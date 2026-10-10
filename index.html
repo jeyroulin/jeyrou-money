@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>財務總控與全方位資產管理系統</title>
   
-  <!-- PWA 手機主畫面圖示與全螢幕設定 -->
+  <!-- PWA 設定與 Manifest 連結 -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="財務總控">
+  <meta name="theme-color" content="#B2C1B4">
   
-  <!-- iOS Safari 內嵌式莫蘭迪綠底白字「財」真實圖示 (180x180 完整獨立碼) -->
-  <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==" />
-  <link rel="apple-touch-icon-precomposed" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==" />
-  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==" />
+  <!-- 強制 iOS Safari 使用高解析度 SVG 莫蘭迪綠圖示 -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23B2C1B4'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='105' fill='%23FFFFFF'>財</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23B2C1B4'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='105' fill='%23FFFFFF'>財</text></svg>">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
