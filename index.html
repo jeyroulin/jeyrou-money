@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>財務總控與全方位資產管理系統</title>
+  
+  <!-- PWA 手機主畫面圖示與全螢幕設定 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="財務總控">
+  
+  <!-- iOS Safari 相容 Base64 PNG Web App 圖示 -->
+  <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==" />
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    select {
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      background-image: none !important;
+    }
+  </style>
+</head>
+<body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen">
+
+  <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden">
+    
+    <!-- 頂部標題與狀態列 -->
+    <header class="mb-4 bg-white p-4 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
+      <div class="flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <h1 class="text-base font-bold text-[#2E2C2B] truncate">財務總控與資產管理系統</h1>
+          <p class="text-xs text-[#827C78] truncate">收支 / 現金流 / AA請款 / 股票 / 定存覆蓋 / 月曆</p>
+        </div>
+        <div id="status-badge" class="shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF0EC] text-[#556357] border border-[#B2C1B4]">
+          連線中
+        </div>
+      </div>
+      <div class="pt-2 border-t border-[#F2ECE9] flex flex-col gap-0.5 text-xs text-[#635D5A]">
+        <div>最新記帳消費日期：<strong id="last-entry-date-display" class="text-[#556357] font-bold">尚無紀錄</strong></div>
+        <div>最近帳務校正日期：<strong id="last-reconcile-date-display" class="text-[#4D5A6E] font-bold">尚無校正紀錄</strong></div>
+      </div>
+    </header>
+
+    <!-- 頂部雙排分頁導覽列 -->
+    <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
+      <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
+        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">
+          快捷記帳
+        </button>
+        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
+          現金流預算
+        </button>
+        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
+          AA請款
+        </button>
+      </div>
+      <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
+        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
+          設定管理
+        </button>
+        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
+          固定資產
+        </button>
+        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
+          財務月曆
+        </button>
+      </div>
+    </nav>
+
+    <div id="error-alert" class="hidden mb-4 p-3.5 bg-[#F7EDED] border border-[#C89B9C] rounded-xl text-[#784D4E] text-xs break-all">
+      <strong class="font-bold block mb-1">系統提示：</strong>
+      <span id="error-msg" class="font-mono"></span>
+    </div>
+
+    <!-- 分頁一：快捷記帳 -->
+    <main id="tab-1" class="tab-content">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] mb-6 space-y-4">
+        <div class="border-b border-[#F2ECE9] pb-3 flex justify-between items-center">
+          <div>
+            <h2 class="text-base font-bold text-[#784D4E]" id="form-mode-title">快捷記帳 (支出)</h2>
+            <p class="text-xs text-[#827C78] mt-0.5">選擇收支模式與扣款管道</p>
+          </div>
+          <div class="flex bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
+            <button type="button" onclick="setEntryMode('支出')" id="mode-btn-expense" class="px-3 py-1.5 rounded-lg bg-[#C89B9C] text-[#2E2C2B] shadow-2xs">支出</button>
+            <button type="button" onclick="setEntryMode('收入')" id="mode-btn-income" class="px-3 py-1.5 rounded-lg text-[#524D4B]">收入</button>
+          </div>
+        </div>
+
+        <form id="expense-form" class="space-y-4">
+          <input type="hidden" id="editing_tx_id" value="">
+
+          <div>
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">實際發生日期</label>
+            <input type="date" id="custom_transaction_date" required class="w-full max-w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">項目名稱</label>
+            <input type="text" id="item_name" required placeholder="請輸入品項或收入來源" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm focus:ring-2 focus:ring-[#B2C1B4] outline-none bg-[#F7F4F3] focus:bg-white">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道選單</label>
+            <select id="account_name" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+              <!-- 動態載入 -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">金額 ($ / 點)</label>
+            <input type="number" id="amount_ntd" required placeholder="0" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-lg font-extrabold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-bold text-[#524D4B] mb-1">歸屬成員</label>
+              <select id="member_tag" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white outline-none">
+                <option value="潔柔">潔柔</option>
+                <option value="宇軒">宇軒</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#524D4B] mb-1">分類</label>
+              <select id="category" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-medium bg-white outline-none">
+                <!-- 動態載入 -->
+              </select>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button type="submit" id="submit-btn" class="flex-1 py-4 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-xl shadow-xs transition text-sm">
+              立即記錄這筆資料
+            </button>
+            <button type="button" id="cancel-edit-btn" onclick="cancelEditing()" class="hidden px-4 py-4 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#3D3A39] font-bold rounded-xl text-sm">
+              取消編輯
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 消費對帳與歷史搜尋 -->
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-bold text-[#2E2C2B]">歷史紀錄對帳與校正編輯</h2>
+          <button onclick="exportToCSV()" class="text-xs bg-[#F7F4F3] text-[#524D4B] px-3 py-1.5 rounded-lg font-bold border border-[#DCD6D3]">匯出 CSV</button>
+        </div>
+
+        <div class="space-y-2">
+          <input type="text" id="search-input" oninput="filterQuickList()" placeholder="搜尋關鍵字..." class="w-full p-2.5 border border-[#DCD6D3] rounded-xl text-xs outline-none bg-[#F7F4F3]">
+          <select id="filter-member-select" onchange="filterQuickList()" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl text-xs font-bold bg-white outline-none">
+            <option value="">全部成員</option>
+            <option value="潔柔">潔柔</option>
+            <option value="宇軒">宇軒</option>
+          </select>
+        </div>
+
+        <div id="quick-list" class="space-y-2 pt-1">
+          <div class="p-4 text-center text-[#827C78] text-xs">尚無紀錄。</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁二：每月現金流與預算專款 -->
+    <main id="tab-2" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
+        <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
+          <div>
+            <h2 class="text-base font-bold text-[#2E2C2B]">每月現金流與預算專款</h2>
+            <p class="text-xs text-[#827C78] mt-0.5">統計剩餘現金流與專款校正</p>
+          </div>
+          <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
+        </div>
+
+        <div class="bg-[#B2C1B4] p-4 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
+          <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
+            <span class="text-xs text-[#435045] font-medium">當月淨剩餘現金流</span>
+            <span id="cashflow-month-tag" class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">當前月份</span>
+          </div>
+          <div class="text-2xl font-extrabold text-[#1F1E1D]" id="cashflow-net-display">$0</div>
+          <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#9EB0A1] text-[#435045]">
+            <div>當月總收入：<strong id="cashflow-income-display" class="text-[#1F1E1D]">$0</strong></div>
+            <div>當月總支出：<strong id="cashflow-expense-display" class="text-[#784D4E]">$0</strong></div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+          <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">自訂專款預算追蹤與校正</strong>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="budget-item-name" placeholder="專款名稱" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
+            <input type="number" id="budget-item-limit" placeholder="預算金額 ($)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
+          </div>
+          <button onclick="addBudgetPlan()" class="w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增專款預算項目</button>
+
+          <div id="budget-plans-list" class="space-y-3 pt-2">
+            <div class="text-center text-[#827C78] py-2">尚無設定專款預算項目。</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁三：AA 請款專區 (改為向冠合請款) -->
+    <main id="tab-3" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-bold text-[#784D4E]">AA 制請款與代墊計算</h2>
+          <input type="month" id="aa-month-select" onchange="renderAATab()" class="p-2 border border-[#C89B9C] rounded-xl text-xs font-bold text-[#784D4E] bg-[#F7EDED] outline-none">
+        </div>
+
+        <div class="bg-[#F7EDED]/80 p-4 rounded-xl border border-[#C89B9C] space-y-3 text-xs">
+          <strong class="font-bold text-[#784D4E] block text-sm">新增請款/代墊細項</strong>
+          <input type="text" id="aa-item-title" placeholder="項目名稱" class="w-full box-border p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="number" id="aa-guanhe-amount" placeholder="冠合應付 ($)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-[#2E2C2B] text-xs">
+            <input type="number" id="aa-jierou-amount" placeholder="潔柔實際代墊 ($)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-[#784D4E] text-xs">
+          </div>
+          <button onclick="addAAItem()" class="w-full py-2.5 bg-[#C89B9C] hover:bg-[#B58788] text-[#2E2C2B] font-bold rounded-lg shadow-xs text-xs">新增請款單項目</button>
+        </div>
+
+        <div class="bg-[#4D4545] text-[#F7F4F3] p-4 rounded-xl space-y-2 text-xs shadow-inner">
+          <div class="flex justify-between items-center text-[#E8C2C3] font-bold border-b border-[#635A5A] pb-2">
+            <span id="aa-title-display">請款單</span>
+            <button onclick="copyAAListText()" class="text-[11px] bg-[#3B3434] text-[#DDD7D4] px-2.5 py-1 rounded hover:bg-[#2B2525] border border-[#635A5A]">複製請款文字</button>
+          </div>
+          
+          <div id="aa-items-container" class="space-y-1.5 py-2">
+            <div class="text-[#B5ADAD] text-center py-2">尚無請款項目。</div>
+          </div>
+
+          <div class="border-t border-dashed border-[#635A5A] pt-2 flex justify-between items-center text-xs font-bold">
+            <span>小計 (冠合應付)：<strong id="aa-guanhe-total-display" class="text-[#F2E5C9] font-bold">$0</strong></span>
+            <span>(潔柔負擔：<strong id="aa-jierou-total-display" class="text-[#E8C2C3] font-bold">$0</strong>)</span>
+          </div>
+        </div>
+
+        <div class="p-3.5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs flex justify-between items-center">
+          <span class="text-[#524D4B] font-medium">本月冠合應支付潔柔金額：</span>
+          <strong id="aa-final-settle-display" class="text-[#556357] text-base font-extrabold">$0</strong>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁四：設定與選單管理 -->
+    <main id="tab-4" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
+        <div>
+          <h2 class="text-base font-bold text-[#5C5069]">設定與選單管理</h2>
+          <p class="text-xs text-[#827C78] mt-0.5">統一管理信用卡、分類、管道與全站資料備份</p>
+        </div>
+
+        <div class="p-4 bg-[#CEC7DB] border border-[#BBB3CB] rounded-xl space-y-2 text-xs text-[#2E2C2B]">
+          <strong class="font-bold text-[#453A52] block text-sm">全站資料備份與跨裝置還原</strong>
+          <p class="text-[#52495E] text-[11px]">換手機或在 iPad 上使用時，可下載全站備份檔並重新載入還原。</p>
+          <div class="flex gap-2 pt-1">
+            <button onclick="exportBackupJSON()" class="flex-1 py-2 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-lg">匯出 JSON 備份檔</button>
+            <label class="flex-1 py-2 bg-[#3D3A39] text-white font-bold rounded-lg text-center cursor-pointer">
+              匯入 JSON 備份
+              <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+            </label>
+          </div>
+        </div>
+
+        <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#4D5A6E] flex justify-between items-center">
+            <span>信用卡設定管理</span>
+            <span class="text-[10px] text-[#827C78] font-normal">到期可停用，保留歷史紀錄</span>
+          </h3>
+
+          <div class="p-3.5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-2.5 text-xs">
+            <strong class="font-bold text-[#4D5A6E] block">新增信用卡</strong>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="card-bank-input" placeholder="銀行" class="p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+              <input type="text" id="card-name-input" placeholder="卡別" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <input type="number" id="card-cutoff-input" placeholder="結帳日" class="p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+              <input type="number" step="0.1" id="card-fee-input" placeholder="手續費%" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
+              <input type="number" step="0.1" id="card-reward-input" placeholder="回饋%" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
+            </div>
+            <button onclick="addCustomCard()" class="w-full py-2.5 bg-[#98A4B7] hover:bg-[#8391A6] text-[#2E2C2B] font-bold rounded-lg text-xs">新增信用卡</button>
+          </div>
+
+          <div id="custom-card-list" class="space-y-2"></div>
+        </div>
+
+        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#2E2C2B]">支出與收入分類管理</h3>
+          <div class="flex gap-2">
+            <input type="text" id="setting-category-input" placeholder="輸入新分類名稱" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <button onclick="addCategoryFromSetting()" class="px-3 py-2 bg-[#CEC7DB] text-[#2E2C2B] rounded-lg text-xs font-bold">新增分類</button>
+          </div>
+          <div id="setting-category-list" class="space-y-1.5 text-xs"></div>
+        </div>
+
+        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#2E2C2B]">支付與收入管道管理</h3>
+          <div class="flex gap-2">
+            <input type="text" id="setting-account-input" placeholder="輸入新管道" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <button onclick="addAccountFromSetting()" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增管道</button>
+          </div>
+          <div id="setting-account-list" class="space-y-1.5 text-xs"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁五：固定資產與年度開銷定存覆蓋追蹤 -->
+    <main id="tab-5" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
+        <div>
+          <h2 class="text-base font-bold text-[#4D5A6E]">固定資產與投資總覽</h2>
+          <p class="text-xs text-[#827C78] mt-0.5">整合股票、定存明細、勞退專戶與年度開銷預存覆蓋率</p>
+        </div>
+
+        <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
+          <button onclick="switchAssetMember('全部')" id="asset-tab-全部" class="asset-member-btn flex-1 py-2 rounded-lg bg-white shadow-2xs text-[#4D5A6E]">全部</button>
+          <button onclick="switchAssetMember('潔柔')" id="asset-tab-潔柔" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">潔柔</button>
+          <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
+        </div>
+
+        <div class="bg-[#98A4B7] p-4 rounded-xl text-[#2E2C2B] shadow-sm space-y-2">
+          <p class="text-xs text-[#3D4757]" id="asset-member-title">【全部成員】固定資產與投資總計</p>
+          <p class="text-2xl font-extrabold" id="asset-total-display">$0</p>
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#3D4757] border-t border-[#8391A6] pt-2">
+            <div>定存總額：<strong id="deposit-total-display" class="text-[#1F1E1D]">$0</strong></div>
+            <div>股票總市值(含現金)：<strong id="stock-total-display" class="text-[#784D4E]">$0</strong></div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
+            <strong class="font-bold text-[#2E2C2B] text-sm">未來年度固定開銷與定存覆蓋率</strong>
+            <div class="flex gap-1 items-center">
+              <select id="annual-year-select" onchange="renderAnnualCoverage()" class="p-1 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
+                <option value="2027">2027 年</option>
+                <option value="2028">2028 年</option>
+              </select>
+              <button onclick="addAnnualExpenseModal()" class="px-2 py-1 bg-[#B2C1B4] text-[#2E2C2B] rounded font-bold text-[10px]">新增開銷</button>
+            </div>
+          </div>
+
+          <div id="annual-coverage-box" class="p-3 bg-white border border-[#DCD6D3] rounded-lg space-y-1.5">
+            <!-- 動態計算 -->
+          </div>
+
+          <div id="annual-items-list" class="space-y-1 pt-1 max-h-40 overflow-y-auto border-t border-[#DCD6D3]">
+            <div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-3 text-xs">
+          <div class="flex justify-between items-center">
+            <strong class="font-bold text-[#4D5A6E] text-sm">定存明細庫 (支援到期日/利息/用途)</strong>
+            <button onclick="addFixedDepositModal()" class="px-2 py-1 bg-[#98A4B7] text-[#2E2C2B] rounded font-bold text-[10px]">新增定存</button>
+          </div>
+          <div id="fixed-deposit-list" class="space-y-2 pt-1">
+            <div class="text-[#827C78] text-center py-1">尚無定存項目</div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+          <div class="flex justify-between items-center">
+            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產 (波動市值 + 交割戶現金)</strong>
+            <button onclick="openAddStockModal()" class="px-2.5 py-1 bg-[#98A4B7] text-[#2E2C2B] rounded font-bold text-[11px]">新增個股</button>
+          </div>
+          <div id="stock-cards-list" class="space-y-3">
+            <div class="text-center text-[#827C78] py-2">尚無個股紀錄。</div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-3 text-xs">
+          <strong class="font-bold text-[#4D5A6E] block text-sm">勞工退休金個人專戶 (4大金額)</strong>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥本金 ($)</label>
+              <input type="number" id="labor-emp-principal" oninput="saveLaborData()" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
+            </div>
+            <div>
+              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥收益 ($)</label>
+              <input type="number" id="labor-emp-income" oninput="saveLaborData()" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#556357]">
+            </div>
+            <div>
+              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提本金 ($)</label>
+              <input type="number" id="labor-self-principal" oninput="saveLaborData()" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
+            </div>
+            <div>
+              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提收益 ($)</label>
+              <input type="number" id="labor-self-income" oninput="saveLaborData()" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#556357]">
+            </div>
+          </div>
+          <div class="p-2.5 bg-white border border-[#BAC7DB] rounded-lg flex justify-between items-center font-bold">
+            <span>勞退總累積獲利：<strong id="labor-profit-sum" class="text-[#556357]">$0</strong></span>
+            <span>累積收益率：<strong id="labor-rate-sum" class="text-[#4D5A6E]">0%</strong></span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁六：財務月曆 -->
+    <main id="tab-6" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+        <h2 class="text-base font-bold text-[#2E2C2B]">互動式財務月曆與信用卡待繳提示</h2>
+
+        <div id="credit-bill-summary" class="p-3 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
+          <strong class="font-bold text-[#524D4B] block">信用卡預估應繳總額提示：</strong>
+          <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
+        </div>
+
+        <div class="flex items-center justify-between bg-[#F7F4F3] p-2.5 rounded-xl border border-[#DCD6D3]">
+          <button onclick="changeCalendarMonth(-1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">上個月</button>
+          <strong id="calendar-month-title" class="text-sm font-extrabold text-[#2E2C2B]">2026年10月</strong>
+          <button onclick="changeCalendarMonth(1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">下個月</button>
+        </div>
+
+        <div class="bg-white border border-[#DCD6D3] rounded-xl overflow-hidden">
+          <div class="grid grid-cols-7 bg-[#DDD7D4] text-center text-[11px] font-bold py-1.5 text-[#524D4B] border-b border-[#DCD6D3]">
+            <div class="text-[#784D4E]">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-[#556357]">六</div>
+          </div>
+          <div id="calendar-days-grid" class="grid grid-cols-7 text-xs border-collapse"></div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
+
+    let entryMode = '支出';
+    let currentAssetMember = '全部';
+    let allTransactions = [];
+    let customCategories = ['生活費', '薪資收入', '現金回饋', '點數折抵'];
+    
+    let customAccounts = [
+      { name: '現金/口袋皮夾', active: true },
+      { name: '預設銀行主帳戶', active: true }
+    ];
+
+    let userCards = [];
+    let budgetPlans = [];
+    let aaListItems = [];
+    let fxAccounts = [];
+    let laborData = { empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 };
+
+    let fixedDeposits = [];
+    let stocksList = [];
+    let annualExpenses = {
+      "2027": [],
+      "2028": []
+    };
+
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+
+    const fetchHeaders = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    };
+
+    function showError(msg) {
+      const alertBox = document.getElementById('error-alert');
+      const errorMsg = document.getElementById('error-msg');
+      if (alertBox && errorMsg) {
+        alertBox.classList.remove('hidden');
+        errorMsg.innerText = msg;
+      }
+    }
+
+    function getTodayString() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function initTodayDate() {
+      const todayStr = getTodayString();
+      const dateInput = document.getElementById('custom_transaction_date');
+      if (dateInput) dateInput.value = todayStr;
+
+      const currentMonthStr = todayStr.substring(0, 7);
+      if (document.getElementById('aa-month-select')) document.getElementById('aa-month-select').value = currentMonthStr;
+      if (document.getElementById('cashflow-month-select')) document.getElementById('cashflow-month-select').value = currentMonthStr;
+    }
+
+    function setEntryMode(mode) {
+      entryMode = mode;
+      const title = document.getElementById('form-mode-title');
+      const btnExp = document.getElementById('mode-btn-expense');
+      const btnInc = document.getElementById('mode-btn-income');
+
+      if (mode === '支出') {
+        title.innerText = '快捷記帳 (支出)';
+        title.className = 'text-base font-bold text-[#784D4E]';
+        btnExp.className = 'px-3 py-1.5 rounded-lg bg-[#C89B9C] text-[#2E2C2B] shadow-2xs';
+        btnInc.className = 'px-3 py-1.5 rounded-lg text-[#524D4B]';
+      } else {
+        title.innerText = '快捷記帳 (收入)';
+        title.className = 'text-base font-bold text-[#4D5A6E]';
+        btnInc.className = 'px-3 py-1.5 rounded-lg bg-[#98A4B7] text-[#2E2C2B] shadow-2xs';
+        btnExp.className = 'px-3 py-1.5 rounded-lg text-[#524D4B]';
+      }
+      renderAccountOptions();
+    }
+
+    function renderAccountOptions() {
+      const select = document.getElementById('account_name');
+      let html = customAccounts.filter(a => a.active).map(a => `<option value="${a.name}">${a.name}</option>`).join('');
+      
+      userCards.filter(c => c.active !== false).forEach(c => {
+        html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號)</option>`;
+      });
+
+      select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
+    }
+
+    function addCategoryFromSetting() {
+      const input = document.getElementById('setting-category-input');
+      const val = input.value.trim();
+      if (!val) return alert('請輸入分類名稱');
+      if (!customCategories.includes(val)) {
+        customCategories.push(val);
+        input.value = '';
+        renderSettingLists();
+        renderCategoryOptions();
+      }
+    }
+
+    function deleteCategory(idx) {
+      if (confirm(`確定要刪除「${customCategories[idx]}」這個分類選單嗎？`)) {
+        customCategories.splice(idx, 1);
+        renderSettingLists();
+        renderCategoryOptions();
+      }
+    }
+
+    function addAccountFromSetting() {
+      const input = document.getElementById('setting-account-input');
+      const val = input.value.trim();
+      if (!val) return alert('請輸入管道名稱');
+      if (!customAccounts.some(a => a.name === val)) {
+        customAccounts.push({ name: val, active: true });
+        input.value = '';
+        renderSettingLists();
+        renderAccountOptions();
+      }
+    }
+
+    function toggleAccountActive(idx) {
+      customAccounts[idx].active = !customAccounts[idx].active;
+      renderSettingLists();
+      renderAccountOptions();
+    }
+
+    function renderSettingLists() {
+      const catContainer = document.getElementById('setting-category-list');
+      if (catContainer) {
+        catContainer.innerHTML = customCategories.map((c, idx) => `
+          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+            <span class="font-bold text-[#3D3A39]">${c}</span>
+            <button onclick="deleteCategory(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+          </div>
+        `).join('');
+      }
+
+      const accContainer = document.getElementById('setting-account-list');
+      if (accContainer) {
+        accContainer.innerHTML = customAccounts.map((a, idx) => `
+          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+            <span class="font-bold ${a.active ? 'text-[#2E2C2B]' : 'text-[#827C78] line-through'}">${a.name}</span>
+            <button onclick="toggleAccountActive(${idx})" class="text-xs font-bold ${a.active ? 'text-[#784D4E]' : 'text-[#556357]'}">
+              ${a.active ? '停用' : '啟用'}
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderCategoryOptions() {
+      const select = document.getElementById('category');
+      if (select) {
+        select.innerHTML = customCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+      }
+    }
+
+    function addCustomCard() {
+      const bank = document.getElementById('card-bank-input').value.trim();
+      const name = document.getElementById('card-name-input').value.trim();
+      const cutoff = Number(document.getElementById('card-cutoff-input').value) || 10;
+      const fee = Number(document.getElementById('card-fee-input').value) || 1.5;
+      const reward = Number(document.getElementById('card-reward-input').value) || 3.0;
+
+      if (!bank || !name) return alert('請填寫發卡銀行與信用卡名稱');
+
+      userCards.push({ bank, name, cutoff, fee, reward, active: true });
+      document.getElementById('card-bank-input').value = '';
+      document.getElementById('card-name-input').value = '';
+
+      renderCustomCardList();
+      renderAccountOptions();
+      renderCalendar();
+      alert('已新增信用卡！');
+    }
+
+    function toggleCardActive(idx) {
+      userCards[idx].active = !userCards[idx].active;
+      renderCustomCardList();
+      renderAccountOptions();
+    }
+
+    function renderCustomCardList() {
+      const container = document.getElementById('custom-card-list');
+      if (!container) return;
+      if (userCards.length === 0) {
+        container.innerHTML = '<div class="text-center text-[#827C78] py-3 text-xs">尚無信用卡紀錄。</div>';
+        return;
+      }
+      container.innerHTML = userCards.map((c, idx) => `
+        <div class="p-3 ${c.active !== false ? 'bg-[#E8EDF5] border-[#BAC7DB]' : 'bg-[#DDD7D4] border-[#DCD6D3] opacity-60'} border rounded-xl flex justify-between items-center text-xs">
+          <div>
+            <strong class="text-[#4D5A6E] block font-bold">${c.bank} - ${c.name} ${c.active === false ? '(已停用)' : ''}</strong>
+            <span class="text-[11px] text-[#635D5A]">每月 ${c.cutoff} 號結帳</span>
+          </div>
+          <button onclick="toggleCardActive(${idx})" class="text-[11px] px-2.5 py-1 rounded font-bold ${c.active !== false ? 'bg-[#F7EDED] text-[#784D4E]' : 'bg-[#EBF0EC] text-[#556357]'}">
+            ${c.active !== false ? '停用此卡' : '重新啟用'}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function addBudgetPlan() {
+      const name = document.getElementById('budget-item-name').value.trim();
+      const limit = Number(document.getElementById('budget-item-limit').value) || 0;
+      if (!name || limit <= 0) return alert('請輸入有效的專款名稱與金額');
+
+      budgetPlans.push({ name, limit });
+      document.getElementById('budget-item-name').value = '';
+      document.getElementById('budget-item-limit').value = '';
+      renderBudgetPlans();
+    }
+
+    function renderBudgetPlans() {
+      const container = document.getElementById('budget-plans-list');
+      if (!container) return;
+      if (budgetPlans.length === 0) {
+        container.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無設定專款預算項目。</div>';
+        return;
+      }
+
+      container.innerHTML = budgetPlans.map(b => `
+        <div class="bg-white p-3 rounded-lg border border-[#DCD6D3] flex justify-between items-center text-xs">
+          <span class="font-bold text-[#2E2C2B]">${b.name}</span>
+          <span class="font-bold text-[#3D3A39]">預算上限: $${b.limit.toLocaleString()}</span>
+        </div>
+      `).join('');
+    }
+
+    // AA 請款邏輯 (對象更名為冠合 + 增加刪減功能)
+    function addAAItem() {
+      const title = document.getElementById('aa-item-title').value.trim();
+      const guanheAmt = Number(document.getElementById('aa-guanhe-amount').value) || 0;
+      const jierouAmt = Number(document.getElementById('aa-jierou-amount').value) || 0;
+
+      if (!title) return alert('請輸入項目名稱');
+
+      aaListItems.push({ title, guanheAmt, jierouAmt });
+      document.getElementById('aa-item-title').value = '';
+      document.getElementById('aa-guanhe-amount').value = '';
+      document.getElementById('aa-jierou-amount').value = '';
+      renderAATab();
+    }
+
+    function deleteAAItem(idx) {
+      aaListItems.splice(idx, 1);
+      renderAATab();
+    }
+
+    function renderAATab() {
+      const container = document.getElementById('aa-items-container');
+      if (!container) return;
+
+      let guanheTotal = 0;
+      let jierouTotal = 0;
+
+      if (aaListItems.length === 0) {
+        container.innerHTML = '<div class="text-[#B5ADAD] text-center py-2">尚無請款項目。</div>';
+      } else {
+        container.innerHTML = aaListItems.map((item, idx) => {
+          guanheTotal += item.guanheAmt;
+          jierouTotal += item.jierouAmt;
+          return `
+            <div class="flex justify-between items-center text-xs border-b border-[#635A5A] pb-1.5 pt-0.5">
+              <span>- ${item.title}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[#F2E5C9] font-bold">冠合 $${item.guanheAmt.toLocaleString()}</span>
+                <button onclick="deleteAAItem(${idx})" class="text-[#E8C2C3] hover:text-white bg-[#635A5A] px-1.5 py-0.5 rounded text-[10px]">刪除</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (document.getElementById('aa-guanhe-total-display')) document.getElementById('aa-guanhe-total-display').innerText = '$' + guanheTotal.toLocaleString();
+      if (document.getElementById('aa-jierou-total-display')) document.getElementById('aa-jierou-total-display').innerText = '$' + jierouTotal.toLocaleString();
+      if (document.getElementById('aa-final-settle-display')) document.getElementById('aa-final-settle-display').innerText = '$' + guanheTotal.toLocaleString();
+    }
+
+    function copyAAListText() {
+      if (aaListItems.length === 0) return alert('目前沒有請款項目！');
+      let text = '【本月請款單細項】\n';
+      let total = 0;
+      aaListItems.forEach(i => {
+        text += `- ${i.title}：$${i.guanheAmt}\n`;
+        total += i.guanheAmt;
+      });
+      text += `-------------------\n總計冠合應付：$${total} 元`;
+
+      navigator.clipboard.writeText(text).then(() => alert('已複製請款文字！'));
+    }
+
+    function addAnnualExpenseModal() {
+      const year = document.getElementById('annual-year-select')?.value || "2027";
+      const name = prompt(`請輸入 ${year} 年度的開銷項目名稱：`);
+      if (!name) return;
+      const amount = Number(prompt('請輸入預估金額 ($)：')) || 0;
+      if (amount <= 0) return;
+
+      if (!annualExpenses[year]) annualExpenses[year] = [];
+      annualExpenses[year].push({ name, amount });
+      renderAnnualCoverage();
+    }
+
+    function renderAnnualCoverage() {
+      const year = document.getElementById('annual-year-select')?.value || "2027";
+      const items = annualExpenses[year] || [];
+      const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
+
+      const savedAmount = fixedDeposits.filter(d => d.bank.includes(year)).reduce((sum, d) => sum + d.amount, 0);
+      const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
+      const diff = totalExpense - savedAmount;
+
+      const coverageBox = document.getElementById('annual-coverage-box');
+      if (coverageBox) {
+        coverageBox.innerHTML = `
+          <div class="flex justify-between items-center font-bold">
+            <span class="text-[#2E2C2B]">${year}年度開銷總預估：$${totalExpense.toLocaleString()}</span>
+            <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'}">達成率 ${pct}%</span>
+          </div>
+          <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
+            <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-[#635D5A]">
+            <span>已準備預存定存：$${savedAmount.toLocaleString()}</span>
+            <span>${totalExpense === 0 ? '尚未新增開銷項目' : (diff <= 0 ? '預存已完全覆蓋' : `還需預存缺口：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
+          </div>
+        `;
+      }
+
+      const listContainer = document.getElementById('annual-items-list');
+      if (listContainer) {
+        listContainer.innerHTML = items.length > 0 ? items.map((i, idx) => `
+          <div class="flex justify-between items-center bg-white p-1.5 rounded border border-[#DCD6D3] text-[11px]">
+            <span>- ${i.name}</span>
+            <div class="space-x-1">
+              <strong class="text-[#2E2C2B]">$${i.amount.toLocaleString()}</strong>
+              <button onclick="annualExpenses['${year}'].splice(${idx},1); renderAnnualCoverage();" class="text-[#784D4E]">刪除</button>
+            </div>
+          </div>
+        `).join('') : '<div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>';
+      }
+    }
+
+    function addFixedDepositModal() {
+      const owner = prompt('請選擇歸屬成員 (潔柔/宇軒)：', '潔柔');
+      const bank = prompt('請輸入機構/定存名稱：');
+      if (!bank) return;
+      const amount = Number(prompt('請輸入定存金額 ($)：')) || 0;
+      const rate = Number(prompt('請輸入年利率 (%)：')) || 0;
+      const date = prompt('請輸入到期日 (YYYY-MM-DD)：', getTodayString());
+
+      if (amount > 0) {
+        fixedDeposits.push({ owner, bank, amount, rate, interest: Math.round(amount * (rate/100)), date, note: '' });
+        renderAssets(currentAssetMember);
+      }
+    }
+
+    function openAddStockModal() {
+      const owner = prompt('請選擇歸屬成員 (潔柔/宇軒)：', '潔柔');
+      const code = prompt('請輸入股票名稱/代號：');
+      if (!code) return;
+      const waveValue = Number(prompt('請輸入目前波動市值 ($)：')) || 0;
+      const cashValue = Number(prompt('請輸入交割戶現金 ($)：')) || 0;
+
+      stocksList.push({ owner, code, waveValue, cashValue, txList: [], divList: [] });
+      renderStocksList();
+      renderAssets(currentAssetMember);
+    }
+
+    function renderStocksList() {
+      const container = document.getElementById('stock-cards-list');
+      if (!container) return;
+
+      const filtered = stocksList.filter(s => currentAssetMember === '全部' || s.owner === currentAssetMember);
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無個股紀錄。</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map((s, idx) => {
+        const total = (s.waveValue || 0) + (s.cashValue || 0);
+        return `
+          <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] space-y-1.5">
+            <div class="flex justify-between items-center font-bold">
+              <span class="text-[#2E2C2B]">${s.owner ? `[${s.owner}] ` : ''}${s.code}</span>
+              <div class="space-x-1">
+                <span class="text-[#4D5A6E] text-sm">$${total.toLocaleString()}</span>
+                <button onclick="stocksList.splice(${idx},1); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs">刪除</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1 border-t border-[#F2ECE9]">
+              <div>波動市值：<strong class="text-[#2E2C2B]">$${(s.waveValue || 0).toLocaleString()}</strong></div>
+              <div>交割戶現金：<strong class="text-[#556357]">$${(s.cashValue || 0).toLocaleString()}</strong></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function saveLaborData() {
+      laborData.empPrincipal = Number(document.getElementById('labor-emp-principal')?.value) || 0;
+      laborData.empIncome = Number(document.getElementById('labor-emp-income')?.value) || 0;
+      laborData.selfPrincipal = Number(document.getElementById('labor-self-principal')?.value) || 0;
+      laborData.selfIncome = Number(document.getElementById('labor-self-income')?.value) || 0;
+
+      const totalProfit = laborData.empIncome + laborData.selfIncome;
+      const totalPrincipal = laborData.empPrincipal + laborData.selfPrincipal;
+      const totalRate = totalPrincipal > 0 ? ((totalProfit / totalPrincipal) * 100).toFixed(1) : 0;
+
+      if (document.getElementById('labor-profit-sum')) document.getElementById('labor-profit-sum').innerText = '$' + totalProfit.toLocaleString();
+      if (document.getElementById('labor-rate-sum')) document.getElementById('labor-rate-sum').innerText = totalRate + '%';
+
+      renderAssets(currentAssetMember);
+    }
+
+    function renderAssets(member) {
+      currentAssetMember = member;
+      if (document.getElementById('asset-member-title')) document.getElementById('asset-member-title').innerText = `【${member}成員】固定資產與投資總計`;
+
+      const depContainer = document.getElementById('fixed-deposit-list');
+      const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
+      const depositTotal = filteredDeposits.reduce((sum, d) => sum + d.amount, 0);
+
+      if (depContainer) {
+        depContainer.innerHTML = filteredDeposits.length > 0
+          ? filteredDeposits.map((d, idx) => `
+            <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#BAC7DB] text-xs">
+              <div>
+                <strong class="text-[#2E2C2B] font-bold">${d.owner ? `[${d.owner}] ` : ''}${d.bank} $${d.amount.toLocaleString()}</strong>
+                <span class="text-[10px] text-[#827C78] block">${d.date || ''} 到期 (${d.rate || 0}% / 利息$${d.interest || 0})</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <strong class="text-[#4D5A6E]">$${d.amount.toLocaleString()}</strong>
+                <button onclick="fixedDeposits.splice(${idx},1); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs ml-1">刪除</button>
+              </div>
+            </div>
+          `).join('')
+          : '<div class="text-[#827C78] text-center py-1">尚無定存項目</div>';
+      }
+
+      const filteredStocks = stocksList.filter(s => member === '全部' || s.owner === member);
+      const stockTotal = filteredStocks.reduce((sum, s) => sum + (s.waveValue || 0) + (s.cashValue || 0), 0);
+
+      if (document.getElementById('stock-total-display')) document.getElementById('stock-total-display').innerText = '$' + stockTotal.toLocaleString();
+      if (document.getElementById('deposit-total-display')) document.getElementById('deposit-total-display').innerText = '$' + depositTotal.toLocaleString();
+
+      const laborTotal = (member === '潔柔' || member === '全部') ? (laborData.empPrincipal + laborData.empIncome + laborData.selfPrincipal + laborData.selfIncome) : 0;
+
+      const grandTotal = depositTotal + stockTotal + laborTotal;
+      if (document.getElementById('asset-total-display')) document.getElementById('asset-total-display').innerText = '$' + Math.round(grandTotal).toLocaleString();
+
+      renderStocksList();
+      renderAnnualCoverage();
+    }
+
+    function switchAssetMember(member) {
+      document.querySelectorAll('.asset-member-btn').forEach(b => {
+        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
+        b.classList.add('text-[#524D4B]');
+      });
+      const btn = document.getElementById(`asset-tab-${member}`);
+      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
+      renderAssets(member);
+    }
+
+    function renderCashFlowTab() {
+      const mVal = document.getElementById('cashflow-month-select').value || '2026-10';
+      const yearStr = mVal.substring(0, 4);
+      const monthStr = mVal.substring(5, 7);
+      document.getElementById('cashflow-month-tag').innerText = `${yearStr}年${monthStr}月`;
+
+      const currentMonthTx = allTransactions.filter(t => t.transaction_date && t.transaction_date.startsWith(mVal));
+      
+      const totalExpense = currentMonthTx.filter(t => Number(t.amount_ntd) < 0).reduce((sum, t) => sum + Math.abs(Number(t.amount_ntd)), 0);
+      const totalIncome = currentMonthTx.filter(t => Number(t.amount_ntd) > 0).reduce((sum, t) => sum + Number(t.amount_ntd), 0);
+
+      document.getElementById('cashflow-expense-display').innerText = '$' + totalExpense.toLocaleString();
+      document.getElementById('cashflow-income-display').innerText = '$' + totalIncome.toLocaleString();
+
+      const netSurplus = totalIncome - totalExpense;
+      document.getElementById('cashflow-net-display').innerText = '$' + netSurplus.toLocaleString();
+    }
+
+    function renderCalendar() {
+      const titleEl = document.getElementById('calendar-month-title');
+      if (!titleEl) return;
+      titleEl.innerText = `${calYear}年${calMonth + 1}月`;
+
+      const grid = document.getElementById('calendar-days-grid');
+      grid.innerHTML = '';
+
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) {
+        grid.innerHTML += `<div class="p-1.5 min-h-[50px] bg-[#F7F4F3]/50 border-r border-b border-[#F2ECE9]"></div>`;
+      }
+
+      for (let day = 1; day <= totalDays; day++) {
+        let isCutoffDay = false;
+        userCards.forEach(c => { if (c.cutoff === day) isCutoffDay = true; });
+
+        const isToday = (day === new Date().getDate() && calMonth === new Date().getMonth() && calYear === new Date().getFullYear());
+        const dayClass = isToday ? 'bg-[#ECE5E3] font-bold border-2 border-[#C2B5B3]' : 'bg-white';
+
+        grid.innerHTML += `
+          <div class="p-1 min-h-[50px] border-r border-b border-[#DCD6D3] ${dayClass}">
+            <div class="text-[10px] text-[#635D5A]">${day}</div>
+            <div class="space-y-0.5">
+              ${isCutoffDay ? '<span class="block text-[9px] bg-[#F7EDED] text-[#784D4E] px-1 rounded truncate font-bold">結帳日</span>' : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      const creditDetailBox = document.getElementById('credit-bill-details');
+      if (creditDetailBox) {
+        if (userCards.length === 0) {
+          creditDetailBox.innerText = '尚無設定信用卡資料。';
+        } else {
+          creditDetailBox.innerHTML = userCards.map(c => `
+            <div>- <strong>${c.bank} ${c.name}</strong> (每月${c.cutoff}號結帳)：預估本期待繳 $0</div>
+          `).join('');
+        }
+      }
+    }
+
+    function exportToCSV() {
+      if (allTransactions.length === 0) return alert('目前無資料可匯出');
+      let csv = '\uFEFF日期,項目,金額,管道,成員,分類\n';
+      allTransactions.forEach(t => {
+        csv += `"${t.transaction_date || ''}","${t.item_name || ''}","${t.amount_ntd || 0}","${t.account_name || ''}","${t.member_tag || ''}","${t.category || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `記帳紀錄_${getTodayString()}.csv`;
+      a.click();
+    }
+
+    function exportBackupJSON() {
+      const backupData = {
+        customCategories,
+        customAccounts,
+        userCards,
+        budgetPlans,
+        fixedDeposits,
+        stocksList,
+        laborData,
+        annualExpenses,
+        exportDate: new Date().toISOString()
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `全站財務備份_${getTodayString()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importBackupJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.customCategories) customCategories = data.customCategories;
+          if (data.customAccounts) customAccounts = data.customAccounts;
+          if (data.userCards) userCards = data.userCards;
+          if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
+          if (data.stocksList) stocksList = data.stocksList;
+          if (data.laborData) laborData = data.laborData;
+          if (data.annualExpenses) annualExpenses = data.annualExpenses;
+
+          renderCategoryOptions();
+          renderAccountOptions();
+          renderAssets('全部');
+          alert('已成功還原備份資料！');
+        } catch (err) {
+          alert('備份檔案讀取失敗：' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function editTransaction(id) {
+      const tx = allTransactions.find(t => t.id === id);
+      if (!tx) return;
+
+      document.getElementById('editing_tx_id').value = tx.id;
+      document.getElementById('custom_transaction_date').value = tx.transaction_date;
+      document.getElementById('item_name').value = tx.item_name;
+      document.getElementById('amount_ntd').value = Math.abs(tx.amount_ntd);
+      document.getElementById('member_tag').value = tx.member_tag || '潔柔';
+      document.getElementById('category').value = tx.category || '生活費';
+
+      if (tx.amount_ntd < 0) {
+        setEntryMode('支出');
+      } else {
+        setEntryMode('收入');
+      }
+
+      document.getElementById('submit-btn').innerText = '儲存修改內容';
+      document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEditing() {
+      document.getElementById('editing_tx_id').value = '';
+      document.getElementById('item_name').value = '';
+      document.getElementById('amount_ntd').value = '';
+      document.getElementById('submit-btn').innerText = '立即記錄這筆資料';
+      document.getElementById('cancel-edit-btn').classList.add('hidden');
+    }
+
+    async function deleteTransaction(id) {
+      if (!confirm('確定要刪除這筆紀錄嗎？')) return;
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${id}`, {
+          method: 'DELETE',
+          headers: fetchHeaders
+        });
+        if (!res.ok) throw new Error(await res.text());
+        fetchTransactions();
+        alert('已成功刪除紀錄！');
+      } catch (err) {
+        alert('刪除失敗: ' + err.message);
+      }
+    }
+
+    document.getElementById('expense-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+
+      const editId = document.getElementById('editing_tx_id').value;
+      const customDate = document.getElementById('custom_transaction_date').value;
+      const rawItemName = document.getElementById('item_name').value;
+      let totalAmount = parseFloat(document.getElementById('amount_ntd').value);
+      const bankName = document.getElementById('account_name').value;
+      const memberTag = document.getElementById('member_tag').value;
+      const category = document.getElementById('category').value;
+
+      if (entryMode === '支出') {
+        totalAmount = -Math.abs(totalAmount);
+      } else {
+        totalAmount = Math.abs(totalAmount);
+      }
+
+      const recordToInsert = {
+        item_name: rawItemName,
+        amount_ntd: totalAmount,
+        account_name: bankName,
+        member_tag: memberTag,
+        category: category,
+        transaction_date: customDate
+      };
+
+      try {
+        let res;
+        if (editId) {
+          res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${editId}`, {
+            method: 'PATCH',
+            headers: fetchHeaders,
+            body: JSON.stringify(recordToInsert)
+          });
+        } else {
+          res = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
+            method: 'POST',
+            headers: fetchHeaders,
+            body: JSON.stringify([recordToInsert])
+          });
+        }
+
+        if (!res.ok) throw new Error(await res.text());
+        document.getElementById('item_name').value = '';
+        document.getElementById('amount_ntd').value = '';
+        cancelEditing();
+        fetchTransactions();
+        alert('已成功儲存！');
+      } catch (err) {
+        alert('儲存失敗: ' + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function fetchTransactions() {
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/transactions?select=*&order=transaction_date.desc', {
+          method: 'GET',
+          headers: fetchHeaders
+        });
+        if (res.ok) {
+          allTransactions = await res.json();
+          filterQuickList();
+          updateLastEntryDateDisplay();
+          renderCashFlowTab();
+        }
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    function updateLastEntryDateDisplay() {
+      if (allTransactions.length === 0) {
+        document.getElementById('last-entry-date-display').innerText = '尚無紀錄';
+        return;
+      }
+
+      const latestDateStr = allTransactions[0].transaction_date;
+      document.getElementById('last-entry-date-display').innerText = latestDateStr;
+    }
+
+    function filterQuickList() {
+      const keyword = (document.getElementById('search-input')?.value || '').toLowerCase();
+      const memberFilter = document.getElementById('filter-member-select')?.value || '';
+
+      const filtered = allTransactions.filter(t => {
+        const matchKey = !keyword || (t.item_name && t.item_name.toLowerCase().includes(keyword));
+        const matchMem = !memberFilter || t.member_tag === memberFilter;
+        return matchKey && matchMem;
+      });
+
+      renderQuickList(filtered);
+    }
+
+    function renderQuickList(list) {
+      const container = document.getElementById('quick-list');
+      if (list.length === 0) {
+        container.innerHTML = '<div class="p-4 text-center text-[#827C78] text-xs">尚無紀錄。</div>';
+        return;
+      }
+
+      container.innerHTML = list.slice(0, 15).map(t => {
+        const isExpense = Number(t.amount_ntd) < 0;
+        const amtStr = (isExpense ? '-' : '+') + '$' + Math.abs(Number(t.amount_ntd)).toLocaleString();
+        const amtClass = isExpense ? 'text-[#784D4E]' : 'text-[#556357]';
+
+        return `
+          <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs">
+            <div>
+              <div class="font-bold text-[#2E2C2B]">${t.item_name || '無品項'}</div>
+              <div class="text-[10px] text-[#827C78] mt-0.5">${t.account_name || ''} - ${t.member_tag || ''} - ${t.transaction_date || ''}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="font-extrabold ${amtClass} text-sm">${amtStr}</div>
+              <button onclick="editTransaction(${t.id})" class="text-[10px] bg-[#F7F4F3] hover:bg-[#DDD7D4] text-[#524D4B] px-2 py-1 rounded border border-[#DCD6D3]">編輯</button>
+              <button onclick="deleteTransaction(${t.id})" class="text-[10px] bg-[#F7EDED] hover:bg-[#EBD2D2] text-[#784D4E] px-1.5 py-1 rounded border border-[#C89B9C]">刪除</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function switchTab(tabIndex) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(el => {
+        el.className = 'nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]';
+      });
+
+      document.getElementById(`tab-${tabIndex}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-btn-${tabIndex}`);
+      if (activeBtn) {
+        activeBtn.className = 'nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] font-bold shadow-xs';
+      }
+
+      if (tabIndex === 2) renderCashFlowTab();
+      if (tabIndex === 3) renderAATab();
+      if (tabIndex === 4) {
+        renderSettingLists();
+        renderCustomCardList();
+      }
+      if (tabIndex === 5) {
+        renderAssets('全部');
+      }
+      if (tabIndex === 6) renderCalendar();
+    }
+
+    async function initSystem() {
+      initTodayDate();
+      renderCategoryOptions();
+      renderAccountOptions();
+      const badge = document.getElementById('status-badge');
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/transactions?select=*&limit=1', { method: 'GET', headers: fetchHeaders });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (badge) {
+          badge.className = 'shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF0EC] text-[#556357] border border-[#B2C1B4]';
+          badge.innerText = '連線正常';
+        }
+        fetchTransactions();
+      } catch (err) {
+        if (badge) {
+          badge.className = 'shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#F7EDED] text-[#784D4E] border border-[#C89B9C]';
+          badge.innerText = '連線失敗';
+        }
+        showError(err.message || '網路請求失敗');
+      }
+    }
+
+    initSystem();
+  </script>
+</body>
+</html>
