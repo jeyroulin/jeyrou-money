@@ -10,9 +10,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="財務總控">
   
-  <!-- iOS Safari 相容 Base64 PNG Web App 圖示 -->
-  <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==" />
-  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==" />
+  <!-- iOS Safari 莫蘭迪綠底白字「財」圖示 -->
+  <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23B2C1B4'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='105' fill='%23FFFFFF'>財</text></svg>" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23B2C1B4'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='105' fill='%23FFFFFF'>財</text></svg>" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -202,7 +202,7 @@
       </section>
     </main>
 
-    <!-- 分頁三：AA 請款專區 (改為向冠合請款) -->
+    <!-- 分頁三：AA 請款專區 -->
     <main id="tab-3" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex items-center justify-between">
@@ -657,7 +657,6 @@
       `).join('');
     }
 
-    // AA 請款邏輯 (對象更名為冠合 + 增加刪減功能)
     function addAAItem() {
       const title = document.getElementById('aa-item-title').value.trim();
       const guanheAmt = Number(document.getElementById('aa-guanhe-amount').value) || 0;
