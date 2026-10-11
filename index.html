@@ -384,7 +384,7 @@
         <!-- 1. 銀行資訊管理 -->
         <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
-            <span>銀行資訊管理</span>
+            <span>銀行資訊管理 (依代碼排序)</span>
             <span class="text-[10px] text-[#827C78] font-normal">可新增、編輯或刪除往來銀行</span>
           </h3>
           <div class="flex gap-2">
@@ -397,7 +397,7 @@
         <!-- 2. 證券商管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
-            <span>證券商管理</span>
+            <span>證券商管理 (依代碼排序)</span>
             <span class="text-[10px] text-[#827C78] font-normal">可新增、編輯或刪除開戶證券商</span>
           </h3>
           <div class="flex gap-2">
@@ -543,17 +543,35 @@
     let currentAssetMember = '全部';
     let allTransactions = [];
 
+    // 依據名稱開頭的代碼數字進行由小到大排序 (Natural Numerical Sort)
+    function sortByCode(list) {
+      return list.sort((a, b) => {
+        const matchA = a.match(/^\d+/);
+        const matchB = b.match(/^\d+/);
+        const numA = matchA ? parseInt(matchA[0], 10) : Infinity;
+        const numB = matchB ? parseInt(matchB[0], 10) : Infinity;
+        
+        if (numA !== numB) {
+          return numA - numB;
+        }
+        return a.localeCompare(b, 'zh-TW');
+      });
+    }
+
     // 預設銀行與證券商預設值
-    let defaultBankList = [
-      '812 台新銀行 (Richart)', '013 國泰世華銀行', '807 永豐銀行 (DAWHO)', 
-      '012 台北富邦銀行', '822 中國信託商業銀行', '700 中華郵政 (郵局)', 
-      '808 玉山銀行', '004 臺灣銀行', '005 土地銀行', '006 合作金庫銀行', 
-      '824 將來銀行', '826 LINE Bank'
-    ];
-    let defaultBrokerList = [
-      '9800 國泰綜合證券', '9200 元大證券', '9600 富邦證券', 
-      '9210 凱基證券', '9260 永豐金證券', '8450 台新綜合證券'
-    ];
+    let defaultBankList = sortByCode([
+      '004 臺灣銀行', '005 土地銀行', '006 合作金庫銀行', '007 第一商業銀行',
+      '008 華南商業銀行', '009 彰化商業銀行', '012 台北富邦銀行', '013 國泰世華銀行',
+      '017 兆豐國際商業銀行', '700 中華郵政 (郵局)', '803 元大商業銀行',
+      '807 永豐銀行 (DAWHO)', '808 玉山銀行', '812 台新銀行 (Richart)',
+      '822 中國信託商業銀行', '824 將來銀行', '826 LINE Bank'
+    ]);
+
+    let defaultBrokerList = sortByCode([
+      '8450 台新綜合證券', '8880 中國信託綜合證券', '9200 元大證券',
+      '9210 凱基證券', '9260 永豐金證券', '9300 群益金鼎證券',
+      '9600 富邦證券', '9800 國泰綜合證券'
+    ]);
 
     let customCategories = ['生活費', '薪資收入', '現金回饋', '點數折抵'];
     let customAccounts = [
@@ -593,6 +611,10 @@
 
     /* --- 全站設定永久儲存 (localStorage + Supabase 同步) --- */
     function saveAllSettingsLocalAndCloud() {
+      // 儲存前確保清單一律從小到大排序
+      bankList = sortByCode(bankList);
+      brokerList = sortByCode(brokerList);
+
       const settingsPayload = {
         customCategories,
         customAccounts,
@@ -653,8 +675,8 @@
     function applySettingsObject(data) {
       if (data.customCategories) customCategories = data.customCategories;
       if (data.customAccounts) customAccounts = data.customAccounts;
-      if (data.bankList && data.bankList.length > 0) bankList = data.bankList;
-      if (data.brokerList && data.brokerList.length > 0) brokerList = data.brokerList;
+      if (data.bankList && data.bankList.length > 0) bankList = sortByCode(data.bankList);
+      if (data.brokerList && data.brokerList.length > 0) brokerList = sortByCode(data.brokerList);
       if (data.userCards) userCards = data.userCards;
       if (data.budgetPlans) budgetPlans = data.budgetPlans;
       if (data.aaListItems) aaListItems = data.aaListItems;
@@ -729,6 +751,7 @@
       if (bankList.length === 0) {
         select.innerHTML = '<option value="一般銀行">尚未設定銀行 (請至設定管理新增)</option>';
       } else {
+        bankList = sortByCode(bankList);
         select.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
       }
       document.getElementById('modal-dep-date').value = getTodayString();
@@ -765,6 +788,7 @@
       if (brokerList.length === 0) {
         select.innerHTML = '<option value="一般證券">尚未設定證券商 (請至設定管理新增)</option>';
       } else {
+        brokerList = sortByCode(brokerList);
         select.innerHTML = brokerList.map(br => `<option value="${br}">${br}</option>`).join('');
       }
       document.getElementById('stock-modal').classList.remove('hidden');
@@ -797,7 +821,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 設定管理 CRUD 功能 (自動儲存) --- */
+    /* --- 設定管理 CRUD 功能 (自動排序 + 儲存) --- */
 
     function addBankFromSetting() {
       const input = document.getElementById('setting-bank-input');
@@ -805,6 +829,7 @@
       if (!val) return alert('請輸入銀行名稱');
       if (!bankList.includes(val)) {
         bankList.push(val);
+        bankList = sortByCode(bankList);
         input.value = '';
         saveAllSettingsLocalAndCloud();
         renderSettingLists();
@@ -815,6 +840,7 @@
       const newName = prompt('請修改銀行名稱：', bankList[idx]);
       if (newName && newName.trim()) {
         bankList[idx] = newName.trim();
+        bankList = sortByCode(bankList);
         saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
@@ -834,6 +860,7 @@
       if (!val) return alert('請輸入證券商名稱');
       if (!brokerList.includes(val)) {
         brokerList.push(val);
+        brokerList = sortByCode(brokerList);
         input.value = '';
         saveAllSettingsLocalAndCloud();
         renderSettingLists();
@@ -844,6 +871,7 @@
       const newName = prompt('請修改證券商名稱：', brokerList[idx]);
       if (newName && newName.trim()) {
         brokerList[idx] = newName.trim();
+        brokerList = sortByCode(brokerList);
         saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
@@ -929,6 +957,9 @@
     }
 
     function renderSettingLists() {
+      bankList = sortByCode(bankList);
+      brokerList = sortByCode(brokerList);
+
       const bankContainer = document.getElementById('setting-bank-list');
       if (bankContainer) {
         bankContainer.innerHTML = bankList.length === 0 ? '<div class="text-[#827C78] text-center py-1">尚未建立銀行資料。</div>' : bankList.map((b, idx) => `
@@ -1407,8 +1438,8 @@
       const backupData = {
         customCategories,
         customAccounts,
-        bankList,
-        brokerList,
+        bankList: sortByCode(bankList),
+        brokerList: sortByCode(brokerList),
         userCards,
         budgetPlans,
         fixedDeposits,
