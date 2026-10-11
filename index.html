@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>財務總控與全方位資產管理系統</title>
   
-  <!-- PWA 設定與 Manifest 連結 -->
   <link rel="manifest" href="./manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,7 +29,7 @@
 
   <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden">
     
-    <!-- 精簡版頂部標題與狀態列 -->
+    <!-- 頂部標題與狀態列 -->
     <header class="mb-4 bg-white p-4 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0">
@@ -46,29 +45,18 @@
       </div>
     </header>
 
-    <!-- 分頁導覽列 -->
+    <!-- 分頁導覽列 (新增股市清單分頁) -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
       <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
-        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">
-          快捷記帳
-        </button>
-        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          現金收支
-        </button>
-        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          AA請款
-        </button>
+        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
+        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">現金收支</button>
+        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">AA請款</button>
       </div>
-      <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
-        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          財務月曆
-        </button>
-        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          資產明細
-        </button>
-        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          設定管理
-        </button>
+      <div class="grid grid-cols-4 gap-1 text-center text-[11px] font-bold">
+        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">財務月曆</button>
+        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
+        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
+        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
       </div>
     </nav>
 
@@ -96,7 +84,7 @@
 
           <div>
             <label class="block text-xs font-bold text-[#524D4B] mb-1">實際發生日期</label>
-            <input type="date" id="custom_transaction_date" required class="w-full max-w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+            <input type="date" id="custom_transaction_date" required class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
           </div>
 
           <div>
@@ -107,7 +95,6 @@
           <div>
             <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道選單</label>
             <select id="account_name" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
-              <!-- 動態載入 -->
             </select>
           </div>
 
@@ -127,7 +114,6 @@
             <div>
               <label class="block text-xs font-bold text-[#524D4B] mb-1">分類</label>
               <select id="category" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-medium bg-white outline-none">
-                <!-- 動態載入 -->
               </select>
             </div>
           </div>
@@ -143,7 +129,6 @@
         </form>
       </section>
 
-      <!-- 消費對帳與歷史搜尋 -->
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-3">
         <div class="flex items-center justify-between">
           <h2 class="text-base font-bold text-[#2E2C2B]">歷史紀錄對帳與校正編輯</h2>
@@ -269,12 +254,55 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產明細 -->
+    <!-- 分頁七：股市清單 (新獨立頁面，潔柔/宇軒頁籤) -->
+    <main id="tab-7" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
+          <div>
+            <h2 class="text-base font-bold text-[#2E2C2B]">獨立股市與交割戶資產清單</h2>
+            <p class="text-xs text-[#827C78] mt-0.5">詳細記載個股買賣、交割戶現金與帳戶現值</p>
+          </div>
+          <button onclick="openStockModal()" class="px-3 py-1.5 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs">+ 新增股票交易</button>
+        </div>
+
+        <!-- 潔柔 / 宇軒 切換頁籤 -->
+        <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
+          <button onclick="switchStockMember('潔柔')" id="stock-tab-潔柔" class="stock-member-btn flex-1 py-2 rounded-lg bg-white text-[#4D5A6E] shadow-2xs">潔柔股票帳戶</button>
+          <button onclick="switchStockMember('宇軒')" id="stock-tab-宇軒" class="stock-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒股票帳戶</button>
+        </div>
+
+        <!-- 頂部帳戶總覽儀表板 -->
+        <div class="bg-[#4D5A6E] text-white p-4 rounded-xl shadow-sm space-y-2.5">
+          <div class="flex justify-between items-center border-b border-[#687890] pb-2">
+            <span class="text-xs text-[#C5D0DF]" id="stock-dashboard-title">潔柔的證券交割帳戶總現值</span>
+            <button onclick="setInitialStockCash()" class="text-[10px] bg-[#374252] text-[#E8EDF5] px-2 py-0.5 rounded border border-[#687890]">校正初始現金</button>
+          </div>
+          <div class="text-2xl font-extrabold" id="stock-account-grand-total">$0</div>
+          <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#687890]">
+            <div>股票總市值：<strong id="stock-total-market-val" class="text-[#F2E5C9] font-bold">$0</strong></div>
+            <div>交割戶現金：<strong id="stock-total-cash-val" class="text-[#B2C1B4] font-bold">$0</strong></div>
+          </div>
+        </div>
+
+        <!-- 個股詳細持股清單 -->
+        <div class="space-y-3 pt-2">
+          <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
+            <span>持股與交易紀錄清單</span>
+            <span class="text-[10px] text-[#827C78]">買入增加持股扣現金 / 賣出減少持股加現金</span>
+          </h3>
+          <div id="stock-detailed-list" class="space-y-3">
+            <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁五：資產總表 (串接連動，無法隨意修改股票) -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div>
-          <h2 class="text-base font-bold text-[#4D5A6E]">資產明細與投資總覽</h2>
-          <p class="text-xs text-[#827C78] mt-0.5">整合股票、定存明細、勞退專戶與年度開銷預存覆蓋率</p>
+          <h2 class="text-base font-bold text-[#4D5A6E]">資產總表與覆蓋率概況</h2>
+          <p class="text-xs text-[#827C78] mt-0.5">整合股票清單、定存明細庫、勞退專戶與年度開銷覆蓋率</p>
         </div>
 
         <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
@@ -284,11 +312,11 @@
         </div>
 
         <div class="bg-[#98A4B7] p-4 rounded-xl text-[#2E2C2B] shadow-sm space-y-2">
-          <p class="text-xs text-[#3D4757]" id="asset-member-title">【全部成員】固定資產與投資總計</p>
+          <p class="text-xs text-[#3D4757]" id="asset-member-title">【全部成員】總資產合計</p>
           <p class="text-2xl font-extrabold" id="asset-total-display">$0</p>
           <div class="grid grid-cols-2 gap-2 text-[11px] text-[#3D4757] border-t border-[#8391A6] pt-2">
             <div>定存總額：<strong id="deposit-total-display" class="text-[#1F1E1D]">$0</strong></div>
-            <div>股票總市值(含現金)：<strong id="stock-total-display" class="text-[#784D4E]">$0</strong></div>
+            <div>股票帳戶總現值：<strong id="stock-total-display" class="text-[#784D4E]">$0</strong></div>
           </div>
         </div>
 
@@ -305,7 +333,6 @@
           </div>
 
           <div id="annual-coverage-box" class="p-3 bg-white border border-[#DCD6D3] rounded-lg space-y-1.5">
-            <!-- 動態計算 -->
           </div>
 
           <div id="annual-items-list" class="space-y-1 pt-1 max-h-40 overflow-y-auto border-t border-[#DCD6D3]">
@@ -315,7 +342,7 @@
 
         <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center">
-            <strong class="font-bold text-[#4D5A6E] text-sm">定存明細庫 (支援到期日/利息/用途)</strong>
+            <strong class="font-bold text-[#4D5A6E] text-sm">定存明細庫 (動態精算利息/用途)</strong>
             <button onclick="openDepositModal()" class="px-2.5 py-1 bg-[#98A4B7] text-white rounded font-bold text-[11px]">新增定存</button>
           </div>
           <div id="fixed-deposit-list" class="space-y-2 pt-1">
@@ -323,17 +350,17 @@
           </div>
         </div>
 
+        <!-- 資產總表中的股市連動卡片 (防呆提示，不可任意修改) -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center">
-            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產 (買入/賣出 + 交割戶現金)</strong>
-            <button onclick="openStockModal()" class="px-2.5 py-1 bg-[#98A4B7] text-white rounded font-bold text-[11px]">新增交易紀錄</button>
+            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產總覽 (已串接『股市清單』)</strong>
+            <button onclick="switchTab(7)" class="px-2.5 py-1 bg-[#4D5A6E] text-white rounded font-bold text-[11px]">前往股市清單管理</button>
           </div>
-          <div id="stock-cards-list" class="space-y-3">
-            <div class="text-center text-[#827C78] py-2">尚無個股紀錄。</div>
+          <div id="asset-stock-summary-box" class="p-3 bg-white rounded-lg border border-[#DCD6D3] space-y-1">
+            <!-- 動態摘要 -->
           </div>
         </div>
 
-        <!-- 獨立拆開的勞工退休金個人專戶 -->
         <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2">
             <strong class="font-bold text-[#4D5A6E] text-sm" id="labor-section-title">勞工退休金個人專戶 (潔柔)</strong>
@@ -403,7 +430,6 @@
           </div>
         </div>
 
-        <!-- 1. 銀行資訊管理 -->
         <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
             <span>銀行資訊管理 (依代碼排序)</span>
@@ -416,7 +442,6 @@
           <div id="setting-bank-list" class="space-y-1.5 text-xs"></div>
         </div>
 
-        <!-- 2. 證券商管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
             <span>證券商管理 (依代碼排序)</span>
@@ -429,7 +454,6 @@
           <div id="setting-broker-list" class="space-y-1.5 text-xs"></div>
         </div>
 
-        <!-- 3. 信用卡設定管理 (優化版：取消手續費/回饋，新增到期日與雙重排序) -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#4D5A6E] flex justify-between items-center">
             <span>信用卡設定管理 (依銀行代碼+到期日排序)</span>
@@ -442,7 +466,6 @@
               <div>
                 <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">選擇發卡銀行</label>
                 <select id="card-bank-input" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
-                  <!-- 動態載入銀行清單 -->
                 </select>
               </div>
               <div>
@@ -466,7 +489,6 @@
           <div id="custom-card-list" class="space-y-2"></div>
         </div>
 
-        <!-- 4. 支出與收入分類管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B]">支出與收入分類管理</h3>
           <div class="flex gap-2">
@@ -476,7 +498,6 @@
           <div id="setting-category-list" class="space-y-1.5 text-xs"></div>
         </div>
 
-        <!-- 5. 支付與收入管道管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B]">支付與收入管道管理</h3>
           <div class="flex gap-2">
@@ -490,10 +511,10 @@
 
   </div>
 
-  <!-- 新增定存彈出視窗 Modal (優化版：開放自己填寫預估利息) -->
+  <!-- 新增定存彈出視窗 Modal (優化版：起存日/到期日時間跨度精算利息) -->
   <div id="deposit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
-      <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增定存單 (支援自訂預估利息)</h3>
+      <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增定存單 (支援時間自動精算利息)</h3>
       <div class="space-y-3 text-xs">
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">歸屬成員</label>
@@ -505,7 +526,6 @@
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">選擇機構 / 銀行</label>
           <select id="modal-dep-bank" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
-            <!-- 動態載入銀行清單 -->
           </select>
         </div>
         <div>
@@ -514,17 +534,21 @@
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">年利率 (%)</label>
-            <input type="number" step="0.01" id="modal-dep-rate" oninput="calcEstInterest()" placeholder="1.7" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+            <label class="block font-bold mb-1 text-[#524D4B]">起存日</label>
+            <input type="date" id="modal-dep-start-date" onchange="calcEstInterest()" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
           </div>
           <div>
             <label class="block font-bold mb-1 text-[#524D4B]">到期日</label>
-            <input type="date" id="modal-dep-date" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+            <input type="date" id="modal-dep-date" onchange="calcEstInterest()" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
           </div>
         </div>
         <div>
-          <label class="block font-bold mb-1 text-[#784D4E]">預估總利息 ($) [可自行填寫修改]</label>
-          <input type="number" id="modal-dep-interest" placeholder="系統自動試算或自行修改" class="w-full p-2.5 border border-[#C89B9C] rounded-xl bg-[#F7EDED] font-bold text-[#784D4E]">
+          <label class="block font-bold mb-1 text-[#524D4B]">年利率 (%)</label>
+          <input type="number" step="0.01" id="modal-dep-rate" oninput="calcEstInterest()" placeholder="1.72" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+        </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#784D4E]">預估總利息 ($) [系統依時間精算，亦可手動修改]</label>
+          <input type="number" id="modal-dep-interest" placeholder="系統自動依起訖日與利率試算" class="w-full p-2.5 border border-[#C89B9C] rounded-xl bg-[#F7EDED] font-bold text-[#784D4E]">
         </div>
       </div>
       <div class="flex gap-2 pt-2">
@@ -534,7 +558,7 @@
     </div>
   </div>
 
-  <!-- 新增股票交易彈出視窗 Modal (優化版：單價、數量、總額與買賣方向) -->
+  <!-- 新增股票交易彈出視窗 Modal -->
   <div id="stock-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 class="text-base font-bold text-[#2E2C2B] border-b border-[#F2ECE9] pb-2">新增股票交易紀錄 (買入 / 賣出)</h3>
@@ -550,45 +574,38 @@
           <div>
             <label class="block font-bold mb-1 text-[#524D4B]">交易類型</label>
             <select id="modal-stock-type" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
-              <option value="買入">購入 (+ 增加持股)</option>
-              <option value="賣出">售出 (- 減少持股)</option>
+              <option value="買入">購入 (+ 增加持股扣現金)</option>
+              <option value="賣出">售出 (- 減少持股加現金)</option>
             </select>
           </div>
         </div>
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">選擇證券商</label>
           <select id="modal-stock-broker" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
-            <!-- 動態載入證券商清單 -->
           </select>
         </div>
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號</label>
-          <input type="text" id="modal-stock-code" placeholder="例: 大銀微系統 / 2330" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+          <input type="text" id="modal-stock-code" placeholder="例: 台積電 / 2330" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">買入/賣出單價 ($)</label>
+            <label class="block font-bold mb-1 text-[#524D4B]">成交單價 ($)</label>
             <input type="number" step="0.01" id="modal-stock-price" oninput="calcStockTotal()" placeholder="0.0" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
           </div>
           <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">交易股數 / 數量</label>
+            <label class="block font-bold mb-1 text-[#524D4B]">成交股數 / 數量</label>
             <input type="number" id="modal-stock-shares" oninput="calcStockTotal()" placeholder="1000" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold mb-1 text-[#4D5A6E]">交易總額 ($)</label>
-            <input type="number" id="modal-stock-total" readonly class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#E8EDF5] font-extrabold text-[#4D5A6E]">
-          </div>
-          <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">交割戶現有現金 ($)</label>
-            <input type="number" id="modal-stock-cash" placeholder="0" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
-          </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#4D5A6E]">交易總金額 ($)</label>
+          <input type="number" id="modal-stock-total" readonly class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#E8EDF5] font-extrabold text-[#4D5A6E]">
         </div>
       </div>
       <div class="flex gap-2 pt-2">
         <button onclick="closeStockModal()" class="flex-1 py-3 bg-[#DDD7D4] text-[#3D3A39] font-bold rounded-xl text-xs">取消</button>
-        <button onclick="saveStockModal()" class="flex-1 py-3 bg-[#B2C1B4] text-[#2E2C2B] font-bold rounded-xl text-xs">儲存股票交易</button>
+        <button onclick="saveStockModal()" class="flex-1 py-3 bg-[#B2C1B4] text-[#2E2C2B] font-bold rounded-xl text-xs">儲存交易紀錄</button>
       </div>
     </div>
   </div>
@@ -598,10 +615,10 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
 
     let entryMode = '支出';
-    let currentAssetMember = '潔柔'; // 預設顯示潔柔
+    let currentAssetMember = '潔柔';
+    let currentStockMember = '潔柔';
     let allTransactions = [];
 
-    // 自然排序函式 (Natural Sort)
     function sortByCode(list) {
       return list.sort((a, b) => {
         const matchA = a.match(/^\d+/);
@@ -639,10 +656,15 @@
     let budgetPlans = [];
     let aaListItems = [];
 
-    // 獨立拆開成員的勞退專戶資料
     let laborDataByMember = {
       '潔柔': { startDate: '', retireAge: 65, empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 },
       '宇軒': { startDate: '', retireAge: 65, empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 }
+    };
+
+    // 股市清單與交割戶餘額（獨立分頁資料）
+    let stockAccountCash = {
+      '潔柔': 0,
+      '宇軒': 0
     };
 
     let fixedDeposits = [];
@@ -668,7 +690,6 @@
       }
     }
 
-    /* --- 全站設定永久儲存 (localStorage + Supabase 同步) --- */
     function saveAllSettingsLocalAndCloud() {
       bankList = sortByCode(bankList);
       brokerList = sortByCode(brokerList);
@@ -676,7 +697,7 @@
       const settingsPayload = {
         customCategories, customAccounts, bankList, brokerList,
         userCards, budgetPlans, aaListItems, fixedDeposits,
-        stocksList, laborDataByMember, annualExpenses,
+        stocksList, stockAccountCash, laborDataByMember, annualExpenses,
         updatedAt: new Date().toISOString()
       };
 
@@ -726,6 +747,7 @@
       if (data.aaListItems) aaListItems = data.aaListItems;
       if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
       if (data.stocksList) stocksList = data.stocksList;
+      if (data.stockAccountCash) stockAccountCash = data.stockAccountCash;
       if (data.laborDataByMember) laborDataByMember = data.laborDataByMember;
       if (data.annualExpenses) annualExpenses = data.annualExpenses;
 
@@ -735,6 +757,7 @@
       renderCustomCardList();
       renderBudgetPlans();
       renderAATab();
+      renderStockPage(currentStockMember);
       renderAssets(currentAssetMember);
     }
 
@@ -783,20 +806,37 @@
       select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
     }
 
-    /* --- 定存彈出視窗與自訂利息 --- */
+    /* --- 1. 定存彈出視窗與依【時間跨度】精算出預估利息 --- */
     function calcEstInterest() {
       const amt = Number(document.getElementById('modal-dep-amount').value) || 0;
       const rate = Number(document.getElementById('modal-dep-rate').value) || 0;
-      if (amt > 0 && rate > 0) {
-        document.getElementById('modal-dep-interest').value = Math.round(amt * (rate / 100));
+      const startDateStr = document.getElementById('modal-dep-start-date').value;
+      const endDateStr = document.getElementById('modal-dep-date').value;
+
+      if (amt > 0 && rate > 0 && startDateStr && endDateStr) {
+        const start = new Date(startDateStr);
+        const end = new Date(endDateStr);
+        const diffTime = end - start;
+        const diffDays = Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)));
+
+        // 精準利息試算：本金 × 年利率% × (天數 / 365)
+        const calculatedInterest = Math.round(amt * (rate / 100) * (diffDays / 365));
+        document.getElementById('modal-dep-interest').value = calculatedInterest;
       }
     }
 
     function openDepositModal() {
       const select = document.getElementById('modal-dep-bank');
       select.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
-      document.getElementById('modal-dep-date').value = getTodayString();
+      document.getElementById('modal-dep-start-date').value = getTodayString();
+      
+      // 預設一年後到期
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+      document.getElementById('modal-dep-date').value = nextYear.toISOString().split('T')[0];
+
       document.getElementById('deposit-modal').classList.remove('hidden');
+      calcEstInterest();
     }
 
     function closeDepositModal() {
@@ -808,12 +848,13 @@
       const bank = document.getElementById('modal-dep-bank').value;
       const amount = Number(document.getElementById('modal-dep-amount').value) || 0;
       const rate = Number(document.getElementById('modal-dep-rate').value) || 0;
+      const startDate = document.getElementById('modal-dep-start-date').value || getTodayString();
       const date = document.getElementById('modal-dep-date').value || getTodayString();
       const interest = Number(document.getElementById('modal-dep-interest').value) || 0;
 
       if (amount <= 0) return alert('請輸入有效的定存金額');
 
-      fixedDeposits.push({ owner, bank, amount, rate, interest, date });
+      fixedDeposits.push({ owner, bank, amount, rate, startDate, date, interest });
 
       closeDepositModal();
       document.getElementById('modal-dep-amount').value = '';
@@ -822,7 +863,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 股票交易彈出視窗 (買入/賣出、單價、股數) --- */
+    /* --- 3. 獨立『股市清單』頁面邏輯與庫存/現金精算 --- */
     function calcStockTotal() {
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = Number(document.getElementById('modal-stock-shares').value) || 0;
@@ -839,6 +880,18 @@
       document.getElementById('stock-modal').classList.add('hidden');
     }
 
+    function setInitialStockCash() {
+      const member = currentStockMember;
+      const currentCash = stockAccountCash[member] || 0;
+      const input = prompt(`請輸入【${member}】的證券交割戶初始現金餘額 ($)：`, currentCash);
+      if (input !== null && !isNaN(Number(input))) {
+        stockAccountCash[member] = Number(input);
+        saveAllSettingsLocalAndCloud();
+        renderStockPage(member);
+        renderAssets(currentAssetMember);
+      }
+    }
+
     function saveStockModal() {
       const owner = document.getElementById('modal-stock-owner').value;
       const type = document.getElementById('modal-stock-type').value;
@@ -847,12 +900,18 @@
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = Number(document.getElementById('modal-stock-shares').value) || 0;
       const total = Number(document.getElementById('modal-stock-total').value) || 0;
-      const cashValue = Number(document.getElementById('modal-stock-cash').value) || 0;
 
       if (!code || shares <= 0) return alert('請輸入正確股票名稱與交易股數');
 
+      // 買入扣交割戶現金，賣出增加交割戶現金
+      if (type === '買入') {
+        stockAccountCash[owner] = (stockAccountCash[owner] || 0) - total;
+      } else {
+        stockAccountCash[owner] = (stockAccountCash[owner] || 0) + total;
+      }
+
       stocksList.push({
-        owner, type, broker, code, price, shares, total, cashValue,
+        owner, type, broker, code, price, shares, total,
         date: getTodayString()
       });
 
@@ -861,8 +920,160 @@
       document.getElementById('modal-stock-price').value = '';
       document.getElementById('modal-stock-shares').value = '';
       document.getElementById('modal-stock-total').value = '';
+      
       saveAllSettingsLocalAndCloud();
+      renderStockPage(currentStockMember);
       renderAssets(currentAssetMember);
+    }
+
+    function switchStockMember(member) {
+      currentStockMember = member;
+      document.querySelectorAll('.stock-member-btn').forEach(b => {
+        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
+        b.classList.add('text-[#524D4B]');
+      });
+      const btn = document.getElementById(`stock-tab-${member}`);
+      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
+      renderStockPage(member);
+    }
+
+    // 計算特定成員的個股彙整持股與市值
+    function getMemberStockHoldings(member) {
+      const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
+      const holdings = {}; // { "台積電": { code, shares, lastPrice, broker, totalValue } }
+
+      userTransactions.forEach(t => {
+        if (!holdings[t.code]) {
+          holdings[t.code] = { code: t.code, shares: 0, lastPrice: t.price, broker: t.broker, owner: t.owner };
+        }
+        if (t.type === '買入') {
+          holdings[t.code].shares += t.shares;
+        } else {
+          holdings[t.code].shares -= t.shares;
+        }
+        holdings[t.code].lastPrice = t.price; // 更新最新價
+      });
+
+      return Object.values(holdings).filter(h => h.shares > 0);
+    }
+
+    function renderStockPage(member) {
+      document.getElementById('stock-dashboard-title').innerText = `【${member}】的證券交割帳戶總現值`;
+
+      const holdings = getMemberStockHoldings(member);
+      const totalMarketValue = holdings.reduce((sum, h) => sum + (h.shares * h.lastPrice), 0);
+      const cashValue = stockAccountCash[member] || 0;
+      const grandTotal = totalMarketValue + cashValue;
+
+      document.getElementById('stock-account-grand-total').innerText = '$' + Math.round(grandTotal).toLocaleString();
+      document.getElementById('stock-total-market-val').innerText = '$' + Math.round(totalMarketValue).toLocaleString();
+      document.getElementById('stock-total-cash-val').innerText = '$' + Math.round(cashValue).toLocaleString();
+
+      const listContainer = document.getElementById('stock-detailed-list');
+      if (holdings.length === 0) {
+        listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無持股紀錄。</div>`;
+      } else {
+        listContainer.innerHTML = holdings.map(h => {
+          const val = h.shares * h.lastPrice;
+          return `
+            <div class="bg-white p-3.5 rounded-xl border border-[#DCD6D3] space-y-1.5 text-xs shadow-2xs">
+              <div class="flex justify-between items-center font-bold">
+                <span class="text-[#2E2C2B] text-sm">${h.code} (${h.broker || '證券'})</span>
+                <span class="text-[#784D4E] font-extrabold text-sm">$${Math.round(val).toLocaleString()}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-1.5">
+                <div>現有持股：<strong class="text-[#2E2C2B] font-bold">${h.shares.toLocaleString()} 股</strong></div>
+                <div>最新參考價：<strong class="text-[#2E2C2B] font-bold">$${h.lastPrice}</strong></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    /* --- 資產總表（與股市清單動態連動，不可在此隨意修改） --- */
+    function renderAssets(member) {
+      currentAssetMember = member;
+      if (document.getElementById('asset-member-title')) document.getElementById('asset-member-title').innerText = `【${member}成員】總資產合計`;
+
+      // 定存
+      const depContainer = document.getElementById('fixed-deposit-list');
+      const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
+      const depositTotal = filteredDeposits.reduce((sum, d) => sum + d.amount, 0);
+
+      if (depContainer) {
+        depContainer.innerHTML = filteredDeposits.length > 0
+          ? filteredDeposits.map((d, idx) => `
+            <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#BAC7DB] text-xs">
+              <div>
+                <strong class="text-[#2E2C2B] font-bold">${d.owner ? `[${d.owner}] ` : ''}${d.bank} $${d.amount.toLocaleString()}</strong>
+                <span class="text-[10px] text-[#827C78] block">${d.startDate || ''} ~ ${d.date || ''} (${d.rate || 0}% / 預估利息$${(d.interest || 0).toLocaleString()})</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <strong class="text-[#4D5A6E]">$${d.amount.toLocaleString()}</strong>
+                <button onclick="fixedDeposits.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs ml-1">刪除</button>
+              </div>
+            </div>
+          `).join('')
+          : '<div class="text-[#827C78] text-center py-1">尚無定存項目</div>';
+      }
+
+      // 股市連動計算 (潔柔 + 宇軒)
+      let memberMarketVal = 0;
+      let memberCashVal = 0;
+
+      if (member === '全部') {
+        const holdingsJR = getMemberStockHoldings('潔柔');
+        const holdingsYX = getMemberStockHoldings('宇軒');
+        memberMarketVal = holdingsJR.reduce((s, h) => s + (h.shares * h.lastPrice), 0) + holdingsYX.reduce((s, h) => s + (h.shares * h.lastPrice), 0);
+        memberCashVal = (stockAccountCash['潔柔'] || 0) + (stockAccountCash['宇軒'] || 0);
+      } else {
+        const holdings = getMemberStockHoldings(member);
+        memberMarketVal = holdings.reduce((s, h) => s + (h.shares * h.lastPrice), 0);
+        memberCashVal = stockAccountCash[member] || 0;
+      }
+
+      const stockGrandTotal = memberMarketVal + memberCashVal;
+
+      const summaryBox = document.getElementById('asset-stock-summary-box');
+      if (summaryBox) {
+        summaryBox.innerHTML = `
+          <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
+            <span>【${member}】股票帳戶總現值</span>
+            <strong class="text-[#4D5A6E] text-sm">$${Math.round(stockGrandTotal).toLocaleString()}</strong>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1">
+            <div>股票總市值：$${Math.round(memberMarketVal).toLocaleString()}</div>
+            <div>交割戶現金：$${Math.round(memberCashVal).toLocaleString()}</div>
+          </div>
+          <p class="text-[10px] text-[#827C78] pt-1 border-t border-[#F2ECE9] mt-1">*詳細明細與加碼/售出請至『股市清單』操作與觀看。</p>
+        `;
+      }
+
+      if (document.getElementById('stock-total-display')) document.getElementById('stock-total-display').innerText = '$' + Math.round(stockGrandTotal).toLocaleString();
+      if (document.getElementById('deposit-total-display')) document.getElementById('deposit-total-display').innerText = '$' + depositTotal.toLocaleString();
+
+      // 勞退展示
+      const targetMember = member === '宇軒' ? '宇軒' : '潔柔';
+      renderLaborSection(targetMember);
+
+      const activeLabor = laborDataByMember[targetMember] || {};
+      const laborTotal = (activeLabor.empPrincipal || 0) + (activeLabor.empIncome || 0) + (activeLabor.selfPrincipal || 0) + (activeLabor.selfIncome || 0);
+
+      const grandTotal = depositTotal + stockGrandTotal + laborTotal;
+      if (document.getElementById('asset-total-display')) document.getElementById('asset-total-display').innerText = '$' + Math.round(grandTotal).toLocaleString();
+
+      renderAnnualCoverage();
+    }
+
+    function switchAssetMember(member) {
+      document.querySelectorAll('.asset-member-btn').forEach(b => {
+        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
+        b.classList.add('text-[#524D4B]');
+      });
+      const btn = document.getElementById(`asset-tab-${member}`);
+      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
+      renderAssets(member);
     }
 
     /* --- 信用卡設定 (依銀行代碼 + 到期日排序) --- */
@@ -945,7 +1156,6 @@
       `).join('');
     }
 
-    /* --- 勞退資料獨立儲存與計算 --- */
     function saveLaborData() {
       const member = currentAssetMember === '宇軒' ? '宇軒' : '潔柔';
       
@@ -983,95 +1193,9 @@
       document.getElementById('labor-rate-sum').innerText = totalRate + '%';
       document.getElementById('labor-current-total').innerText = '$' + currentTotal.toLocaleString();
 
-      // 估算未來退休累積總額模型 (以年化3%及剩餘年份估算)
-      const futureYears = Math.max(1, (data.retireAge || 65) - 37); // 以37歲現況估算
+      const futureYears = Math.max(1, (data.retireAge || 65) - 37);
       const estFuture = Math.round(currentTotal * Math.pow(1.03, futureYears));
       document.getElementById('labor-est-future-total').innerText = '$' + estFuture.toLocaleString();
-    }
-
-    function renderAssets(member) {
-      currentAssetMember = member;
-      if (document.getElementById('asset-member-title')) document.getElementById('asset-member-title').innerText = `【${member}成員】固定資產與投資總計`;
-
-      // 定存
-      const depContainer = document.getElementById('fixed-deposit-list');
-      const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
-      const depositTotal = filteredDeposits.reduce((sum, d) => sum + d.amount, 0);
-
-      if (depContainer) {
-        depContainer.innerHTML = filteredDeposits.length > 0
-          ? filteredDeposits.map((d, idx) => `
-            <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#BAC7DB] text-xs">
-              <div>
-                <strong class="text-[#2E2C2B] font-bold">${d.owner ? `[${d.owner}] ` : ''}${d.bank} $${d.amount.toLocaleString()}</strong>
-                <span class="text-[10px] text-[#827C78] block">${d.date || ''} 到期 (${d.rate || 0}% / 預估利息$${(d.interest || 0).toLocaleString()})</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <strong class="text-[#4D5A6E]">$${d.amount.toLocaleString()}</strong>
-                <button onclick="fixedDeposits.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs ml-1">刪除</button>
-              </div>
-            </div>
-          `).join('')
-          : '<div class="text-[#827C78] text-center py-1">尚無定存項目</div>';
-      }
-
-      // 股票 (彙整買賣股數與交割戶現金)
-      const stockContainer = document.getElementById('stock-cards-list');
-      const filteredStocks = stocksList.filter(s => member === '全部' || s.owner === member);
-      let stockTotalSum = 0;
-
-      if (stockContainer) {
-        if (filteredStocks.length === 0) {
-          stockContainer.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無個股交易紀錄。</div>';
-        } else {
-          stockContainer.innerHTML = filteredStocks.map((s, idx) => {
-            const isBuy = s.type !== '賣出';
-            const totalVal = (s.total || 0) + (s.cashValue || 0);
-            stockTotalSum += isBuy ? totalVal : -totalVal;
-
-            return `
-              <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] space-y-1 text-xs">
-                <div class="flex justify-between items-center font-bold">
-                  <span class="text-[#2E2C2B]">${s.owner ? `[${s.owner}] ` : ''}${s.code} (${s.broker || ''})</span>
-                  <div class="space-x-1">
-                    <span class="${isBuy ? 'text-[#784D4E]' : 'text-[#556357]'} font-extrabold">${isBuy ? '買入' : '賣出'} $${(s.total||0).toLocaleString()}</span>
-                    <button onclick="stocksList.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="text-[#784D4E]">刪除</button>
-                  </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-1">
-                  <div>單價：$${s.price || 0} | 股數：${s.shares || 0}</div>
-                  <div>交割戶現金：$${(s.cashValue || 0).toLocaleString()}</div>
-                </div>
-              </div>
-            `;
-          }).join('');
-        }
-      }
-
-      if (document.getElementById('stock-total-display')) document.getElementById('stock-total-display').innerText = '$' + Math.max(0, stockTotalSum).toLocaleString();
-      if (document.getElementById('deposit-total-display')) document.getElementById('deposit-total-display').innerText = '$' + depositTotal.toLocaleString();
-
-      // 勞退展示
-      const targetMember = member === '宇軒' ? '宇軒' : '潔柔';
-      renderLaborSection(targetMember);
-
-      const activeLabor = laborDataByMember[targetMember] || {};
-      const laborTotal = (activeLabor.empPrincipal || 0) + (activeLabor.empIncome || 0) + (activeLabor.selfPrincipal || 0) + (activeLabor.selfIncome || 0);
-
-      const grandTotal = depositTotal + Math.max(0, stockTotalSum) + laborTotal;
-      if (document.getElementById('asset-total-display')) document.getElementById('asset-total-display').innerText = '$' + Math.round(grandTotal).toLocaleString();
-
-      renderAnnualCoverage();
-    }
-
-    function switchAssetMember(member) {
-      document.querySelectorAll('.asset-member-btn').forEach(b => {
-        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
-        b.classList.add('text-[#524D4B]');
-      });
-      const btn = document.getElementById(`asset-tab-${member}`);
-      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
-      renderAssets(member);
     }
 
     /* --- 設定管理 CRUD --- */
@@ -1519,7 +1643,7 @@
         bankList: sortByCode(bankList),
         brokerList: sortByCode(brokerList),
         userCards, budgetPlans, fixedDeposits,
-        stocksList, laborDataByMember, annualExpenses,
+        stocksList, stockAccountCash, laborDataByMember, annualExpenses,
         exportDate: new Date().toISOString()
       };
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
@@ -1729,6 +1853,7 @@
         renderSettingLists();
         renderCustomCardList();
       }
+      if (tabIndex === 7) renderStockPage(currentStockMember);
     }
 
     async function initSystem() {
