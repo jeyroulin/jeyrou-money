@@ -45,7 +45,7 @@
       </div>
     </header>
 
-    <!-- 分頁導覽列 (新增股市清單分頁) -->
+    <!-- 分頁導覽列 -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
       <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
@@ -254,15 +254,18 @@
       </section>
     </main>
 
-    <!-- 分頁七：股市清單 (新獨立頁面，潔柔/宇軒頁籤) -->
+    <!-- 分頁七：股市清單 (支援即時/最新股價連動與損益試算) -->
     <main id="tab-7" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
           <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">獨立股市與交割戶資產清單</h2>
-            <p class="text-xs text-[#827C78] mt-0.5">詳細記載個股買賣、交割戶現金與帳戶現值</p>
+            <h2 class="text-base font-bold text-[#2E2C2B]">股市資產與最新動態現值</h2>
+            <p class="text-xs text-[#827C78] mt-0.5">即時清點股數、現值、累積成本與未實現損益</p>
           </div>
-          <button onclick="openStockModal()" class="px-3 py-1.5 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs">+ 新增股票交易</button>
+          <div class="flex gap-1">
+            <button onclick="fetchAllStockPricesOnline()" class="px-2.5 py-1.5 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs">🔄 更新股價</button>
+            <button onclick="openStockModal()" class="px-2.5 py-1.5 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs">+ 買賣交易</button>
+          </div>
         </div>
 
         <!-- 潔柔 / 宇軒 切換頁籤 -->
@@ -275,20 +278,24 @@
         <div class="bg-[#4D5A6E] text-white p-4 rounded-xl shadow-sm space-y-2.5">
           <div class="flex justify-between items-center border-b border-[#687890] pb-2">
             <span class="text-xs text-[#C5D0DF]" id="stock-dashboard-title">潔柔的證券交割帳戶總現值</span>
-            <button onclick="setInitialStockCash()" class="text-[10px] bg-[#374252] text-[#E8EDF5] px-2 py-0.5 rounded border border-[#687890]">校正初始現金</button>
+            <button onclick="setInitialStockCash()" class="text-[10px] bg-[#374252] text-[#E8EDF5] px-2 py-0.5 rounded border border-[#687890]">校正交割戶現金</button>
           </div>
           <div class="text-2xl font-extrabold" id="stock-account-grand-total">$0</div>
           <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#687890]">
-            <div>股票總市值：<strong id="stock-total-market-val" class="text-[#F2E5C9] font-bold">$0</strong></div>
-            <div>交割戶現金：<strong id="stock-total-cash-val" class="text-[#B2C1B4] font-bold">$0</strong></div>
+            <div>股票最新總市值：<strong id="stock-total-market-val" class="text-[#F2E5C9] font-bold">$0</strong></div>
+            <div>交割戶現金餘額：<strong id="stock-total-cash-val" class="text-[#B2C1B4] font-bold">$0</strong></div>
+          </div>
+          <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-1 border-t border-[#5F6F87]">
+            <span>總投入成本：<strong id="stock-total-cost-val">$0</strong></span>
+            <span>未實現預估損益：<strong id="stock-total-profit-val" class="text-base font-extrabold">$0</strong></span>
           </div>
         </div>
 
         <!-- 個股詳細持股清單 -->
         <div class="space-y-3 pt-2">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
-            <span>持股與交易紀錄清單</span>
-            <span class="text-[10px] text-[#827C78]">買入增加持股扣現金 / 賣出減少持股加現金</span>
+            <span>持有股票清單 (可手動修改最新價)</span>
+            <span class="text-[10px] text-[#827C78]">點擊「校正單價」可手動更新最新股價</span>
           </h3>
           <div id="stock-detailed-list" class="space-y-3">
             <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
@@ -297,12 +304,12 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產總表 (串接連動，無法隨意修改股票) -->
+    <!-- 分頁五：資產總表 (串接動態現值) -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div>
           <h2 class="text-base font-bold text-[#4D5A6E]">資產總表與覆蓋率概況</h2>
-          <p class="text-xs text-[#827C78] mt-0.5">整合股票清單、定存明細庫、勞退專戶與年度開銷覆蓋率</p>
+          <p class="text-xs text-[#827C78] mt-0.5">整合股票實際現值、定存明細庫、勞退專戶與年度開銷覆蓋率</p>
         </div>
 
         <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
@@ -350,14 +357,13 @@
           </div>
         </div>
 
-        <!-- 資產總表中的股市連動卡片 (防呆提示，不可任意修改) -->
+        <!-- 資產總表中的股市連動卡片 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center">
-            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產總覽 (已串接『股市清單』)</strong>
+            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產動態現值 (已串接股市清單)</strong>
             <button onclick="switchTab(7)" class="px-2.5 py-1 bg-[#4D5A6E] text-white rounded font-bold text-[11px]">前往股市清單管理</button>
           </div>
           <div id="asset-stock-summary-box" class="p-3 bg-white rounded-lg border border-[#DCD6D3] space-y-1">
-            <!-- 動態摘要 -->
           </div>
         </div>
 
@@ -511,7 +517,7 @@
 
   </div>
 
-  <!-- 新增定存彈出視窗 Modal (優化版：起存日/到期日時間跨度精算利息) -->
+  <!-- 新增定存彈出視窗 Modal -->
   <div id="deposit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增定存單 (支援時間自動精算利息)</h3>
@@ -585,8 +591,8 @@
           </select>
         </div>
         <div>
-          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號</label>
-          <input type="text" id="modal-stock-code" placeholder="例: 台積電 / 2330" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號 (例: 2330 或 台積電)</label>
+          <input type="text" id="modal-stock-code" placeholder="例: 2330 / 大銀微系統" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -661,11 +667,8 @@
       '宇軒': { startDate: '', retireAge: 65, empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 }
     };
 
-    // 股市清單與交割戶餘額（獨立分頁資料）
-    let stockAccountCash = {
-      '潔柔': 0,
-      '宇軒': 0
-    };
+    let stockAccountCash = { '潔柔': 0, '宇軒': 0 };
+    let manualStockPrices = {}; // 快取手動或線上抓取的最新單價
 
     let fixedDeposits = [];
     let stocksList = [];
@@ -697,7 +700,8 @@
       const settingsPayload = {
         customCategories, customAccounts, bankList, brokerList,
         userCards, budgetPlans, aaListItems, fixedDeposits,
-        stocksList, stockAccountCash, laborDataByMember, annualExpenses,
+        stocksList, stockAccountCash, manualStockPrices,
+        laborDataByMember, annualExpenses,
         updatedAt: new Date().toISOString()
       };
 
@@ -748,6 +752,7 @@
       if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
       if (data.stocksList) stocksList = data.stocksList;
       if (data.stockAccountCash) stockAccountCash = data.stockAccountCash;
+      if (data.manualStockPrices) manualStockPrices = data.manualStockPrices;
       if (data.laborDataByMember) laborDataByMember = data.laborDataByMember;
       if (data.annualExpenses) annualExpenses = data.annualExpenses;
 
@@ -806,7 +811,7 @@
       select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
     }
 
-    /* --- 1. 定存彈出視窗與依【時間跨度】精算出預估利息 --- */
+    /* --- 定存彈出視窗與依【時間跨度】精算出預估利息 --- */
     function calcEstInterest() {
       const amt = Number(document.getElementById('modal-dep-amount').value) || 0;
       const rate = Number(document.getElementById('modal-dep-rate').value) || 0;
@@ -819,7 +824,6 @@
         const diffTime = end - start;
         const diffDays = Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)));
 
-        // 精準利息試算：本金 × 年利率% × (天數 / 365)
         const calculatedInterest = Math.round(amt * (rate / 100) * (diffDays / 365));
         document.getElementById('modal-dep-interest').value = calculatedInterest;
       }
@@ -830,7 +834,6 @@
       select.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
       document.getElementById('modal-dep-start-date').value = getTodayString();
       
-      // 預設一年後到期
       const nextYear = new Date();
       nextYear.setFullYear(nextYear.getFullYear() + 1);
       document.getElementById('modal-dep-date').value = nextYear.toISOString().split('T')[0];
@@ -863,7 +866,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 3. 獨立『股市清單』頁面邏輯與庫存/現金精算 --- */
+    /* --- 股市與最新股價連動試算 --- */
     function calcStockTotal() {
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = Number(document.getElementById('modal-stock-shares').value) || 0;
@@ -883,7 +886,7 @@
     function setInitialStockCash() {
       const member = currentStockMember;
       const currentCash = stockAccountCash[member] || 0;
-      const input = prompt(`請輸入【${member}】的證券交割戶初始現金餘額 ($)：`, currentCash);
+      const input = prompt(`請輸入【${member}】的證券交割戶現金餘額 ($)：`, currentCash);
       if (input !== null && !isNaN(Number(input))) {
         stockAccountCash[member] = Number(input);
         saveAllSettingsLocalAndCloud();
@@ -903,11 +906,15 @@
 
       if (!code || shares <= 0) return alert('請輸入正確股票名稱與交易股數');
 
-      // 買入扣交割戶現金，賣出增加交割戶現金
       if (type === '買入') {
         stockAccountCash[owner] = (stockAccountCash[owner] || 0) - total;
       } else {
         stockAccountCash[owner] = (stockAccountCash[owner] || 0) + total;
+      }
+
+      // 當輸入交易單價時，若未設定最新參考價，預設更新
+      if (!manualStockPrices[code]) {
+        manualStockPrices[code] = price;
       }
 
       stocksList.push({
@@ -926,6 +933,60 @@
       renderAssets(currentAssetMember);
     }
 
+    function updateStockLatestPrice(code) {
+      const curPrice = manualStockPrices[code] || 0;
+      const input = prompt(`請輸入「${code}」的最新股票單價 ($)：`, curPrice);
+      if (input !== null && !isNaN(Number(input)) && Number(input) > 0) {
+        manualStockPrices[code] = Number(input);
+        saveAllSettingsLocalAndCloud();
+        renderStockPage(currentStockMember);
+        renderAssets(currentAssetMember);
+      }
+    }
+
+    // 線上自動更新台股盤後收盤價 API (證交所/櫃買數據)
+    async function fetchAllStockPricesOnline() {
+      const holdings = getMemberStockHoldings(currentStockMember);
+      if (holdings.length === 0) return alert('目前沒有持股項目可更新！');
+
+      alert('正在線上更新最新股價，請稍候...');
+
+      let updatedCount = 0;
+      for (let h of holdings) {
+        // 擷取數字代號，如 2330
+        const matchCode = h.code.match(/\d+/);
+        if (matchCode) {
+          const stockNum = matchCode[0];
+          try {
+            // 使用證交所開放 API 試圖連線獲取盤後資訊
+            const res = await fetch(`https://corsproxy.io/?https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${stockNum}.tw`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.msgArray && data.msgArray.length > 0) {
+                const latestPrice = parseFloat(data.msgArray[0].z || data.msgArray[0].y);
+                if (latestPrice > 0) {
+                  manualStockPrices[h.code] = latestPrice;
+                  updatedCount++;
+                }
+              }
+            }
+          } catch (e) {
+            console.log('Stock API fetch skip:', e);
+          }
+        }
+      }
+
+      saveAllSettingsLocalAndCloud();
+      renderStockPage(currentStockMember);
+      renderAssets(currentAssetMember);
+
+      if (updatedCount > 0) {
+        alert(`已成功聯網自動更新 ${updatedCount} 支個股的最新股價！`);
+      } else {
+        alert('線上價格抓取完畢，已保持當前最新校正單價！');
+      }
+    }
+
     function switchStockMember(member) {
       currentStockMember = member;
       document.querySelectorAll('.stock-member-btn').forEach(b => {
@@ -937,53 +998,92 @@
       renderStockPage(member);
     }
 
-    // 計算特定成員的個股彙整持股與市值
+    // 計算特定成員的個股彙整持股、總投入成本、與最新動態現值
     function getMemberStockHoldings(member) {
       const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
-      const holdings = {}; // { "台積電": { code, shares, lastPrice, broker, totalValue } }
+      const holdings = {};
 
       userTransactions.forEach(t => {
         if (!holdings[t.code]) {
-          holdings[t.code] = { code: t.code, shares: 0, lastPrice: t.price, broker: t.broker, owner: t.owner };
+          holdings[t.code] = {
+            code: t.code, shares: 0, totalCost: 0,
+            lastBuyPrice: t.price, broker: t.broker, owner: t.owner
+          };
         }
         if (t.type === '買入') {
           holdings[t.code].shares += t.shares;
+          holdings[t.code].totalCost += t.total;
         } else {
           holdings[t.code].shares -= t.shares;
+          holdings[t.code].totalCost -= t.total;
         }
-        holdings[t.code].lastPrice = t.price; // 更新最新價
+        holdings[t.code].lastBuyPrice = t.price;
       });
 
-      return Object.values(holdings).filter(h => h.shares > 0);
+      return Object.values(holdings).filter(h => h.shares > 0).map(h => {
+        const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
+        const currentMarketValue = h.shares * latestPrice;
+        const avgCost = h.shares > 0 ? Math.round(h.totalCost / h.shares * 10) / 10 : 0;
+        const unrealizedProfit = currentMarketValue - h.totalCost;
+        const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
+
+        return {
+          ...h,
+          latestPrice,
+          avgCost,
+          currentMarketValue,
+          unrealizedProfit,
+          profitRate
+        };
+      });
     }
 
     function renderStockPage(member) {
       document.getElementById('stock-dashboard-title').innerText = `【${member}】的證券交割帳戶總現值`;
 
       const holdings = getMemberStockHoldings(member);
-      const totalMarketValue = holdings.reduce((sum, h) => sum + (h.shares * h.lastPrice), 0);
+      const totalMarketValue = holdings.reduce((sum, h) => sum + h.currentMarketValue, 0);
+      const totalCost = holdings.reduce((sum, h) => sum + h.totalCost, 0);
       const cashValue = stockAccountCash[member] || 0;
       const grandTotal = totalMarketValue + cashValue;
+      const totalProfit = totalMarketValue - totalCost;
 
       document.getElementById('stock-account-grand-total').innerText = '$' + Math.round(grandTotal).toLocaleString();
       document.getElementById('stock-total-market-val').innerText = '$' + Math.round(totalMarketValue).toLocaleString();
       document.getElementById('stock-total-cash-val').innerText = '$' + Math.round(cashValue).toLocaleString();
+      document.getElementById('stock-total-cost-val').innerText = '$' + Math.round(totalCost).toLocaleString();
+      
+      const profitEl = document.getElementById('stock-total-profit-val');
+      const isPositive = totalProfit >= 0;
+      profitEl.innerText = (isPositive ? '+' : '') + '$' + Math.round(totalProfit).toLocaleString();
+      profitEl.className = `text-base font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
 
       const listContainer = document.getElementById('stock-detailed-list');
       if (holdings.length === 0) {
         listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無持股紀錄。</div>`;
       } else {
         listContainer.innerHTML = holdings.map(h => {
-          const val = h.shares * h.lastPrice;
+          const isProf = h.unrealizedProfit >= 0;
           return `
-            <div class="bg-white p-3.5 rounded-xl border border-[#DCD6D3] space-y-1.5 text-xs shadow-2xs">
+            <div class="bg-white p-3.5 rounded-xl border border-[#DCD6D3] space-y-2 text-xs shadow-2xs">
               <div class="flex justify-between items-center font-bold">
                 <span class="text-[#2E2C2B] text-sm">${h.code} (${h.broker || '證券'})</span>
-                <span class="text-[#784D4E] font-extrabold text-sm">$${Math.round(val).toLocaleString()}</span>
+                <div class="text-right">
+                  <span class="text-[#4D5A6E] font-extrabold text-sm block">現值: $${Math.round(h.currentMarketValue).toLocaleString()}</span>
+                  <span class="text-[10px] ${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">
+                    損益: ${isProf ? '+' : ''}$${Math.round(h.unrealizedProfit).toLocaleString()} (${h.profitRate}%)
+                  </span>
+                </div>
               </div>
+
               <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-1.5">
-                <div>現有持股：<strong class="text-[#2E2C2B] font-bold">${h.shares.toLocaleString()} 股</strong></div>
-                <div>最新參考價：<strong class="text-[#2E2C2B] font-bold">$${h.lastPrice}</strong></div>
+                <div>持有股數：<strong class="text-[#2E2C2B] font-bold">${h.shares.toLocaleString()} 股</strong></div>
+                <div>均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">$${h.avgCost} ($${Math.round(h.totalCost).toLocaleString()})</strong></div>
+              </div>
+
+              <div class="flex justify-between items-center bg-[#F7F4F3] p-2 rounded-lg text-[11px]">
+                <span>最新參考單價：<strong class="text-[#784D4E] font-bold">$${h.latestPrice}</strong></span>
+                <button onclick="updateStockLatestPrice('${h.code}')" class="px-2 py-0.5 bg-[#DDD7D4] hover:bg-[#C8C1BE] text-[#2E2C2B] rounded font-bold">校正單價</button>
               </div>
             </div>
           `;
@@ -991,7 +1091,7 @@
       }
     }
 
-    /* --- 資產總表（與股市清單動態連動，不可在此隨意修改） --- */
+    /* --- 資產總表（連動實際股票現值與現金） --- */
     function renderAssets(member) {
       currentAssetMember = member;
       if (document.getElementById('asset-member-title')) document.getElementById('asset-member-title').innerText = `【${member}成員】總資產合計`;
@@ -1018,18 +1118,18 @@
           : '<div class="text-[#827C78] text-center py-1">尚無定存項目</div>';
       }
 
-      // 股市連動計算 (潔柔 + 宇軒)
+      // 股市動態現值計算
       let memberMarketVal = 0;
       let memberCashVal = 0;
 
       if (member === '全部') {
         const holdingsJR = getMemberStockHoldings('潔柔');
         const holdingsYX = getMemberStockHoldings('宇軒');
-        memberMarketVal = holdingsJR.reduce((s, h) => s + (h.shares * h.lastPrice), 0) + holdingsYX.reduce((s, h) => s + (h.shares * h.lastPrice), 0);
+        memberMarketVal = holdingsJR.reduce((s, h) => s + h.currentMarketValue, 0) + holdingsYX.reduce((s, h) => s + h.currentMarketValue, 0);
         memberCashVal = (stockAccountCash['潔柔'] || 0) + (stockAccountCash['宇軒'] || 0);
       } else {
         const holdings = getMemberStockHoldings(member);
-        memberMarketVal = holdings.reduce((s, h) => s + (h.shares * h.lastPrice), 0);
+        memberMarketVal = holdings.reduce((s, h) => s + h.currentMarketValue, 0);
         memberCashVal = stockAccountCash[member] || 0;
       }
 
@@ -1039,14 +1139,14 @@
       if (summaryBox) {
         summaryBox.innerHTML = `
           <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
-            <span>【${member}】股票帳戶總現值</span>
+            <span>【${member}】股票帳戶總現值 (含現金)</span>
             <strong class="text-[#4D5A6E] text-sm">$${Math.round(stockGrandTotal).toLocaleString()}</strong>
           </div>
           <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1">
-            <div>股票總市值：$${Math.round(memberMarketVal).toLocaleString()}</div>
-            <div>交割戶現金：$${Math.round(memberCashVal).toLocaleString()}</div>
+            <div>股票動態總市值：$${Math.round(memberMarketVal).toLocaleString()}</div>
+            <div>交割戶現金餘額：$${Math.round(memberCashVal).toLocaleString()}</div>
           </div>
-          <p class="text-[10px] text-[#827C78] pt-1 border-t border-[#F2ECE9] mt-1">*詳細明細與加碼/售出請至『股市清單』操作與觀看。</p>
+          <p class="text-[10px] text-[#827C78] pt-1 border-t border-[#F2ECE9] mt-1">*點擊上方按鈕可前往『股市清單』進行交易或即時更新單價。</p>
         `;
       }
 
@@ -1076,7 +1176,7 @@
       renderAssets(member);
     }
 
-    /* --- 信用卡設定 (依銀行代碼 + 到期日排序) --- */
+    /* --- 信用卡設定 --- */
     function sortUserCards() {
       userCards.sort((a, b) => {
         const matchA = a.bank.match(/^\d+/);
@@ -1643,7 +1743,8 @@
         bankList: sortByCode(bankList),
         brokerList: sortByCode(brokerList),
         userCards, budgetPlans, fixedDeposits,
-        stocksList, stockAccountCash, laborDataByMember, annualExpenses,
+        stocksList, stockAccountCash, manualStockPrices,
+        laborDataByMember, annualExpenses,
         exportDate: new Date().toISOString()
       };
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
