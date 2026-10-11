@@ -13,7 +13,6 @@
   <meta name="apple-mobile-web-app-title" content="財務總控">
   <meta name="theme-color" content="#B2C1B4">
   
-  <!-- 強制 iOS Safari 使用高解析度 SVG 莫蘭迪綠圖示 -->
   <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23B2C1B4'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='105' fill='%23FFFFFF'>財</text></svg>">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23B2C1B4'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='105' fill='%23FFFFFF'>財</text></svg>">
 
@@ -31,12 +30,11 @@
 
   <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden">
     
-    <!-- 頂部標題與狀態列 -->
+    <!-- 精簡版頂部標題與狀態列 (移除重複的第二排文字) -->
     <header class="mb-4 bg-white p-4 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0">
           <h1 class="text-base font-bold text-[#2E2C2B] truncate">財務總控與資產管理系統</h1>
-          <p class="text-xs text-[#827C78] truncate">收支 / 現金流 / AA請款 / 股票 / 定存覆蓋 / 月曆</p>
         </div>
         <div id="status-badge" class="shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF0EC] text-[#556357] border border-[#B2C1B4]">
           連線中
@@ -48,14 +46,14 @@
       </div>
     </header>
 
-    <!-- 頂部雙排分頁導覽列 -->
+    <!-- 重排分頁導覽列：快捷記帳、現金收支、AA請款、財務月曆、資產明細、設定管理 -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
       <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">
           快捷記帳
         </button>
         <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          現金流預算
+          現金收支
         </button>
         <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
           AA請款
@@ -63,13 +61,13 @@
       </div>
       <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
         <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          設定管理
+          財務月曆
         </button>
         <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          固定資產
+          資產明細
         </button>
         <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">
-          財務月曆
+          設定管理
         </button>
       </div>
     </nav>
@@ -167,12 +165,12 @@
       </section>
     </main>
 
-    <!-- 分頁二：每月現金流與預算專款 -->
+    <!-- 分頁二：現金收支 (原現金流預算) -->
     <main id="tab-2" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
           <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">每月現金流與預算專款</h2>
+            <h2 class="text-base font-bold text-[#2E2C2B]">每月現金收支與預算專款</h2>
             <p class="text-xs text-[#827C78] mt-0.5">統計剩餘現金流與專款校正</p>
           </div>
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
@@ -246,74 +244,36 @@
       </section>
     </main>
 
-    <!-- 分頁四：設定與選單管理 -->
+    <!-- 分頁四：財務月曆 -->
     <main id="tab-4" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
-        <div>
-          <h2 class="text-base font-bold text-[#5C5069]">設定與選單管理</h2>
-          <p class="text-xs text-[#827C78] mt-0.5">統一管理信用卡、分類、管道與全站資料備份</p>
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+        <h2 class="text-base font-bold text-[#2E2C2B]">互動式財務月曆與信用卡待繳提示</h2>
+
+        <div id="credit-bill-summary" class="p-3 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
+          <strong class="font-bold text-[#524D4B] block">信用卡預估應繳總額提示：</strong>
+          <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
         </div>
 
-        <div class="p-4 bg-[#CEC7DB] border border-[#BBB3CB] rounded-xl space-y-2 text-xs text-[#2E2C2B]">
-          <strong class="font-bold text-[#453A52] block text-sm">全站資料備份與跨裝置還原</strong>
-          <p class="text-[#52495E] text-[11px]">換手機或在 iPad 上使用時，可下載全站備份檔並重新載入還原。</p>
-          <div class="flex gap-2 pt-1">
-            <button onclick="exportBackupJSON()" class="flex-1 py-2 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-lg">匯出 JSON 備份檔</button>
-            <label class="flex-1 py-2 bg-[#3D3A39] text-white font-bold rounded-lg text-center cursor-pointer">
-              匯入 JSON 備份
-              <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
-            </label>
-          </div>
+        <div class="flex items-center justify-between bg-[#F7F4F3] p-2.5 rounded-xl border border-[#DCD6D3]">
+          <button onclick="changeCalendarMonth(-1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">上個月</button>
+          <strong id="calendar-month-title" class="text-sm font-extrabold text-[#2E2C2B]">2026年10月</strong>
+          <button onclick="changeCalendarMonth(1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">下個月</button>
         </div>
 
-        <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#4D5A6E] flex justify-between items-center">
-            <span>信用卡設定管理</span>
-            <span class="text-[10px] text-[#827C78] font-normal">到期可停用，保留歷史紀錄</span>
-          </h3>
-
-          <div class="p-3.5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-2.5 text-xs">
-            <strong class="font-bold text-[#4D5A6E] block">新增信用卡</strong>
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="card-bank-input" placeholder="銀行" class="p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
-              <input type="text" id="card-name-input" placeholder="卡別" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
-            </div>
-            <div class="grid grid-cols-3 gap-2">
-              <input type="number" id="card-cutoff-input" placeholder="結帳日" class="p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
-              <input type="number" step="0.1" id="card-fee-input" placeholder="手續費%" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
-              <input type="number" step="0.1" id="card-reward-input" placeholder="回饋%" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
-            </div>
-            <button onclick="addCustomCard()" class="w-full py-2.5 bg-[#98A4B7] hover:bg-[#8391A6] text-[#2E2C2B] font-bold rounded-lg text-xs">新增信用卡</button>
+        <div class="bg-white border border-[#DCD6D3] rounded-xl overflow-hidden">
+          <div class="grid grid-cols-7 bg-[#DDD7D4] text-center text-[11px] font-bold py-1.5 text-[#524D4B] border-b border-[#DCD6D3]">
+            <div class="text-[#784D4E]">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-[#556357]">六</div>
           </div>
-
-          <div id="custom-card-list" class="space-y-2"></div>
-        </div>
-
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#2E2C2B]">支出與收入分類管理</h3>
-          <div class="flex gap-2">
-            <input type="text" id="setting-category-input" placeholder="輸入新分類名稱" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addCategoryFromSetting()" class="px-3 py-2 bg-[#CEC7DB] text-[#2E2C2B] rounded-lg text-xs font-bold">新增分類</button>
-          </div>
-          <div id="setting-category-list" class="space-y-1.5 text-xs"></div>
-        </div>
-
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#2E2C2B]">支付與收入管道管理</h3>
-          <div class="flex gap-2">
-            <input type="text" id="setting-account-input" placeholder="輸入新管道" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addAccountFromSetting()" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增管道</button>
-          </div>
-          <div id="setting-account-list" class="space-y-1.5 text-xs"></div>
+          <div id="calendar-days-grid" class="grid grid-cols-7 text-xs border-collapse"></div>
         </div>
       </section>
     </main>
 
-    <!-- 分頁五：固定資產與年度開銷定存覆蓋追蹤 -->
+    <!-- 分頁五：資產明細 (原固定資產) -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div>
-          <h2 class="text-base font-bold text-[#4D5A6E]">固定資產與投資總覽</h2>
+          <h2 class="text-base font-bold text-[#4D5A6E]">資產明細與投資總覽</h2>
           <p class="text-xs text-[#827C78] mt-0.5">整合股票、定存明細、勞退專戶與年度開銷預存覆蓋率</p>
         </div>
 
@@ -401,27 +361,94 @@
       </section>
     </main>
 
-    <!-- 分頁六：財務月曆 -->
+    <!-- 分頁六：設定管理 (包含銀行、證券商、信用卡、分類、管道全方位編輯與刪除) -->
     <main id="tab-6" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
-        <h2 class="text-base font-bold text-[#2E2C2B]">互動式財務月曆與信用卡待繳提示</h2>
-
-        <div id="credit-bill-summary" class="p-3 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
-          <strong class="font-bold text-[#524D4B] block">信用卡預估應繳總額提示：</strong>
-          <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
+        <div>
+          <h2 class="text-base font-bold text-[#5C5069]">設定與選單管理</h2>
+          <p class="text-xs text-[#827C78] mt-0.5">管理銀行資訊、證券商、信用卡、分類管道與全站備份</p>
         </div>
 
-        <div class="flex items-center justify-between bg-[#F7F4F3] p-2.5 rounded-xl border border-[#DCD6D3]">
-          <button onclick="changeCalendarMonth(-1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">上個月</button>
-          <strong id="calendar-month-title" class="text-sm font-extrabold text-[#2E2C2B]">2026年10月</strong>
-          <button onclick="changeCalendarMonth(1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">下個月</button>
-        </div>
-
-        <div class="bg-white border border-[#DCD6D3] rounded-xl overflow-hidden">
-          <div class="grid grid-cols-7 bg-[#DDD7D4] text-center text-[11px] font-bold py-1.5 text-[#524D4B] border-b border-[#DCD6D3]">
-            <div class="text-[#784D4E]">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-[#556357]">六</div>
+        <div class="p-4 bg-[#CEC7DB] border border-[#BBB3CB] rounded-xl space-y-2 text-xs text-[#2E2C2B]">
+          <strong class="font-bold text-[#453A52] block text-sm">全站資料備份與跨裝置還原</strong>
+          <p class="text-[#52495E] text-[11px]">換手機或在 iPad 上使用時，可下載全站備份檔並重新載入還原。</p>
+          <div class="flex gap-2 pt-1">
+            <button onclick="exportBackupJSON()" class="flex-1 py-2 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-lg">匯出 JSON 備份檔</button>
+            <label class="flex-1 py-2 bg-[#3D3A39] text-white font-bold rounded-lg text-center cursor-pointer">
+              匯入 JSON 備份
+              <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+            </label>
           </div>
-          <div id="calendar-days-grid" class="grid grid-cols-7 text-xs border-collapse"></div>
+        </div>
+
+        <!-- 1. 銀行資訊管理 (兼具新增、編輯、刪除) -->
+        <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
+            <span>銀行資訊管理</span>
+            <span class="text-[10px] text-[#827C78] font-normal">可新增、編輯或刪除往來銀行</span>
+          </h3>
+          <div class="flex gap-2">
+            <input type="text" id="setting-bank-input" placeholder="輸入銀行名稱 (例: 台新銀行)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <button onclick="addBankFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增銀行</button>
+          </div>
+          <div id="setting-bank-list" class="space-y-1.5 text-xs"></div>
+        </div>
+
+        <!-- 2. 證券商管理 (兼具新增、編輯、刪除) -->
+        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
+            <span>證券商管理</span>
+            <span class="text-[10px] text-[#827C78] font-normal">可新增、編輯或刪除開戶證券商</span>
+          </h3>
+          <div class="flex gap-2">
+            <input type="text" id="setting-broker-input" placeholder="輸入證券商名稱 (例: 國泰綜合證券)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <button onclick="addBrokerFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增證券商</button>
+          </div>
+          <div id="setting-broker-list" class="space-y-1.5 text-xs"></div>
+        </div>
+
+        <!-- 3. 信用卡設定管理 (編輯、停用、刪除) -->
+        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#4D5A6E] flex justify-between items-center">
+            <span>信用卡設定管理</span>
+            <span class="text-[10px] text-[#827C78] font-normal">到期可停用或編輯資訊</span>
+          </h3>
+
+          <div class="p-3.5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-2.5 text-xs">
+            <strong class="font-bold text-[#4D5A6E] block">新增信用卡</strong>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="card-bank-input" placeholder="銀行" class="p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+              <input type="text" id="card-name-input" placeholder="卡別" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <input type="number" id="card-cutoff-input" placeholder="結帳日" class="p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+              <input type="number" step="0.1" id="card-fee-input" placeholder="手續費%" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
+              <input type="number" step="0.1" id="card-reward-input" placeholder="回饋%" class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
+            </div>
+            <button onclick="addCustomCard()" class="w-full py-2.5 bg-[#98A4B7] hover:bg-[#8391A6] text-[#2E2C2B] font-bold rounded-lg text-xs">新增信用卡</button>
+          </div>
+
+          <div id="custom-card-list" class="space-y-2"></div>
+        </div>
+
+        <!-- 4. 支出與收入分類管理 (兼具編輯與刪除) -->
+        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#2E2C2B]">支出與收入分類管理</h3>
+          <div class="flex gap-2">
+            <input type="text" id="setting-category-input" placeholder="輸入新分類名稱" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <button onclick="addCategoryFromSetting()" class="px-3 py-2 bg-[#CEC7DB] text-[#2E2C2B] rounded-lg text-xs font-bold">新增分類</button>
+          </div>
+          <div id="setting-category-list" class="space-y-1.5 text-xs"></div>
+        </div>
+
+        <!-- 5. 支付與收入管道管理 (兼具編輯與刪除) -->
+        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+          <h3 class="text-xs font-bold text-[#2E2C2B]">支付與收入管道管理</h3>
+          <div class="flex gap-2">
+            <input type="text" id="setting-account-input" placeholder="輸入新管道" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <button onclick="addAccountFromSetting()" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增管道</button>
+          </div>
+          <div id="setting-account-list" class="space-y-1.5 text-xs"></div>
         </div>
       </section>
     </main>
@@ -442,10 +469,11 @@
       { name: '預設銀行主帳戶', active: true }
     ];
 
+    let bankList = [];
+    let brokerList = [];
     let userCards = [];
     let budgetPlans = [];
     let aaListItems = [];
-    let fxAccounts = [];
     let laborData = { empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 };
 
     let fixedDeposits = [];
@@ -519,6 +547,63 @@
       select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
     }
 
+    /* --- 設定管理 CRUD 功能 --- */
+
+    // 銀行資訊管理
+    function addBankFromSetting() {
+      const input = document.getElementById('setting-bank-input');
+      const val = input.value.trim();
+      if (!val) return alert('請輸入銀行名稱');
+      if (!bankList.includes(val)) {
+        bankList.push(val);
+        input.value = '';
+        renderSettingLists();
+      }
+    }
+
+    function editBank(idx) {
+      const newName = prompt('請修改銀行名稱：', bankList[idx]);
+      if (newName && newName.trim()) {
+        bankList[idx] = newName.trim();
+        renderSettingLists();
+      }
+    }
+
+    function deleteBank(idx) {
+      if (confirm(`確定要刪除「${bankList[idx]}」嗎？`)) {
+        bankList.splice(idx, 1);
+        renderSettingLists();
+      }
+    }
+
+    // 證券商管理
+    function addBrokerFromSetting() {
+      const input = document.getElementById('setting-broker-input');
+      const val = input.value.trim();
+      if (!val) return alert('請輸入證券商名稱');
+      if (!brokerList.includes(val)) {
+        brokerList.push(val);
+        input.value = '';
+        renderSettingLists();
+      }
+    }
+
+    function editBroker(idx) {
+      const newName = prompt('請修改證券商名稱：', brokerList[idx]);
+      if (newName && newName.trim()) {
+        brokerList[idx] = newName.trim();
+        renderSettingLists();
+      }
+    }
+
+    function deleteBroker(idx) {
+      if (confirm(`確定要刪除「${brokerList[idx]}」嗎？`)) {
+        brokerList.splice(idx, 1);
+        renderSettingLists();
+      }
+    }
+
+    // 分類管理
     function addCategoryFromSetting() {
       const input = document.getElementById('setting-category-input');
       const val = input.value.trim();
@@ -531,14 +616,24 @@
       }
     }
 
+    function editCategory(idx) {
+      const newName = prompt('請修改分類名稱：', customCategories[idx]);
+      if (newName && newName.trim()) {
+        customCategories[idx] = newName.trim();
+        renderSettingLists();
+        renderCategoryOptions();
+      }
+    }
+
     function deleteCategory(idx) {
-      if (confirm(`確定要刪除「${customCategories[idx]}」這個分類選單嗎？`)) {
+      if (confirm(`確定要刪除「${customCategories[idx]}」這個分類嗎？`)) {
         customCategories.splice(idx, 1);
         renderSettingLists();
         renderCategoryOptions();
       }
     }
 
+    // 管道管理
     function addAccountFromSetting() {
       const input = document.getElementById('setting-account-input');
       const val = input.value.trim();
@@ -551,31 +646,85 @@
       }
     }
 
+    function editAccount(idx) {
+      const newName = prompt('請修改管道名稱：', customAccounts[idx].name);
+      if (newName && newName.trim()) {
+        customAccounts[idx].name = newName.trim();
+        renderSettingLists();
+        renderAccountOptions();
+      }
+    }
+
     function toggleAccountActive(idx) {
       customAccounts[idx].active = !customAccounts[idx].active;
       renderSettingLists();
       renderAccountOptions();
     }
 
+    function deleteAccount(idx) {
+      if (confirm(`確定要刪除「${customAccounts[idx].name}」管道嗎？`)) {
+        customAccounts.splice(idx, 1);
+        renderSettingLists();
+        renderAccountOptions();
+      }
+    }
+
     function renderSettingLists() {
+      // 渲染銀行
+      const bankContainer = document.getElementById('setting-bank-list');
+      if (bankContainer) {
+        bankContainer.innerHTML = bankList.length === 0 ? '<div class="text-[#827C78] text-center py-1">尚未建立銀行資料。</div>' : bankList.map((b, idx) => `
+          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+            <span class="font-bold text-[#2E2C2B]">${b}</span>
+            <div class="space-x-2">
+              <button onclick="editBank(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
+              <button onclick="deleteBank(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // 渲染證券商
+      const brokerContainer = document.getElementById('setting-broker-list');
+      if (brokerContainer) {
+        brokerContainer.innerHTML = brokerList.length === 0 ? '<div class="text-[#827C78] text-center py-1">尚未建立證券商資料。</div>' : brokerList.map((br, idx) => `
+          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+            <span class="font-bold text-[#2E2C2B]">${br}</span>
+            <div class="space-x-2">
+              <button onclick="editBroker(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
+              <button onclick="deleteBroker(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // 渲染分類
       const catContainer = document.getElementById('setting-category-list');
       if (catContainer) {
         catContainer.innerHTML = customCategories.map((c, idx) => `
           <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
             <span class="font-bold text-[#3D3A39]">${c}</span>
-            <button onclick="deleteCategory(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+            <div class="space-x-2">
+              <button onclick="editCategory(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
+              <button onclick="deleteCategory(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+            </div>
           </div>
         `).join('');
       }
 
+      // 渲染管道
       const accContainer = document.getElementById('setting-account-list');
       if (accContainer) {
         accContainer.innerHTML = customAccounts.map((a, idx) => `
           <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
             <span class="font-bold ${a.active ? 'text-[#2E2C2B]' : 'text-[#827C78] line-through'}">${a.name}</span>
-            <button onclick="toggleAccountActive(${idx})" class="text-xs font-bold ${a.active ? 'text-[#784D4E]' : 'text-[#556357]'}">
-              ${a.active ? '停用' : '啟用'}
-            </button>
+            <div class="space-x-2">
+              <button onclick="editAccount(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
+              <button onclick="toggleAccountActive(${idx})" class="text-xs font-bold ${a.active ? 'text-[#784D4E]' : 'text-[#556357]'}">
+                ${a.active ? '停用' : '啟用'}
+              </button>
+              <button onclick="deleteAccount(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+            </div>
           </div>
         `).join('');
       }
@@ -607,6 +756,31 @@
       alert('已新增信用卡！');
     }
 
+    function editCustomCard(idx) {
+      const c = userCards[idx];
+      const newBank = prompt('修改發卡銀行：', c.bank);
+      const newName = prompt('修改信用卡名稱：', c.name);
+      const newCutoff = Number(prompt('修改每月結帳日 (1~31)：', c.cutoff));
+
+      if (newBank && newName) {
+        userCards[idx].bank = newBank.trim();
+        userCards[idx].name = newName.trim();
+        if (newCutoff > 0 && newCutoff <= 31) userCards[idx].cutoff = newCutoff;
+        renderCustomCardList();
+        renderAccountOptions();
+        renderCalendar();
+      }
+    }
+
+    function deleteCustomCard(idx) {
+      if (confirm(`確定要刪除「${userCards[idx].bank} ${userCards[idx].name}」這張信用卡嗎？`)) {
+        userCards.splice(idx, 1);
+        renderCustomCardList();
+        renderAccountOptions();
+        renderCalendar();
+      }
+    }
+
     function toggleCardActive(idx) {
       userCards[idx].active = !userCards[idx].active;
       renderCustomCardList();
@@ -626,9 +800,13 @@
             <strong class="text-[#4D5A6E] block font-bold">${c.bank} - ${c.name} ${c.active === false ? '(已停用)' : ''}</strong>
             <span class="text-[11px] text-[#635D5A]">每月 ${c.cutoff} 號結帳</span>
           </div>
-          <button onclick="toggleCardActive(${idx})" class="text-[11px] px-2.5 py-1 rounded font-bold ${c.active !== false ? 'bg-[#F7EDED] text-[#784D4E]' : 'bg-[#EBF0EC] text-[#556357]'}">
-            ${c.active !== false ? '停用此卡' : '重新啟用'}
-          </button>
+          <div class="space-x-1">
+            <button onclick="editCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-white border border-[#DCD6D3] text-[#4D5A6E]">編輯</button>
+            <button onclick="toggleCardActive(${idx})" class="text-[11px] px-2 py-1 rounded font-bold ${c.active !== false ? 'bg-[#F7EDED] text-[#784D4E]' : 'bg-[#EBF0EC] text-[#556357]'}">
+              ${c.active !== false ? '停用' : '啟用'}
+            </button>
+            <button onclick="deleteCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7EDED] text-[#784D4E]">刪除</button>
+          </div>
         </div>
       `).join('');
     }
@@ -652,10 +830,13 @@
         return;
       }
 
-      container.innerHTML = budgetPlans.map(b => `
+      container.innerHTML = budgetPlans.map((b, idx) => `
         <div class="bg-white p-3 rounded-lg border border-[#DCD6D3] flex justify-between items-center text-xs">
           <span class="font-bold text-[#2E2C2B]">${b.name}</span>
-          <span class="font-bold text-[#3D3A39]">預算上限: $${b.limit.toLocaleString()}</span>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-[#3D3A39]">上限: $${b.limit.toLocaleString()}</span>
+            <button onclick="budgetPlans.splice(${idx},1); renderBudgetPlans();" class="text-[#784D4E] text-xs font-bold">刪除</button>
+          </div>
         </div>
       `).join('');
     }
@@ -958,6 +1139,18 @@
       }
     }
 
+    function changeCalendarMonth(delta) {
+      calMonth += delta;
+      if (calMonth < 0) {
+        calMonth = 11;
+        calYear--;
+      } else if (calMonth > 11) {
+        calMonth = 0;
+        calYear++;
+      }
+      renderCalendar();
+    }
+
     function exportToCSV() {
       if (allTransactions.length === 0) return alert('目前無資料可匯出');
       let csv = '\uFEFF日期,項目,金額,管道,成員,分類\n';
@@ -976,6 +1169,8 @@
       const backupData = {
         customCategories,
         customAccounts,
+        bankList,
+        brokerList,
         userCards,
         budgetPlans,
         fixedDeposits,
@@ -1002,6 +1197,8 @@
           const data = JSON.parse(e.target.result);
           if (data.customCategories) customCategories = data.customCategories;
           if (data.customAccounts) customAccounts = data.customAccounts;
+          if (data.bankList) bankList = data.bankList;
+          if (data.brokerList) brokerList = data.brokerList;
           if (data.userCards) userCards = data.userCards;
           if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
           if (data.stocksList) stocksList = data.stocksList;
@@ -1010,6 +1207,7 @@
 
           renderCategoryOptions();
           renderAccountOptions();
+          renderSettingLists();
           renderAssets('全部');
           alert('已成功還原備份資料！');
         } catch (err) {
@@ -1175,7 +1373,7 @@
         const amtClass = isExpense ? 'text-[#784D4E]' : 'text-[#556357]';
 
         return `
-          <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs">
+          <div class="p-3 bg-[#FFFFFF] border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs">
             <div>
               <div class="font-bold text-[#2E2C2B]">${t.item_name || '無品項'}</div>
               <div class="text-[10px] text-[#827C78] mt-0.5">${t.account_name || ''} - ${t.member_tag || ''} - ${t.transaction_date || ''}</div>
@@ -1204,14 +1402,12 @@
 
       if (tabIndex === 2) renderCashFlowTab();
       if (tabIndex === 3) renderAATab();
-      if (tabIndex === 4) {
+      if (tabIndex === 4) renderCalendar();
+      if (tabIndex === 5) renderAssets('全部');
+      if (tabIndex === 6) {
         renderSettingLists();
         renderCustomCardList();
       }
-      if (tabIndex === 5) {
-        renderAssets('全部');
-      }
-      if (tabIndex === 6) renderCalendar();
     }
 
     async function initSystem() {
