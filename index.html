@@ -2138,7 +2138,7 @@
       const grandTotal = cashAssetTotal + laborTotal;
       const totalVal = Math.max(1, grandTotal);
 
-      const depPct = ((depositTotal / totalVal) * 100).toFixed(1);
+      const depPct = (((depositTotal + annualFundTotal) / totalVal) * 100).toFixed(1);
       const insPct = ((insuranceTotal / totalVal) * 100).toFixed(1);
       const frxPct = ((forexTotalNTD / totalVal) * 100).toFixed(1);
       const stkPct = (Math.max(0, stockGrandTotal / totalVal) * 100).toFixed(1);
@@ -2985,10 +2985,9 @@
           const items = annualExpenses[year] || [];
           const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
 
+          // 資金來源：100% 只採計手動新增填寫的預備資金 (原始自動算金額歸零)
           const userFunds = annualFundList.filter(f => f.year === year);
-          const userFundTotal = userFunds.reduce((sum, f) => sum + f.amount, 0);
-          const autoSavedAmount = fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
-          const savedAmount = userFundTotal + autoSavedAmount;
+          const savedAmount = userFunds.reduce((sum, f) => sum + f.amount, 0);
 
           const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
           const diff = totalExpense - savedAmount;
