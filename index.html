@@ -23,6 +23,10 @@
       appearance: none !important;
       background-image: none !important;
     }
+    .keep-word {
+      word-break: keep-all !important;
+      overflow-wrap: break-word !important;
+    }
   </style>
 </head>
 <body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen">
@@ -254,17 +258,17 @@
       </section>
     </main>
 
-    <!-- 分頁七：股市清單 (國泰券商預估變現淨額模型) -->
+    <!-- 分頁七：股市清單 (附件二/三 排版對齊優化) -->
     <main id="tab-7" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
-        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
-          <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">股市資產與國泰預估變現淨額</h2>
-            <p class="text-xs text-[#827C78] mt-0.5">已採用「國泰券商淨額模型」(扣除0.3%證交稅與最低手續費)</p>
+        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
+          <div class="min-w-0">
+            <h2 class="text-base font-bold text-[#2E2C2B] keep-word">股市資產與國泰預估變現淨額</h2>
+            <p class="text-xs text-[#827C78] mt-0.5 keep-word">國泰券商淨額模型 (扣除 0.3% 證交稅與手續費)</p>
           </div>
-          <div class="flex gap-1">
-            <button onclick="fetchAllStockPricesOnline()" class="px-2 py-1.5 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs">🔄 更新股價</button>
-            <button onclick="openStockModal()" class="px-2 py-1.5 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs">+ 買賣零股</button>
+          <div class="flex gap-1 shrink-0">
+            <button onclick="fetchAllStockPricesOnline()" class="px-2.5 py-1.5 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">🔄 更新股價</button>
+            <button onclick="openStockModal()" class="px-2.5 py-1.5 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
           </div>
         </div>
 
@@ -275,39 +279,39 @@
         </div>
 
         <!-- 頂部帳戶總覽儀表板 -->
-        <div class="bg-[#4D5A6E] text-white p-4 rounded-xl shadow-sm space-y-2.5">
-          <div class="flex justify-between items-center border-b border-[#687890] pb-2">
-            <span class="text-xs text-[#C5D0DF]" id="stock-dashboard-title">潔柔的證券交割帳戶預估總現值</span>
-            <div class="flex gap-1">
-              <button onclick="addStockAccountCashFlow()" class="text-[10px] bg-[#B2C1B4] text-[#2E2C2B] font-bold px-2 py-0.5 rounded shadow-2xs">+ 月固定存入現金</button>
-              <button onclick="setInitialStockCash()" class="text-[10px] bg-[#374252] text-[#E8EDF5] px-2 py-0.5 rounded border border-[#687890]">起始現金校正</button>
+        <div class="bg-[#4D5A6E] text-white p-4 rounded-2xl shadow-sm space-y-3">
+          <div class="flex justify-between items-center border-b border-[#687890] pb-2.5 gap-2">
+            <span class="text-xs text-[#C5D0DF] font-bold keep-word" id="stock-dashboard-title">潔柔的證券交割帳戶預估總現值</span>
+            <div class="flex gap-1 shrink-0">
+              <button onclick="addStockAccountCashFlow()" class="text-[10px] bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold px-2 py-1 rounded-lg shadow-2xs">+ 月固定存入</button>
+              <button onclick="setInitialStockCash()" class="text-[10px] bg-[#374252] hover:bg-[#2A3340] text-[#E8EDF5] font-bold px-2 py-1 rounded-lg border border-[#687890]">起始現金校正</button>
             </div>
           </div>
           <div class="text-2xl font-extrabold" id="stock-account-grand-total">$0</div>
           <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#687890]">
-            <div>國泰預估變現淨額：<strong id="stock-total-market-val" class="text-[#F2E5C9] font-bold">$0</strong></div>
-            <div>交割戶現金餘額：<strong id="stock-total-cash-val" class="text-[#B2C1B4] font-bold">$0</strong></div>
+            <div>國泰預估變現淨額：<strong id="stock-total-market-val" class="text-[#F2E5C9] font-bold block mt-0.5">$0</strong></div>
+            <div>交割戶現金餘額：<strong id="stock-total-cash-val" class="text-[#B2C1B4] font-bold block mt-0.5">$0</strong></div>
           </div>
-          <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-1 border-t border-[#5F6F87]">
-            <span>股票投入總成本：<strong id="stock-total-cost-val">$0</strong></span>
-            <span>預估扣稅費後淨損益：<strong id="stock-total-profit-val" class="text-base font-extrabold">$0</strong></span>
+          <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-1.5 border-t border-[#5F6F87]">
+            <span>股票投入總成本：<strong id="stock-total-cost-val" class="font-bold">$0</strong></span>
+            <span>淨損益：<strong id="stock-total-profit-val" class="text-sm font-extrabold">$0</strong></span>
           </div>
         </div>
 
         <!-- 個股詳細持股清單與零股明細展開 -->
         <div class="space-y-3 pt-2">
-          <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
-            <span>持股卡片 (完全對齊國泰券商 App 顯示)</span>
-            <span class="text-[10px] text-[#827C78]">已自動扣除預估 0.3% 證交稅與手續費</span>
-          </h3>
+          <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
+            <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單</h3>
+            <span class="text-[10px] text-[#827C78] keep-word">自動預扣 0.3% 證交稅與國泰手續費</span>
+          </div>
           <div id="stock-detailed-list" class="space-y-3">
             <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
           </div>
         </div>
 
         <!-- 交割戶現金變動歷史紀錄清單 -->
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-2 text-xs">
-          <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-1.5">證券交割戶現金異動歷程 (自動加總)</strong>
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
+          <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">證券交割戶現金異動歷程 (全自動加總)</strong>
           <div id="stock-cash-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
             <div class="text-center text-[#827C78] py-2">尚無現金異動紀錄。</div>
           </div>
@@ -315,12 +319,12 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產總表 -->
+    <!-- 分頁五：資產總表 (附件一：加入資產類別圓餅圖與版面優化) -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div>
-          <h2 class="text-base font-bold text-[#4D5A6E]">資產總表與覆蓋率概況</h2>
-          <p class="text-xs text-[#827C78] mt-0.5">整合股票實際現值、定存明細庫、勞退專戶與年度開銷覆蓋率</p>
+          <h2 class="text-base font-bold text-[#4D5A6E] keep-word">資產總表與覆蓋率概況</h2>
+          <p class="text-xs text-[#827C78] mt-0.5 keep-word">整合股票實際現值、定存明細庫、勞退專戶與年度開銷覆蓋率</p>
         </div>
 
         <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
@@ -329,28 +333,45 @@
           <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
         </div>
 
-        <div class="bg-[#98A4B7] p-4 rounded-xl text-[#2E2C2B] shadow-sm space-y-2">
-          <p class="text-xs text-[#3D4757]" id="asset-member-title">【全部成員】總資產合計</p>
-          <p class="text-2xl font-extrabold" id="asset-total-display">$0</p>
-          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#3D4757] border-t border-[#8391A6] pt-2">
-            <div>定存總額：<strong id="deposit-total-display" class="text-[#1F1E1D]">$0</strong></div>
-            <div>股票預估變現總值：<strong id="stock-total-display" class="text-[#784D4E]">$0</strong></div>
+        <!-- 總資產金額與動態資產類別圓餅圖卡片 -->
+        <div class="bg-[#98A4B7] p-4.5 rounded-2xl text-[#2E2C2B] shadow-sm space-y-3">
+          <div class="flex justify-between items-start border-b border-[#8391A6] pb-2">
+            <div>
+              <p class="text-xs text-[#3D4757] font-bold" id="asset-member-title">【全部成員】總資產合計</p>
+              <p class="text-2xl font-extrabold mt-1 text-[#1F1E1D]" id="asset-total-display">$0</p>
+            </div>
+            <span class="text-[10px] bg-[#8391A6] text-white px-2 py-0.5 rounded font-bold">動態比例</span>
           </div>
-        </div>
 
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
-            <strong class="font-bold text-[#2E2C2B] text-sm">未來年度固定開銷與定存覆蓋率</strong>
-            <div class="flex gap-1 items-center">
-              <select id="annual-year-select" onchange="renderAnnualCoverage()" class="p-1 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
-                <option value="2027">2027 年</option>
-                <option value="2028">2028 年</option>
-              </select>
-              <button onclick="addAnnualExpenseModal()" class="px-2 py-1 bg-[#B2C1B4] text-[#2E2C2B] rounded font-bold text-[10px]">新增開銷</button>
+          <!-- 圓餅圖 (Pie Chart) 區域 -->
+          <div class="bg-white/80 backdrop-blur-sm p-3 rounded-xl border border-white/40 flex items-center justify-between gap-3">
+            <div id="asset-pie-chart-container" class="shrink-0">
+              <!-- SVG 圓餅圖由 JS 動態渲染 -->
+            </div>
+            <div id="asset-pie-legend" class="flex-1 space-y-1.5 text-[11px] font-bold text-[#3D3A39]">
+              <!-- 圓餅圖圖例由 JS 動態渲染 -->
             </div>
           </div>
 
-          <div id="annual-coverage-box" class="p-3 bg-white border border-[#DCD6D3] rounded-lg space-y-1.5">
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#2E2C2B] pt-1">
+            <div class="bg-white/40 p-2 rounded-lg">定存總額：<strong id="deposit-total-display" class="text-[#1F1E1D] font-bold block mt-0.5">$0</strong></div>
+            <div class="bg-white/40 p-2 rounded-lg">股票預估變現值：<strong id="stock-total-display" class="text-[#784D4E] font-bold block mt-0.5">$0</strong></div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
+            <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來年度固定開銷與定存覆蓋率</strong>
+            <div class="flex gap-1.5 items-center shrink-0">
+              <select id="annual-year-select" onchange="renderAnnualCoverage()" class="p-1.5 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B] outline-none">
+                <option value="2027">2027 年</option>
+                <option value="2028">2028 年</option>
+              </select>
+              <button onclick="addAnnualExpenseModal()" class="px-2.5 py-1.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] rounded-lg font-bold text-[11px] shadow-2xs">+ 新增開銷</button>
+            </div>
+          </div>
+
+          <div id="annual-coverage-box" class="p-3 bg-white border border-[#DCD6D3] rounded-xl space-y-1.5">
           </div>
 
           <div id="annual-items-list" class="space-y-1 pt-1 max-h-40 overflow-y-auto border-t border-[#DCD6D3]">
@@ -358,10 +379,10 @@
           </div>
         </div>
 
-        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-3 text-xs">
-          <div class="flex justify-between items-center">
-            <strong class="font-bold text-[#4D5A6E] text-sm">定存明細庫 (動態精算利息/用途)</strong>
-            <button onclick="openDepositModal()" class="px-2.5 py-1 bg-[#98A4B7] text-white rounded font-bold text-[11px]">新增定存</button>
+        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
+            <strong class="font-bold text-[#4D5A6E] text-sm keep-word">定存明細庫 (動態精算利息/用途)</strong>
+            <button onclick="openDepositModal()" class="px-2.5 py-1.5 bg-[#98A4B7] hover:bg-[#8391A6] text-white rounded-lg font-bold text-[11px] shadow-2xs">+ 新增定存</button>
           </div>
           <div id="fixed-deposit-list" class="space-y-2 pt-1">
             <div class="text-[#827C78] text-center py-1">尚無定存項目</div>
@@ -369,59 +390,59 @@
         </div>
 
         <!-- 資產總表中的股市連動卡片 -->
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
-          <div class="flex justify-between items-center">
-            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產國泰預估變現值 (已連動對齊)</strong>
-            <button onclick="switchTab(7)" class="px-2.5 py-1 bg-[#4D5A6E] text-white rounded font-bold text-[11px]">前往股市清單管理</button>
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
+            <strong class="font-bold text-[#2E2C2B] text-sm keep-word">股票資產國泰預估變現值</strong>
+            <button onclick="switchTab(7)" class="px-2.5 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold text-[11px] shrink-0 shadow-2xs">前往股市清單管理</button>
           </div>
-          <div id="asset-stock-summary-box" class="p-3 bg-white rounded-lg border border-[#DCD6D3] space-y-1">
+          <div id="asset-stock-summary-box" class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1.5">
           </div>
         </div>
 
-        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2">
-            <strong class="font-bold text-[#4D5A6E] text-sm" id="labor-section-title">勞工退休金個人專戶 (潔柔)</strong>
-            <button onclick="saveLaborData()" class="px-3 py-1 bg-[#4D5A6E] text-white font-bold rounded-lg text-[11px] shadow-2xs">儲存勞退資料</button>
+        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
+            <strong class="font-bold text-[#4D5A6E] text-sm keep-word" id="labor-section-title">勞工退休金個人專戶 (潔柔)</strong>
+            <button onclick="saveLaborData()" class="px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded-lg text-[11px] shadow-2xs">儲存勞退資料</button>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">提撥起始日</label>
-              <input type="date" id="labor-start-date" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
+              <input type="date" id="labor-start-date" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
             </div>
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">預估退休年齡</label>
-              <input type="number" id="labor-retire-age" placeholder="65" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
+              <input type="number" id="labor-retire-age" placeholder="65" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
             </div>
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥本金 ($)</label>
-              <input type="number" id="labor-emp-principal" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
+              <input type="number" id="labor-emp-principal" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
             </div>
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥收益 ($)</label>
-              <input type="number" id="labor-emp-income" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#556357]">
+              <input type="number" id="labor-emp-income" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#556357]">
             </div>
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提本金 ($)</label>
-              <input type="number" id="labor-self-principal" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#2E2C2B]">
+              <input type="number" id="labor-self-principal" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
             </div>
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提收益 ($)</label>
-              <input type="number" id="labor-self-income" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded bg-white font-bold text-[#556357]">
+              <input type="number" id="labor-self-income" placeholder="0" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#556357]">
             </div>
           </div>
 
-          <div class="p-2.5 bg-white border border-[#BAC7DB] rounded-lg flex justify-between items-center font-bold">
+          <div class="p-2.5 bg-white border border-[#BAC7DB] rounded-xl flex justify-between items-center font-bold">
             <span>勞退總累積獲利：<strong id="labor-profit-sum" class="text-[#556357]">$0</strong></span>
             <span>累積收益率：<strong id="labor-rate-sum" class="text-[#4D5A6E]">0%</strong></span>
           </div>
 
-          <div class="p-2.5 bg-[#DCE4F0] border border-[#A2B4CE] rounded-lg space-y-1 font-bold text-[#2E2C2B]">
+          <div class="p-3 bg-[#DCE4F0] border border-[#A2B4CE] rounded-xl space-y-1 font-bold text-[#2E2C2B]">
             <div class="flex justify-between items-center">
               <span>現有專戶總額：<strong id="labor-current-total">$0</strong></span>
               <span>預估退休累積總額：<strong id="labor-est-future-total" class="text-[#4D5A6E]">$0</strong></span>
             </div>
-            <p class="text-[10px] text-[#635D5A] font-normal">*(依年化收益率3%及每月持續提撥模型計算估算)</p>
+            <p class="text-[10px] text-[#635D5A] font-normal mt-0.5">*(依年化收益率3%及每月持續提撥模型計算估算)</p>
           </div>
         </div>
       </section>
@@ -1116,17 +1137,13 @@
 
       return Object.values(holdings).filter(h => h.shares > 0).map(h => {
         const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
-        const grossValue = h.shares * latestPrice; // 純股市價總額
+        const grossValue = h.shares * latestPrice;
 
-        // 國泰券商售出費用預估：
-        // 1. 證交稅 = 0.3% (四捨五入)
         const estTax = Math.round(grossValue * 0.003);
-        // 2. 國泰零股售出手續費 = 最低 1~2 元起 (視成交金額與折扣算)
         let estFee = 2;
         if (grossValue < 1000) estFee = 0;
         else if (grossValue < 2000) estFee = 1;
 
-        // 國泰預估折現/可領回淨額 = 總市價 - 證交稅 - 手續費
         const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
         const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
         const unrealizedProfit = currentMarketValue - h.totalCost;
@@ -1152,7 +1169,6 @@
       const totalMarketValue = holdings.reduce((sum, h) => sum + h.currentMarketValue, 0);
       const totalCost = holdings.reduce((sum, h) => sum + h.totalCost, 0);
 
-      // 交割戶現金自動加總
       const initialCash = stockAccountCash[member] || 0;
       const userCashLogs = stockCashLogs.filter(l => l.owner === member);
       const cashLogSum = userCashLogs.reduce((s, l) => s + l.amount, 0);
@@ -1173,9 +1189,9 @@
       const profitEl = document.getElementById('stock-total-profit-val');
       const isPositive = totalProfit >= 0;
       profitEl.innerText = (isPositive ? '+' : '') + '$' + totalProfit.toLocaleString();
-      profitEl.className = `text-base font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
+      profitEl.className = `text-sm font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
 
-      // 渲染個股卡片與零股交易明細展開
+      // 渲染個股卡片 (附件二/三排版優化)
       const listContainer = document.getElementById('stock-detailed-list');
       if (holdings.length === 0) {
         listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無持股紀錄。</div>`;
@@ -1186,47 +1202,47 @@
           const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
           return `
-            <div class="bg-white p-3.5 rounded-xl border border-[#DCD6D3] space-y-2 text-xs shadow-2xs">
-              <div class="flex justify-between items-center font-bold">
-                <span class="text-[#2E2C2B] text-sm">${h.code} (${h.broker || '國泰證券'})</span>
-                <div class="text-right">
-                  <span class="text-[#4D5A6E] font-extrabold text-sm block">國泰預估淨額: $${h.currentMarketValue.toLocaleString()}</span>
+            <div class="bg-white p-4 rounded-2xl border border-[#DCD6D3] space-y-2.5 text-xs shadow-2xs">
+              <div class="flex justify-between items-start font-bold gap-2">
+                <span class="text-[#2E2C2B] text-sm font-extrabold keep-word">${h.code} <span class="text-[11px] font-normal text-[#635D5A]">(${h.broker || '國泰證券'})</span></span>
+                <div class="text-right shrink-0">
+                  <span class="text-[#4D5A6E] font-extrabold text-sm block">現值: $${h.currentMarketValue.toLocaleString()}</span>
                   <span class="text-[10px] ${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">
-                    淨損益: ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
+                    損益: ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
                   </span>
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-1.5">
+              <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-2">
                 <div>持有股數：<strong class="text-[#2E2C2B] font-bold">${h.shares.toLocaleString()} 股</strong></div>
                 <div>均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">$${h.avgCost} ($${Math.round(h.totalCost).toLocaleString()})</strong></div>
               </div>
 
-              <div class="flex justify-between items-center bg-[#F7F4F3] p-2 rounded-lg text-[11px]">
-                <div>
+              <div class="flex justify-between items-center bg-[#F7F4F3] p-2.5 rounded-xl text-[11px] gap-2">
+                <div class="min-w-0">
                   <span class="block">最新單價：<strong class="text-[#784D4E] font-bold">$${h.latestPrice}</strong></span>
-                  <span class="text-[9px] text-[#827C78]">原市價 $${h.grossValue.toLocaleString()} - 預估稅費 $${h.estTaxFee}</span>
+                  <span class="text-[9px] text-[#827C78] truncate block">原市價 $${h.grossValue.toLocaleString()} - 預估稅費 $${h.estTaxFee}</span>
                 </div>
-                <div class="space-x-1">
-                  <button onclick="updateStockLatestPrice('${h.code}')" class="px-2 py-0.5 bg-[#DDD7D4] text-[#2E2C2B] rounded font-bold">校正單價</button>
-                  <button onclick="toggleStockDetails('${h.code}')" class="px-2 py-0.5 bg-[#4D5A6E] text-white rounded font-bold">
+                <div class="space-x-1 shrink-0">
+                  <button onclick="updateStockLatestPrice('${h.code}')" class="px-2 py-1 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#2E2C2B] rounded-lg font-bold">校正單價</button>
+                  <button onclick="toggleStockDetails('${h.code}')" class="px-2 py-1 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold">
                     ${isExpanded ? '收起明細 ▲' : '買賣明細 ▼'}
                   </button>
                 </div>
               </div>
 
               ${isExpanded ? `
-                <div class="p-2.5 bg-[#E8EDF5] rounded-lg border border-[#BAC7DB] space-y-1.5 mt-2 text-[11px]">
-                  <strong class="font-bold text-[#4D5A6E] block border-b border-[#BAC7DB] pb-1">「${h.code}」買賣歷史紀錄 (${sortedTxList.length}筆)</strong>
+                <div class="p-3 bg-[#E8EDF5] rounded-xl border border-[#BAC7DB] space-y-2 mt-2 text-[11px]">
+                  <strong class="font-bold text-[#4D5A6E] block border-b border-[#BAC7DB] pb-1.5">「${h.code}」買賣歷史紀錄 (${sortedTxList.length}筆)</strong>
                   ${sortedTxList.map(t => `
-                    <div class="flex justify-between items-center bg-white p-2 rounded border border-[#DCD6D3]">
-                      <div>
-                        <strong class="${t.type === '買入' ? 'text-[#784D4E]' : 'text-[#556357]'} font-bold">[${t.type}] ${t.shares}股 @ $${t.price}</strong>
+                    <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] gap-2">
+                      <div class="min-w-0">
+                        <strong class="${t.type === '買入' ? 'text-[#784D4E]' : 'text-[#556357]'} font-bold block">[${t.type}] ${t.shares}股 @ $${t.price}</strong>
                         <span class="text-[10px] text-[#827C78] block">日期：${t.date || '無紀錄'} | 總計：$${t.total.toLocaleString()}</span>
                       </div>
-                      <div class="space-x-1">
-                        <button onclick="editStockTransaction(${t.id})" class="px-2 py-0.5 bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] font-bold rounded">編輯</button>
-                        <button onclick="deleteStockTransaction(${t.id})" class="px-2 py-0.5 bg-[#F7EDED] text-[#784D4E] font-bold rounded">刪除</button>
+                      <div class="space-x-1 shrink-0">
+                        <button onclick="editStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] font-bold rounded-lg">編輯</button>
+                        <button onclick="deleteStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7EDED] text-[#784D4E] font-bold rounded-lg">刪除</button>
                       </div>
                     </div>
                   `).join('')}
@@ -1243,20 +1259,68 @@
         cashHistoryContainer.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無現金異動紀錄。</div>';
       } else {
         cashHistoryContainer.innerHTML = [...userCashLogs].reverse().map(l => `
-          <div class="flex justify-between items-center bg-white p-2 rounded border border-[#DCD6D3] text-xs">
-            <div>
-              <strong class="text-[#2E2C2B] font-bold block">${l.title}</strong>
+          <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] text-xs gap-2">
+            <div class="min-w-0">
+              <strong class="text-[#2E2C2B] font-bold block truncate">${l.title}</strong>
               <span class="text-[10px] text-[#827C78]">${l.date}</span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 shrink-0">
               <strong class="${l.amount >= 0 ? 'text-[#556357]' : 'text-[#784D4E]'} font-extrabold">
                 ${l.amount >= 0 ? '+' : ''}$${l.amount.toLocaleString()}
               </strong>
-              <button onclick="deleteStockCashLog(${l.id})" class="text-[#784D4E] text-[10px] bg-[#F7EDED] px-1.5 py-0.5 rounded border border-[#C89B9C]">刪除</button>
+              <button onclick="deleteStockCashLog(${l.id})" class="text-[#784D4E] text-[10px] bg-[#F7EDED] px-2 py-0.5 rounded-lg border border-[#C89B9C]">刪除</button>
             </div>
           </div>
         `).join('');
       }
+    }
+
+    /* --- 動態渲染資產類別 SVG 圓餅圖 --- */
+    function renderAssetPieChart(depositAmt, stockAmt, laborAmt) {
+      const chartContainer = document.getElementById('asset-pie-chart-container');
+      const legendContainer = document.getElementById('asset-pie-legend');
+      if (!chartContainer || !legendContainer) return;
+
+      const total = Math.max(0, depositAmt) + Math.max(0, stockAmt) + Math.max(0, laborAmt);
+
+      if (total <= 0) {
+        chartContainer.innerHTML = `
+          <svg width="70" height="70" viewBox="0 0 36 36" class="rounded-full">
+            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#DCD6D3" stroke-width="6"/>
+          </svg>`;
+        legendContainer.innerHTML = '<span class="text-[#827C78]">尚無資產數據</span>';
+        return;
+      }
+
+      const depPct = Math.max(0, (depositAmt / total) * 100);
+      const stockPct = Math.max(0, (stockAmt / total) * 100);
+      const laborPct = Math.max(0, (laborAmt / total) * 100);
+
+      let cumulative = 0;
+      function getSlice(pct, color) {
+        if (pct <= 0) return '';
+        const dashArray = `${pct} ${100 - pct}`;
+        const dashOffset = 100 - cumulative + 25;
+        cumulative += pct;
+        return `<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${color}" stroke-width="6" stroke-dasharray="${dashArray}" stroke-dashoffset="${dashOffset}"/>`;
+      }
+
+      const paths = [
+        getSlice(depPct, '#4D5A6E'),
+        getSlice(stockPct, '#C89B9C'),
+        getSlice(laborPct, '#556357')
+      ].join('');
+
+      chartContainer.innerHTML = `
+        <svg width="76" height="76" viewBox="0 0 36 36" class="rounded-full transform -rotate-90">
+          ${paths}
+        </svg>`;
+
+      legendContainer.innerHTML = `
+        <div class="flex justify-between items-center"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] inline-block"></span>定存</span> <strong class="text-[#2E2C2B]">${depPct.toFixed(1)}%</strong></div>
+        <div class="flex justify-between items-center"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#C89B9C] inline-block"></span>股票預估值</span> <strong class="text-[#2E2C2B]">${stockPct.toFixed(1)}%</strong></div>
+        <div class="flex justify-between items-center"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#556357] inline-block"></span>勞退專戶</span> <strong class="text-[#2E2C2B]">${laborPct.toFixed(1)}%</strong></div>
+      `;
     }
 
     /* --- 資產總表 --- */
@@ -1272,14 +1336,14 @@
       if (depContainer) {
         depContainer.innerHTML = filteredDeposits.length > 0
           ? filteredDeposits.map((d, idx) => `
-            <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#BAC7DB] text-xs">
-              <div>
-                <strong class="text-[#2E2C2B] font-bold">${d.owner ? `[${d.owner}] ` : ''}${d.bank} $${d.amount.toLocaleString()}</strong>
+            <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#BAC7DB] text-xs gap-2">
+              <div class="min-w-0">
+                <strong class="text-[#2E2C2B] font-bold block truncate">${d.owner ? `[${d.owner}] ` : ''}${d.bank} $${d.amount.toLocaleString()}</strong>
                 <span class="text-[10px] text-[#827C78] block">${d.startDate || ''} ~ ${d.date || ''} (${d.rate || 0}% / 預估利息$${(d.interest || 0).toLocaleString()})</span>
               </div>
-              <div class="flex items-center gap-1">
+              <div class="flex items-center gap-1 shrink-0">
                 <strong class="text-[#4D5A6E]">$${d.amount.toLocaleString()}</strong>
-                <button onclick="fixedDeposits.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs ml-1">刪除</button>
+                <button onclick="fixedDeposits.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs font-bold ml-1">刪除</button>
               </div>
             </div>
           `).join('')
@@ -1318,14 +1382,14 @@
       if (summaryBox) {
         summaryBox.innerHTML = `
           <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
-            <span>【${member}】國泰股票帳戶總現值 (含現金)</span>
-            <strong class="text-[#4D5A6E] text-sm">$${Math.round(stockGrandTotal).toLocaleString()}</strong>
+            <span class="keep-word">【${member}】國泰股票帳戶總現值 (含現金)</span>
+            <strong class="text-[#4D5A6E] text-sm font-extrabold">$${Math.round(stockGrandTotal).toLocaleString()}</strong>
           </div>
-          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1">
-            <div>國泰預估變現淨額：$${Math.round(memberMarketVal).toLocaleString()}</div>
-            <div>交割戶現金餘額：$${Math.round(memberCashVal).toLocaleString()}</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1 border-t border-[#F2ECE9]">
+            <div>預估變現淨額：<strong class="text-[#2E2C2B] font-bold block">$${Math.round(memberMarketVal).toLocaleString()}</strong></div>
+            <div>交割戶現金餘額：<strong class="text-[#2E2C2B] font-bold block">$${Math.round(memberCashVal).toLocaleString()}</strong></div>
           </div>
-          <p class="text-[10px] text-[#827C78] pt-1 border-t border-[#F2ECE9] mt-1">*已完全對齊國泰證券 App 顯示之預估折現淨額。</p>
+          <p class="text-[10px] text-[#827C78] pt-1.5 border-t border-[#F2ECE9] mt-1 keep-word">*完全對齊國泰證券 App 顯示之預估折現淨額。</p>
         `;
       }
 
@@ -1341,6 +1405,9 @@
 
       const grandTotal = depositTotal + stockGrandTotal + laborTotal;
       if (document.getElementById('asset-total-display')) document.getElementById('asset-total-display').innerText = '$' + Math.round(grandTotal).toLocaleString();
+
+      // 渲染動態圓餅圖
+      renderAssetPieChart(depositTotal, stockGrandTotal, laborTotal);
 
       renderAnnualCoverage();
     }
@@ -1422,14 +1489,14 @@
         return;
       }
       container.innerHTML = userCards.map((c, idx) => `
-        <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs">
-          <div>
-            <strong class="text-[#2E2C2B] block font-bold">${c.bank} - ${c.name}</strong>
+        <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs gap-2">
+          <div class="min-w-0">
+            <strong class="text-[#2E2C2B] block font-bold truncate">${c.bank} - ${c.name}</strong>
             <span class="text-[10px] text-[#635D5A]">每月 ${c.cutoff} 號結帳 | 到期日：<strong class="text-[#784D4E]">${c.expiry || '未設定'}</strong></span>
           </div>
-          <div class="space-x-1">
-            <button onclick="editCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E]">修改到期日/名稱</button>
-            <button onclick="deleteCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7EDED] text-[#784D4E]">剪卡刪除</button>
+          <div class="space-x-1 shrink-0">
+            <button onclick="editCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E]">修改</button>
+            <button onclick="deleteCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7EDED] text-[#784D4E]">剪卡</button>
           </div>
         </div>
       `).join('');
@@ -1628,9 +1695,9 @@
       const bankContainer = document.getElementById('setting-bank-list');
       if (bankContainer) {
         bankContainer.innerHTML = bankList.map((b, idx) => `
-          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
             <span class="font-bold text-[#2E2C2B]">${b}</span>
-            <div class="space-x-2">
+            <div class="space-x-2 shrink-0">
               <button onclick="editBank(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
               <button onclick="deleteBank(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
             </div>
@@ -1641,9 +1708,9 @@
       const brokerContainer = document.getElementById('setting-broker-list');
       if (brokerContainer) {
         brokerContainer.innerHTML = brokerList.map((br, idx) => `
-          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
             <span class="font-bold text-[#2E2C2B]">${br}</span>
-            <div class="space-x-2">
+            <div class="space-x-2 shrink-0">
               <button onclick="editBroker(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
               <button onclick="deleteBroker(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
             </div>
@@ -1654,9 +1721,9 @@
       const catContainer = document.getElementById('setting-category-list');
       if (catContainer) {
         catContainer.innerHTML = customCategories.map((c, idx) => `
-          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
             <span class="font-bold text-[#3D3A39]">${c}</span>
-            <div class="space-x-2">
+            <div class="space-x-2 shrink-0">
               <button onclick="editCategory(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
               <button onclick="deleteCategory(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
             </div>
@@ -1667,9 +1734,9 @@
       const accContainer = document.getElementById('setting-account-list');
       if (accContainer) {
         accContainer.innerHTML = customAccounts.map((a, idx) => `
-          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3]">
+          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
             <span class="font-bold ${a.active ? 'text-[#2E2C2B]' : 'text-[#827C78] line-through'}">${a.name}</span>
-            <div class="space-x-2">
+            <div class="space-x-2 shrink-0">
               <button onclick="editAccount(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
               <button onclick="toggleAccountActive(${idx})" class="text-xs font-bold ${a.active ? 'text-[#784D4E]' : 'text-[#556357]'}">
                 ${a.active ? '停用' : '啟用'}
@@ -1706,9 +1773,9 @@
         return;
       }
       container.innerHTML = budgetPlans.map((b, idx) => `
-        <div class="bg-white p-3 rounded-lg border border-[#DCD6D3] flex justify-between items-center text-xs">
+        <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
           <span class="font-bold text-[#2E2C2B]">${b.name}</span>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 shrink-0">
             <span class="font-bold text-[#3D3A39]">上限: $${b.limit.toLocaleString()}</span>
             <button onclick="budgetPlans.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans();" class="text-[#784D4E] text-xs font-bold">刪除</button>
           </div>
@@ -1753,7 +1820,7 @@
           return `
             <div class="flex justify-between items-center text-xs border-b border-[#635A5A] pb-1.5 pt-0.5">
               <span>- ${item.title}</span>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 shrink-0">
                 <span class="text-[#F2E5C9] font-bold">冠合 $${item.guanheAmt.toLocaleString()}</span>
                 <button onclick="deleteAAItem(${idx})" class="text-[#E8C2C3] hover:text-white bg-[#635A5A] px-1.5 py-0.5 rounded text-[10px]">刪除</button>
               </div>
@@ -1822,9 +1889,9 @@
       const listContainer = document.getElementById('annual-items-list');
       if (listContainer) {
         listContainer.innerHTML = items.length > 0 ? items.map((i, idx) => `
-          <div class="flex justify-between items-center bg-white p-1.5 rounded border border-[#DCD6D3] text-[11px]">
+          <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-[#DCD6D3] text-[11px]">
             <span>- ${i.name}</span>
-            <div class="space-x-1">
+            <div class="space-x-1 shrink-0">
               <strong class="text-[#2E2C2B]">$${i.amount.toLocaleString()}</strong>
               <button onclick="annualExpenses['${year}'].splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAnnualCoverage();" class="text-[#784D4E]">刪除</button>
             </div>
@@ -2097,12 +2164,12 @@
         const amtClass = isExpense ? 'text-[#784D4E]' : 'text-[#556357]';
 
         return `
-          <div class="p-3 bg-[#FFFFFF] border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs">
-            <div>
-              <div class="font-bold text-[#2E2C2B]">${t.item_name || '無品項'}</div>
-              <div class="text-[10px] text-[#827C78] mt-0.5">${t.account_name || ''} - ${t.member_tag || ''} - ${t.transaction_date || ''}</div>
+          <div class="p-3 bg-[#FFFFFF] border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs gap-2">
+            <div class="min-w-0">
+              <div class="font-bold text-[#2E2C2B] truncate">${t.item_name || '無品項'}</div>
+              <div class="text-[10px] text-[#827C78] mt-0.5 truncate">${t.account_name || ''} - ${t.member_tag || ''} - ${t.transaction_date || ''}</div>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 shrink-0">
               <div class="font-extrabold ${amtClass} text-sm">${amtStr}</div>
               <button onclick="editTransaction(${t.id})" class="text-[10px] bg-[#F7F4F3] hover:bg-[#DDD7D4] text-[#524D4B] px-2 py-1 rounded border border-[#DCD6D3]">編輯</button>
               <button onclick="deleteTransaction(${t.id})" class="text-[10px] bg-[#F7EDED] hover:bg-[#EBD2D2] text-[#784D4E] px-1.5 py-1 rounded border border-[#C89B9C]">刪除</button>
