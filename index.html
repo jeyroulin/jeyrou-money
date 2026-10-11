@@ -30,7 +30,7 @@
 
   <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden">
     
-    <!-- 精簡版頂部標題與狀態列 (移除重複的第二排文字) -->
+    <!-- 精簡版頂部標題與狀態列 -->
     <header class="mb-4 bg-white p-4 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0">
@@ -46,7 +46,7 @@
       </div>
     </header>
 
-    <!-- 重排分頁導覽列：快捷記帳、現金收支、AA請款、財務月曆、資產明細、設定管理 -->
+    <!-- 分頁導覽列 -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
       <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">
@@ -165,7 +165,7 @@
       </section>
     </main>
 
-    <!-- 分頁二：現金收支 (原現金流預算) -->
+    <!-- 分頁二：現金收支 -->
     <main id="tab-2" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
@@ -269,7 +269,7 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產明細 (原固定資產) -->
+    <!-- 分頁五：資產明細 -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div>
@@ -316,7 +316,7 @@
         <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center">
             <strong class="font-bold text-[#4D5A6E] text-sm">定存明細庫 (支援到期日/利息/用途)</strong>
-            <button onclick="addFixedDepositModal()" class="px-2 py-1 bg-[#98A4B7] text-[#2E2C2B] rounded font-bold text-[10px]">新增定存</button>
+            <button onclick="openDepositModal()" class="px-2.5 py-1 bg-[#98A4B7] text-white rounded font-bold text-[11px]">新增定存</button>
           </div>
           <div id="fixed-deposit-list" class="space-y-2 pt-1">
             <div class="text-[#827C78] text-center py-1">尚無定存項目</div>
@@ -326,7 +326,7 @@
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center">
             <strong class="font-bold text-[#2E2C2B] text-sm">股票資產 (波動市值 + 交割戶現金)</strong>
-            <button onclick="openAddStockModal()" class="px-2.5 py-1 bg-[#98A4B7] text-[#2E2C2B] rounded font-bold text-[11px]">新增個股</button>
+            <button onclick="openStockModal()" class="px-2.5 py-1 bg-[#98A4B7] text-white rounded font-bold text-[11px]">新增個股</button>
           </div>
           <div id="stock-cards-list" class="space-y-3">
             <div class="text-center text-[#827C78] py-2">尚無個股紀錄。</div>
@@ -361,7 +361,7 @@
       </section>
     </main>
 
-    <!-- 分頁六：設定管理 (包含銀行、證券商、信用卡、分類、管道全方位編輯與刪除) -->
+    <!-- 分頁六：設定管理 -->
     <main id="tab-6" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
         <div>
@@ -381,7 +381,7 @@
           </div>
         </div>
 
-        <!-- 1. 銀行資訊管理 (兼具新增、編輯、刪除) -->
+        <!-- 1. 銀行資訊管理 -->
         <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
             <span>銀行資訊管理</span>
@@ -394,7 +394,7 @@
           <div id="setting-bank-list" class="space-y-1.5 text-xs"></div>
         </div>
 
-        <!-- 2. 證券商管理 (兼具新增、編輯、刪除) -->
+        <!-- 2. 證券商管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
             <span>證券商管理</span>
@@ -407,7 +407,7 @@
           <div id="setting-broker-list" class="space-y-1.5 text-xs"></div>
         </div>
 
-        <!-- 3. 信用卡設定管理 (編輯、停用、刪除) -->
+        <!-- 3. 信用卡設定管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#4D5A6E] flex justify-between items-center">
             <span>信用卡設定管理</span>
@@ -431,7 +431,7 @@
           <div id="custom-card-list" class="space-y-2"></div>
         </div>
 
-        <!-- 4. 支出與收入分類管理 (兼具編輯與刪除) -->
+        <!-- 4. 支出與收入分類管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B]">支出與收入分類管理</h3>
           <div class="flex gap-2">
@@ -441,7 +441,7 @@
           <div id="setting-category-list" class="space-y-1.5 text-xs"></div>
         </div>
 
-        <!-- 5. 支付與收入管道管理 (兼具編輯與刪除) -->
+        <!-- 5. 支付與收入管道管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
           <h3 class="text-xs font-bold text-[#2E2C2B]">支付與收入管道管理</h3>
           <div class="flex gap-2">
@@ -453,6 +453,86 @@
       </section>
     </main>
 
+  </div>
+
+  <!-- 新增定存彈出視窗 Modal (串接銀行清單) -->
+  <div id="deposit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
+      <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增定存單 (串接銀行)</h3>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">歸屬成員</label>
+          <select id="modal-dep-owner" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-[#F7F4F3]">
+            <option value="潔柔">潔柔</option>
+            <option value="宇軒">宇軒</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">選擇機構 / 銀行</label>
+          <select id="modal-dep-bank" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
+            <!-- 動態載入銀行清單 -->
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">定存金額 ($)</label>
+          <input type="number" id="modal-dep-amount" placeholder="100000" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold mb-1 text-[#524D4B]">年利率 (%)</label>
+            <input type="number" step="0.01" id="modal-dep-rate" placeholder="1.7" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+          </div>
+          <div>
+            <label class="block font-bold mb-1 text-[#524D4B]">到期日</label>
+            <input type="date" id="modal-dep-date" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeDepositModal()" class="flex-1 py-3 bg-[#DDD7D4] text-[#3D3A39] font-bold rounded-xl text-xs">取消</button>
+        <button onclick="saveDepositModal()" class="flex-1 py-3 bg-[#98A4B7] text-white font-bold rounded-xl text-xs">儲存定存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 新增個股彈出視窗 Modal (串接證券商清單) -->
+  <div id="stock-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
+      <h3 class="text-base font-bold text-[#2E2C2B] border-b border-[#F2ECE9] pb-2">新增個股/股票資產 (串接證券商)</h3>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">歸屬成員</label>
+          <select id="modal-stock-owner" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-[#F7F4F3]">
+            <option value="潔柔">潔柔</option>
+            <option value="宇軒">宇軒</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">選擇證券商</label>
+          <select id="modal-stock-broker" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
+            <!-- 動態載入證券商清單 -->
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號</label>
+          <input type="text" id="modal-stock-code" placeholder="例: 台積電 2330 / 0050" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold mb-1 text-[#524D4B]">目前波動市值 ($)</label>
+            <input type="number" id="modal-stock-wave" placeholder="0" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+          </div>
+          <div>
+            <label class="block font-bold mb-1 text-[#524D4B]">交割戶現金 ($)</label>
+            <input type="number" id="modal-stock-cash" placeholder="0" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeStockModal()" class="flex-1 py-3 bg-[#DDD7D4] text-[#3D3A39] font-bold rounded-xl text-xs">取消</button>
+        <button onclick="saveStockModal()" class="flex-1 py-3 bg-[#B2C1B4] text-[#2E2C2B] font-bold rounded-xl text-xs">儲存股票</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -469,8 +549,8 @@
       { name: '預設銀行主帳戶', active: true }
     ];
 
-    let bankList = [];
-    let brokerList = [];
+    let bankList = ['台新銀行 (Richart)', '國泰世華銀行', '永豐銀行 (DAWHO)', '台北富邦銀行', '中國信託商業銀行', '中華郵政 (郵局)', '玉山銀行'];
+    let brokerList = ['國泰綜合證券', '元大證券', '富邦證券', '凱基證券', '永豐金證券', '台新綜合證券'];
     let userCards = [];
     let budgetPlans = [];
     let aaListItems = [];
@@ -547,9 +627,84 @@
       select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
     }
 
+    /* --- 定存與股票 Modal 彈出視窗串接邏輯 --- */
+    function openDepositModal() {
+      const select = document.getElementById('modal-dep-bank');
+      if (bankList.length === 0) {
+        select.innerHTML = '<option value="一般銀行">尚未設定銀行 (請至設定管理新增)</option>';
+      } else {
+        select.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
+      }
+      document.getElementById('modal-dep-date').value = getTodayString();
+      document.getElementById('deposit-modal').classList.remove('hidden');
+    }
+
+    function closeDepositModal() {
+      document.getElementById('deposit-modal').classList.add('hidden');
+    }
+
+    function saveDepositModal() {
+      const owner = document.getElementById('modal-dep-owner').value;
+      const bank = document.getElementById('modal-dep-bank').value;
+      const amount = Number(document.getElementById('modal-dep-amount').value) || 0;
+      const rate = Number(document.getElementById('modal-dep-rate').value) || 0;
+      const date = document.getElementById('modal-dep-date').value || getTodayString();
+
+      if (amount <= 0) return alert('請輸入有效的定存金額');
+
+      fixedDeposits.push({
+        owner,
+        bank,
+        amount,
+        rate,
+        interest: Math.round(amount * (rate / 100)),
+        date
+      });
+
+      closeDepositModal();
+      document.getElementById('modal-dep-amount').value = '';
+      renderAssets(currentAssetMember);
+    }
+
+    function openStockModal() {
+      const select = document.getElementById('modal-stock-broker');
+      if (brokerList.length === 0) {
+        select.innerHTML = '<option value="一般證券">尚未設定證券商 (請至設定管理新增)</option>';
+      } else {
+        select.innerHTML = brokerList.map(br => `<option value="${br}">${br}</option>`).join('');
+      }
+      document.getElementById('stock-modal').classList.remove('hidden');
+    }
+
+    function closeStockModal() {
+      document.getElementById('stock-modal').classList.add('hidden');
+    }
+
+    function saveStockModal() {
+      const owner = document.getElementById('modal-stock-owner').value;
+      const broker = document.getElementById('modal-stock-broker').value;
+      const code = document.getElementById('modal-stock-code').value.trim();
+      const waveValue = Number(document.getElementById('modal-stock-wave').value) || 0;
+      const cashValue = Number(document.getElementById('modal-stock-cash').value) || 0;
+
+      if (!code) return alert('請輸入股票名稱或代號');
+
+      stocksList.push({
+        owner,
+        code: `${code} (${broker})`,
+        waveValue,
+        cashValue
+      });
+
+      closeStockModal();
+      document.getElementById('modal-stock-code').value = '';
+      document.getElementById('modal-stock-wave').value = '';
+      document.getElementById('modal-stock-cash').value = '';
+      renderAssets(currentAssetMember);
+    }
+
     /* --- 設定管理 CRUD 功能 --- */
 
-    // 銀行資訊管理
     function addBankFromSetting() {
       const input = document.getElementById('setting-bank-input');
       const val = input.value.trim();
@@ -576,7 +731,6 @@
       }
     }
 
-    // 證券商管理
     function addBrokerFromSetting() {
       const input = document.getElementById('setting-broker-input');
       const val = input.value.trim();
@@ -603,7 +757,6 @@
       }
     }
 
-    // 分類管理
     function addCategoryFromSetting() {
       const input = document.getElementById('setting-category-input');
       const val = input.value.trim();
@@ -633,7 +786,6 @@
       }
     }
 
-    // 管道管理
     function addAccountFromSetting() {
       const input = document.getElementById('setting-account-input');
       const val = input.value.trim();
@@ -670,7 +822,6 @@
     }
 
     function renderSettingLists() {
-      // 渲染銀行
       const bankContainer = document.getElementById('setting-bank-list');
       if (bankContainer) {
         bankContainer.innerHTML = bankList.length === 0 ? '<div class="text-[#827C78] text-center py-1">尚未建立銀行資料。</div>' : bankList.map((b, idx) => `
@@ -684,7 +835,6 @@
         `).join('');
       }
 
-      // 渲染證券商
       const brokerContainer = document.getElementById('setting-broker-list');
       if (brokerContainer) {
         brokerContainer.innerHTML = brokerList.length === 0 ? '<div class="text-[#827C78] text-center py-1">尚未建立證券商資料。</div>' : brokerList.map((br, idx) => `
@@ -698,7 +848,6 @@
         `).join('');
       }
 
-      // 渲染分類
       const catContainer = document.getElementById('setting-category-list');
       if (catContainer) {
         catContainer.innerHTML = customCategories.map((c, idx) => `
@@ -712,7 +861,6 @@
         `).join('');
       }
 
-      // 渲染管道
       const accContainer = document.getElementById('setting-account-list');
       if (accContainer) {
         accContainer.innerHTML = customAccounts.map((a, idx) => `
@@ -953,32 +1101,6 @@
           </div>
         `).join('') : '<div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>';
       }
-    }
-
-    function addFixedDepositModal() {
-      const owner = prompt('請選擇歸屬成員 (潔柔/宇軒)：', '潔柔');
-      const bank = prompt('請輸入機構/定存名稱：');
-      if (!bank) return;
-      const amount = Number(prompt('請輸入定存金額 ($)：')) || 0;
-      const rate = Number(prompt('請輸入年利率 (%)：')) || 0;
-      const date = prompt('請輸入到期日 (YYYY-MM-DD)：', getTodayString());
-
-      if (amount > 0) {
-        fixedDeposits.push({ owner, bank, amount, rate, interest: Math.round(amount * (rate/100)), date, note: '' });
-        renderAssets(currentAssetMember);
-      }
-    }
-
-    function openAddStockModal() {
-      const owner = prompt('請選擇歸屬成員 (潔柔/宇軒)：', '潔柔');
-      const code = prompt('請輸入股票名稱/代號：');
-      if (!code) return;
-      const waveValue = Number(prompt('請輸入目前波動市值 ($)：')) || 0;
-      const cashValue = Number(prompt('請輸入交割戶現金 ($)：')) || 0;
-
-      stocksList.push({ owner, code, waveValue, cashValue, txList: [], divList: [] });
-      renderStocksList();
-      renderAssets(currentAssetMember);
     }
 
     function renderStocksList() {
