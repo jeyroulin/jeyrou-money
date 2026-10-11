@@ -165,7 +165,6 @@
           <button onclick="exportToCSV()" class="text-xs bg-[#F7F4F3] text-[#524D4B] px-3 py-1.5 rounded-lg font-bold border border-[#DCD6D3]">匯出 CSV</button>
         </div>
 
-        <!-- 增強型日期區間與關鍵字篩選 -->
         <div class="space-y-2 p-3 bg-[#F7F4F3] rounded-xl border border-[#DCD6D3] text-xs">
           <div class="grid grid-cols-2 gap-2">
             <div>
@@ -276,10 +275,13 @@
       </section>
     </main>
 
-    <!-- 分頁四：財務月曆與視覺化分析 -->
+    <!-- 分頁四：財務月曆與莫蘭迪 Google 日曆同步 -->
     <main id="tab-4" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
-        <h2 class="text-base font-bold text-[#2E2C2B]">財務月曆與收支視覺化分析</h2>
+        <div class="flex justify-between items-center">
+          <h2 class="text-base font-bold text-[#2E2C2B]">財務月曆與行程同步</h2>
+          <button onclick="fetchGoogleCalendarEvents()" class="px-3 py-1.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg text-xs">🔄 同步 Google 日曆</button>
+        </div>
 
         <!-- 月度收支與分類視覺化卡片 -->
         <div class="bg-[#F7F4F3] p-4 rounded-xl border border-[#DCD6D3] space-y-4">
@@ -900,8 +902,13 @@
     const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
 
+    /* --- Google Calendar API 整合設定 --- */
+    const GOOGLE_API_KEY = 'YOUR_GOOGLE_API_KEY'; // 👈 請於此處貼上您於 Google Cloud 取得的 API Key
+    const GOOGLE_CALENDAR_ID = '1eb3dbcdbb929072f5ab6a98878d3e40328753a2f069e901cbde755da5633546@group.calendar.google.com';
+    let googleCalendarEvents = [];
+
     let currentTabIndex = 1;
-    let currentUser = null; // { name, role: 'admin' | 'viewer' }
+    let currentUser = null;
     let userAccounts = [
       { name: 'admin', pass: '123456', role: 'admin' },
       { name: 'yuxuan', pass: '123456', role: 'viewer' }
@@ -1003,6 +1010,28 @@
       'Content-Type': 'application/json',
       'Prefer': 'return=representation'
     };
+
+    /* --- Google Calendar API 聯網同步邏輯 --- */
+    async function fetchGoogleCalendarEvents() {
+      if (!GOOGLE_API_KEY || GOOGLE_API_KEY === 'YOUR_GOOGLE_API_KEY') {
+        console.log('尚未填入有效的 Google Calendar API Key');
+        return;
+      }
+      try {
+        const timeMin = new Date(calYear, calMonth, 1).toISOString();
+        const timeMax = new Date(calYear, calMonth + 1, 0, 23, 59, 59).toISOString();
+        const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(GOOGLE_CALENDAR_ID)}/events?key=${GOOGLE_API_KEY}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true`;
+
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          googleCalendarEvents = data.items || [];
+          renderCalendar();
+        }
+      } catch (err) {
+        console.log('Google Calendar API 同步失敗：', err);
+      }
+    }
 
     function handleLogin(e) {
       e.preventDefault();
@@ -2779,6 +2808,12 @@
         let isCutoffDay = false;
         userCards.forEach(c => { if (c.cutoff === day) isCutoffDay = true; });
 
+        const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayEvents = googleCalendarEvents.filter(e => {
+          const start = e.start?.date || e.start?.dateTime?.substring(0, 10);
+          return start === dateStr;
+        });
+
         const isToday = (day === new Date().getDate() && calMonth === new Date().getMonth() && calYear === new Date().getFullYear());
         const dayClass = isToday ? 'bg-[#ECE5E3] font-bold border-2 border-[#C2B5B3]' : 'bg-white';
 
@@ -2787,6 +2822,11 @@
             <div class="text-[10px] text-[#635D5A]">${day}</div>
             <div class="space-y-0.5">
               ${isCutoffDay ? '<span class="block text-[9px] bg-[#F7EDED] text-[#784D4E] px-1 rounded truncate font-bold">結帳日</span>' : ''}
+              ${dayEvents.map(e => `
+                <span class="block text-[9px] bg-[#EAE8F0] text-[#5A4E7A] border border-[#C5BFE0] px-1 rounded truncate font-medium" title="${e.summary}">
+                  📅 ${e.summary}
+                </span>
+              `).join('')}
             </div>
           </div>
         `;
@@ -2805,7 +2845,6 @@
     }
 
     function renderCalendarVisualCharts() {
-      // 1. 近6個月長條圖
       const chartBox = document.getElementById('six-month-chart-box');
       if (chartBox) {
         const months = [];
@@ -2838,7 +2877,6 @@
         }).join('');
       }
 
-      // 2. 當月分類支出佔比
       const pieBox = document.getElementById('category-expense-pie-box');
       if (pieBox) {
         const curMStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}`;
@@ -2878,6 +2916,7 @@
       calMonth += delta;
       if (calMonth < 0) { calMonth = 11; calYear--; }
       else if (calMonth > 11) { calMonth = 0; calYear++; }
+      fetchGoogleCalendarEvents();
       renderCalendar();
     }
 
@@ -3032,7 +3071,6 @@
         fetchTransactions();
         alert('已成功儲存！');
       } catch (err) {
-        // 離線快取儲存
         if (editId) {
           const idx = allTransactions.findIndex(t => t.id === Number(editId));
           if (idx !== -1) allTransactions[idx] = { ...recordToInsert, id: Number(editId) };
@@ -3151,7 +3189,10 @@
 
       if (tabIndex === 2) renderCashFlowTab();
       if (tabIndex === 3) renderAATab();
-      if (tabIndex === 4) renderCalendar();
+      if (tabIndex === 4) {
+        fetchGoogleCalendarEvents();
+        renderCalendar();
+      }
       if (tabIndex === 5) renderAssets(currentAssetMember);
       if (tabIndex === 6) {
         renderCardBankOptions();
