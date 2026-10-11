@@ -2803,10 +2803,28 @@
       }
     }
 
+// 允許手動校正/設定「已準備定存金額」
+    let customAnnualSavedAmount = {};
+
+    function setCustomAnnualSavedAmount(year) {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      const currentVal = customAnnualSavedAmount[year] !== undefined 
+        ? customAnnualSavedAmount[year] 
+        : fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
+      
+      const input = prompt(`請輸入 ${year} 年度「已準備定存 / 預備金」總額 ($)：`, currentVal);
+      if (input !== null && !isNaN(parseCurrencyNumber(input))) {
+        customAnnualSavedAmount[year] = parseCurrencyNumber(input);
+        saveAllSettingsLocalAndCloud();
+        renderAnnualCoverage();
+      }
+    }
+
     function saveAnnualExpenseInline() {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
       const year = document.getElementById('annual-year-select')?.value || String(new Date().getFullYear() + 1);
-      const month = document.getElementById('annual-input-month')?.value || '1月';
+      const monthSelect = document.getElementById('annual-input-month');
+      const month = monthSelect ? monthSelect.value : '1月';
       const nameEl = document.getElementById('annual-input-name');
       const amountEl = document.getElementById('annual-input-amount');
 
@@ -2837,7 +2855,7 @@
       const item = annualExpenses[year]?.[idx];
       if (!item) return;
 
-      const newMonth = prompt('請修改月份 (例: 11月)：', item.month || '1月');
+      const newMonth = prompt('請修改月份 (例: 1月~12月)：', item.month || '1月');
       if (newMonth === null) return;
       const newName = prompt('請修改開銷項目名稱：', item.name);
       if (newName === null) return;
@@ -2868,9 +2886,21 @@
       const select = document.getElementById('annual-year-select');
       const year = select?.value || String(new Date().getFullYear() + 1);
       const items = annualExpenses[year] || [];
+
+      // 排序邏輯：1. 月份 (1月->12月)  2. 金額 (大->小)
+      items.sort((a, b) => {
+        const numA = parseInt(String(a.month || '0').replace(/[^\d]/g, ''), 10) || 99;
+        const numB = parseInt(String(b.month || '0').replace(/[^\d]/g, ''), 10) || 99;
+        if (numA !== numB) return numA - numB;
+        return b.amount - a.amount;
+      });
+
       const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
 
-      const savedAmount = fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
+      // 已準備定存：優先採用自訂金額，未設定時自動抓取定存庫
+      const autoSavedAmount = fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
+      const savedAmount = customAnnualSavedAmount[year] !== undefined ? customAnnualSavedAmount[year] : autoSavedAmount;
+
       const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
       const diff = totalExpense - savedAmount;
 
@@ -2884,8 +2914,11 @@
           <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
             <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
           </div>
-          <div class="flex justify-between text-[11px] text-[#635D5A]">
-            <span>已準備定存：$${savedAmount.toLocaleString()}</span>
+          <div class="flex justify-between text-[11px] text-[#635D5A] items-center">
+            <span>
+              已準備定存：$${savedAmount.toLocaleString()} 
+              <button onclick="setCustomAnnualSavedAmount('${year}')" class="editable-only ml-1 text-[10px] text-[#4D5A6E] underline">校正金額</button>
+            </span>
             <span>${totalExpense === 0 ? '尚未新增開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
           </div>
         `;
@@ -2896,82 +2929,9 @@
         listContainer.innerHTML = items.length > 0 ? items.map((i, idx) => `
           <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3] text-xs gap-2">
             <div class="flex items-center gap-1.5 min-w-0">
-              <span class="px-1.5 py-0.5 bg-[#F7F4F3] border border-[#DCD6D3] text-[#784D4E] font-bold rounded text-[10px] shrink-0">${i.month || '未定'}</span>
+              <span class="px-1.5 py-0.5 bg-[#F7F4F3] border border-[#DCD6D3] text-[#784D4E] font-bold rounded text-[10px] shrink-0">${i.month || '1月'}</span>
               <span class="font-bold text-[#2E2C2B] truncate">${i.name}</span>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <strong class="text-[#4D5A6E] font-bold">$${i.amount.toLocaleString()}</strong>
-              <div class="editable-only space-x-1">
-                <button onclick="editAnnualExpense('${year}', ${idx})" class="text-[10px] bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] px-2 py-0.5 rounded font-bold">編輯</button>
-                <button onclick="deleteAnnualExpense('${year}', ${idx})" class="text-[10px] bg-[#F7EDED] text-[#784D4E] px-2 py-0.5 rounded font-bold">刪除</button>
-              </div>
-            </div>
-          </div>
-        `).join('') : '<div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>';
-      }
-    }
-
-    function editAnnualExpense(year, idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
-      const item = annualExpenses[year]?.[idx];
-      if (!item) return;
-
-      const newName = prompt('請修改開銷項目名稱：', item.name);
-      if (newName === null) return;
-      const newAmountStr = prompt('請修改預估金額 ($)：', item.amount);
-      if (newAmountStr === null) return;
-
-      const newAmount = parseCurrencyNumber(newAmountStr);
-      if (newName.trim() && newAmount > 0) {
-        annualExpenses[year][idx].name = newName.trim();
-        annualExpenses[year][idx].amount = newAmount;
-        saveAllSettingsLocalAndCloud();
-        renderAnnualCoverage();
-      }
-    }
-
-    function deleteAnnualExpense(year, idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm(`確定要刪除「${annualExpenses[year][idx].name}」嗎？`)) {
-        annualExpenses[year].splice(idx, 1);
-        saveAllSettingsLocalAndCloud();
-        renderAnnualCoverage();
-      }
-    }
-
-    function renderAnnualCoverage() {
-      initAnnualYearOptions();
-      const select = document.getElementById('annual-year-select');
-      const year = select?.value || String(new Date().getFullYear() + 1);
-      const items = annualExpenses[year] || [];
-      const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
-
-      const savedAmount = fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
-      const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
-      const diff = totalExpense - savedAmount;
-
-      const coverageBox = document.getElementById('annual-coverage-box');
-      if (coverageBox) {
-        coverageBox.innerHTML = `
-          <div class="flex justify-between items-center font-bold">
-            <span class="text-[#2E2C2B]">${year}年度開銷總預估：$${totalExpense.toLocaleString()}</span>
-            <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'}">達成率 ${pct}%</span>
-          </div>
-          <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
-            <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
-          </div>
-          <div class="flex justify-between text-[11px] text-[#635D5A]">
-            <span>已準備定存：$${savedAmount.toLocaleString()}</span>
-            <span>${totalExpense === 0 ? '尚未新增開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
-          </div>
-        `;
-      }
-
-      const listContainer = document.getElementById('annual-items-list');
-      if (listContainer) {
-        listContainer.innerHTML = items.length > 0 ? items.map((i, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3] text-xs gap-2">
-            <span class="font-bold text-[#2E2C2B] truncate">- ${i.name}</span>
             <div class="flex items-center gap-2 shrink-0">
               <strong class="text-[#4D5A6E] font-bold">$${i.amount.toLocaleString()}</strong>
               <div class="editable-only space-x-1">
