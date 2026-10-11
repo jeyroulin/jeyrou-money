@@ -322,31 +322,39 @@
       </section>
     </main>
 
-    <!-- 分頁八：外幣儲蓄與投資 -->
+    <!-- 分頁八：外幣儲蓄與投資 (莫蘭迪色系與高可讀性優化) -->
     <main id="tab-8" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
           <div class="min-w-0">
-            <h2 class="text-base font-bold text-[#3B5998] keep-word">外幣儲蓄與投資管家</h2>
-            <p class="text-xs text-[#827C78] mt-0.5 keep-word">預備出國基金與外幣投資損益（與銀行庫連動）</p>
+            <h2 class="text-base font-bold text-[#4A5B6E] keep-word">外幣儲蓄與投資管家</h2>
+            <p class="text-xs text-[#827C78] mt-0.5 keep-word">外幣投資與資產損益管理</p>
           </div>
-          <button onclick="openForexModal()" class="px-3 py-1.5 bg-[#3B5998] hover:bg-[#2D4373] text-white font-bold rounded-xl text-xs shadow-xs shrink-0">+ 交易外幣</button>
+          <button onclick="openForexModal()" class="px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
         </div>
 
-        <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
-          <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#3B5998] shadow-2xs">潔柔外幣帳戶</button>
-          <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒外幣帳戶</button>
+        <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
+          <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#4A5B6E] shadow-2xs font-bold">潔柔外幣帳戶</button>
+          <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#635D5A]">宇軒外幣帳戶</button>
         </div>
 
-        <div class="bg-[#3B5998] text-white p-4.5 rounded-2xl shadow-sm space-y-3">
-          <div class="flex justify-between items-center border-b border-[#5270B0] pb-2.5">
-            <span class="text-xs text-[#DCE4F5] font-bold" id="forex-dashboard-title">潔柔的外幣資產折合台幣總值</span>
-            <button onclick="updateForexRatesOnline()" class="text-[10px] bg-[#2D4373] hover:bg-[#1F3054] text-white px-2 py-1 rounded-lg border border-[#6B87C2]">🔄 更新即時匯率</button>
+        <!-- 外幣大看板 (莫蘭迪藍灰風格，優化行高與間距) -->
+        <div class="bg-[#5B6B7C] text-white p-5 rounded-2xl shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-[#708092] pb-3">
+            <span class="text-xs text-[#DCE3EC] font-bold" id="forex-dashboard-title">【潔柔】的外幣資產折合台幣總值</span>
+            <button onclick="updateForexRatesOnline()" class="text-[10px] bg-[#4A5B6E] hover:bg-[#3B4A5B] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#708092]">🔄 更新即時匯率</button>
           </div>
-          <div class="text-2xl font-extrabold" id="forex-grand-total-ntd">$0</div>
-          <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#5270B0]">
-            <div>購入外幣總成本：<strong id="forex-total-cost-ntd" class="text-[#DCE4F5] font-bold block mt-0.5">$0</strong></div>
-            <div>外幣投資損益：<strong id="forex-total-profit-ntd" class="text-sm font-extrabold block mt-0.5">$0</strong></div>
+          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="forex-grand-total-ntd">$0</div>
+          
+          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#708092] leading-relaxed">
+            <div>
+              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">購入外幣總成本：</span>
+              <strong id="forex-total-cost-ntd" class="text-white text-sm font-bold">$0</strong>
+            </div>
+            <div>
+              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">外幣投資損益：</span>
+              <strong id="forex-total-profit-ntd" class="text-sm font-extrabold block">$0</strong>
+            </div>
           </div>
         </div>
 
@@ -605,10 +613,10 @@
 
   </div>
 
-  <!-- 外幣 Modal -->
+  <!-- 外幣 Modal (莫蘭迪配色與簡化選單) -->
   <div id="forex-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
-    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
-      <h3 class="text-base font-bold text-[#3B5998] border-b border-[#F2ECE9] pb-2">新增外幣儲蓄與投資交易紀錄</h3>
+    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl border border-[#DCD6D3]">
+      <h3 class="text-base font-bold text-[#4A5B6E] border-b border-[#F2ECE9] pb-2">新增外幣儲蓄與投資交易紀錄</h3>
       <div class="space-y-3 text-xs">
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">交易日期</label>
@@ -625,8 +633,8 @@
           <div>
             <label class="block font-bold mb-1 text-[#524D4B]">交易類型</label>
             <select id="modal-forex-type" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
-              <option value="購入">購入外幣 (+增加外幣存量)</option>
-              <option value="售出/提領">售出/提領 (-減少外幣出國用)</option>
+              <option value="購入">購入外幣</option>
+              <option value="售出/提領">售出/提領</option>
             </select>
           </div>
         </div>
@@ -639,10 +647,10 @@
           <div>
             <label class="block font-bold mb-1 text-[#524D4B]">選擇幣別</label>
             <select id="modal-forex-currency" onchange="autoFillForexRate()" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
-              <option value="USD">USD 日常/美金</option>
-              <option value="JPY">JPY 出國/日圓</option>
-              <option value="EUR">EUR 旅遊/歐元</option>
-              <option value="KRW">KRW 旅遊/韓元</option>
+              <option value="USD">USD 美金</option>
+              <option value="JPY">JPY 日圓</option>
+              <option value="EUR">EUR 歐元</option>
+              <option value="KRW">KRW 韓元</option>
               <option value="CNY">CNY 人民幣</option>
             </select>
           </div>
@@ -657,14 +665,14 @@
             <input type="number" step="0.01" id="modal-forex-amount" oninput="calcForexNTD()" placeholder="例如: 1000" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
           </div>
           <div>
-            <label class="block font-bold mb-1 text-[#3B5998]">折合台幣總額 ($)</label>
-            <input type="number" id="modal-forex-ntd" class="w-full p-2.5 border border-[#3B5998] rounded-xl bg-[#EBF0F9] font-extrabold text-[#3B5998]">
+            <label class="block font-bold mb-1 text-[#4A5B6E]">折合台幣總額 ($)</label>
+            <input type="number" id="modal-forex-ntd" class="w-full p-2.5 border border-[#B0C4DE] rounded-xl bg-[#F0F4F8] font-extrabold text-[#4A5B6E]">
           </div>
         </div>
       </div>
       <div class="flex gap-2 pt-2">
         <button onclick="closeForexModal()" class="flex-1 py-3 bg-[#DDD7D4] text-[#3D3A39] font-bold rounded-xl text-xs">取消</button>
-        <button onclick="saveForexModal()" class="flex-1 py-3 bg-[#3B5998] text-white font-bold rounded-xl text-xs">儲存外幣交易</button>
+        <button onclick="saveForexModal()" class="flex-1 py-3 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs">儲存外幣交易</button>
       </div>
     </div>
   </div>
@@ -1098,11 +1106,11 @@
     function switchForexMember(member) {
       currentForexMember = member;
       document.querySelectorAll('.forex-member-btn').forEach(b => {
-        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#3B5998]');
-        b.classList.add('text-[#524D4B]');
+        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4A5B6E]');
+        b.classList.add('text-[#635D5A]');
       });
       const btn = document.getElementById(`forex-tab-${member}`);
-      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#3B5998]');
+      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4A5B6E]');
       renderForexPage(member);
     }
 
@@ -1188,15 +1196,15 @@
         listContainer.innerHTML = holdings.map(h => {
           const isP = h.profit >= 0;
           return `
-            <div class="bg-white p-3.5 rounded-2xl border border-[#DCD6D3] space-y-2 text-xs">
+            <div class="bg-white p-4 rounded-2xl border border-[#DCD6D3] space-y-2.5 text-xs">
               <div class="flex justify-between items-center font-bold">
-                <span class="text-sm font-extrabold text-[#3B5998]">${h.currency} 外幣儲蓄</span>
+                <span class="text-sm font-extrabold text-[#4A5B6E]">${h.currency} 外幣儲蓄</span>
                 <span class="text-sm font-extrabold text-[#2E2C2B]">折合台幣: $${h.currentNTDValue.toLocaleString()}</span>
               </div>
               <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-2">
                 <div>持有數量：<strong class="text-[#2E2C2B] font-bold">${h.totalAmount.toLocaleString()} ${h.currency}</strong></div>
                 <div>均買匯率：<strong class="text-[#2E2C2B] font-bold">${h.avgRate}</strong></div>
-                <div>目前參考匯率：<strong class="text-[#3B5998] font-bold">${h.latestRate}</strong></div>
+                <div>目前參考匯率：<strong class="text-[#4A5B6E] font-bold">${h.latestRate}</strong></div>
                 <div>未實現損益：<strong class="${isP ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">${isP ? '+' : ''}$${h.profit.toLocaleString()}</strong></div>
               </div>
             </div>
@@ -1216,7 +1224,7 @@
               <span class="text-[10px] text-[#827C78]">${f.date} | 匯率:${f.rate}</span>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <strong class="text-[#3B5998] font-bold">$${f.ntdTotal.toLocaleString()}</strong>
+              <strong class="text-[#4A5B6E] font-bold">$${f.ntdTotal.toLocaleString()}</strong>
               <button onclick="deleteForexTransaction(${f.id})" class="text-[#784D4E] text-[10px] bg-[#F7EDED] px-2 py-0.5 rounded border border-[#C89B9C]">刪除</button>
             </div>
           </div>
@@ -1671,7 +1679,7 @@
       }
     }
 
-    /* --- 資產總表核心邏輯 (完全無邊框、乾極簡圓餅圖 + 附件二看板) --- */
+    /* --- 資產總表核心邏輯 --- */
     function renderAssets(member) {
       currentAssetMember = member;
 
@@ -1763,8 +1771,8 @@
                 <strong class="text-[#2E2C2B] font-extrabold">${insPct}%</strong>
               </div>
               <div class="flex justify-between items-center">
-                <span class="flex items-center gap-1.5 font-bold text-[#3B5998]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#3B5998] inline-block"></span>外幣儲蓄
+                <span class="flex items-center gap-1.5 font-bold text-[#4A5B6E]">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#4A5B6E] inline-block"></span>外幣儲蓄
                 </span>
                 <strong class="text-[#2E2C2B] font-extrabold">${frxPct}%</strong>
               </div>
@@ -1785,7 +1793,7 @@
         `;
       }
 
-      // --- 2. 渲染總資產大看板 (附件二樣式) ---
+      // --- 2. 渲染總資產大看板 ---
       const dashCard = document.getElementById('asset-dashboard-card');
       if (dashCard) {
         dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3';
@@ -1828,10 +1836,10 @@
 
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
             <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#3B5998] inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-[#4A5B6E] inline-block"></span>
               <span class="font-bold text-[#2E2C2B]">外幣儲蓄與投資總值</span>
             </div>
-            <strong class="text-[#3B5998] text-sm font-bold">$${forexTotalNTD.toLocaleString()}</strong>
+            <strong class="text-[#4A5B6E] text-sm font-bold">$${forexTotalNTD.toLocaleString()}</strong>
           </div>
 
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
@@ -1910,7 +1918,7 @@
       renderAnnualCoverage();
     }
 
-    // 純圓餅圖 SVG，完全移除外框與背景圓框
+    // 純圓餅圖 SVG
     function renderBorderlessPieSVG(dep, ins, frx, stk, lab) {
       const total = Math.max(0, dep) + Math.max(0, ins) + Math.max(0, frx) + Math.max(0, stk) + Math.max(0, lab);
       if (total <= 0) {
@@ -1936,7 +1944,7 @@
         <svg width="84" height="84" viewBox="0 0 36 36" class="transform -rotate-90">
           ${getPath(pDep, '#4D5A6E')}
           ${getPath(pIns, '#78699B')}
-          ${getPath(pFrx, '#3B5998')}
+          ${getPath(pFrx, '#4A5B6E')}
           ${getPath(pStk, '#C89B9C')}
           ${getPath(pLab, '#556357')}
         </svg>
