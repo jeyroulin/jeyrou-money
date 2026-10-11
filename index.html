@@ -388,7 +388,7 @@
             <span class="text-[10px] text-[#827C78] font-normal">可新增、編輯或刪除往來銀行</span>
           </h3>
           <div class="flex gap-2">
-            <input type="text" id="setting-bank-input" placeholder="輸入銀行名稱 (例: 台新銀行)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <input type="text" id="setting-bank-input" placeholder="輸入銀行名稱 (例: 812 台新銀行)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
             <button onclick="addBankFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增銀行</button>
           </div>
           <div id="setting-bank-list" class="space-y-1.5 text-xs"></div>
@@ -401,7 +401,7 @@
             <span class="text-[10px] text-[#827C78] font-normal">可新增、編輯或刪除開戶證券商</span>
           </h3>
           <div class="flex gap-2">
-            <input type="text" id="setting-broker-input" placeholder="輸入證券商名稱 (例: 國泰綜合證券)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <input type="text" id="setting-broker-input" placeholder="輸入證券商名稱 (例: 9800 國泰綜合證券)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
             <button onclick="addBrokerFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增證券商</button>
           </div>
           <div id="setting-broker-list" class="space-y-1.5 text-xs"></div>
@@ -455,7 +455,7 @@
 
   </div>
 
-  <!-- 新增定存彈出視窗 Modal (串接銀行清單) -->
+  <!-- 新增定存彈出視窗 Modal -->
   <div id="deposit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增定存單 (串接銀行)</h3>
@@ -495,7 +495,7 @@
     </div>
   </div>
 
-  <!-- 新增個股彈出視窗 Modal (串接證券商清單) -->
+  <!-- 新增個股彈出視窗 Modal -->
   <div id="stock-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 class="text-base font-bold text-[#2E2C2B] border-b border-[#F2ECE9] pb-2">新增個股/股票資產 (串接證券商)</h3>
@@ -542,15 +542,27 @@
     let entryMode = '支出';
     let currentAssetMember = '全部';
     let allTransactions = [];
+
+    // 預設銀行與證券商預設值
+    let defaultBankList = [
+      '812 台新銀行 (Richart)', '013 國泰世華銀行', '807 永豐銀行 (DAWHO)', 
+      '012 台北富邦銀行', '822 中國信託商業銀行', '700 中華郵政 (郵局)', 
+      '808 玉山銀行', '004 臺灣銀行', '005 土地銀行', '006 合作金庫銀行', 
+      '824 將來銀行', '826 LINE Bank'
+    ];
+    let defaultBrokerList = [
+      '9800 國泰綜合證券', '9200 元大證券', '9600 富邦證券', 
+      '9210 凱基證券', '9260 永豐金證券', '8450 台新綜合證券'
+    ];
+
     let customCategories = ['生活費', '薪資收入', '現金回饋', '點數折抵'];
-    
     let customAccounts = [
       { name: '現金/口袋皮夾', active: true },
       { name: '預設銀行主帳戶', active: true }
     ];
 
-    let bankList = ['台新銀行 (Richart)', '國泰世華銀行', '永豐銀行 (DAWHO)', '台北富邦銀行', '中國信託商業銀行', '中華郵政 (郵局)', '玉山銀行'];
-    let brokerList = ['國泰綜合證券', '元大證券', '富邦證券', '凱基證券', '永豐金證券', '台新綜合證券'];
+    let bankList = [...defaultBankList];
+    let brokerList = [...defaultBrokerList];
     let userCards = [];
     let budgetPlans = [];
     let aaListItems = [];
@@ -558,10 +570,7 @@
 
     let fixedDeposits = [];
     let stocksList = [];
-    let annualExpenses = {
-      "2027": [],
-      "2028": []
-    };
+    let annualExpenses = { "2027": [], "2028": [] };
 
     let calYear = new Date().getFullYear();
     let calMonth = new Date().getMonth();
@@ -580,6 +589,93 @@
         alertBox.classList.remove('hidden');
         errorMsg.innerText = msg;
       }
+    }
+
+    /* --- 全站設定永久儲存 (localStorage + Supabase 同步) --- */
+    function saveAllSettingsLocalAndCloud() {
+      const settingsPayload = {
+        customCategories,
+        customAccounts,
+        bankList,
+        brokerList,
+        userCards,
+        budgetPlans,
+        aaListItems,
+        fixedDeposits,
+        stocksList,
+        laborData,
+        annualExpenses,
+        updatedAt: new Date().toISOString()
+      };
+
+      // 1. 本地儲存
+      localStorage.setItem('jeyrou_money_settings', JSON.stringify(settingsPayload));
+
+      // 2. 雲端 Supabase 同步
+      fetch(`${SUPABASE_URL}/rest/v1/user_settings?id=eq.default_settings`, {
+        method: 'POST',
+        headers: { ...fetchHeaders, 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({
+          id: 'default_settings',
+          data: settingsPayload,
+          updated_at: new Date().toISOString()
+        })
+      }).catch(err => console.log('Cloud sync error:', err));
+    }
+
+    async function loadAllSettingsLocalAndCloud() {
+      // 1. 先讀取本地
+      const localData = localStorage.getItem('jeyrou_money_settings');
+      if (localData) {
+        try {
+          applySettingsObject(JSON.parse(localData));
+        } catch (e) {}
+      }
+
+      // 2. 再從雲端獲取最新版本
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/user_settings?id=eq.default_settings`, {
+          method: 'GET',
+          headers: fetchHeaders
+        });
+        if (res.ok) {
+          const cloudRes = await res.json();
+          if (cloudRes && cloudRes.length > 0 && cloudRes[0].data) {
+            applySettingsObject(cloudRes[0].data);
+            localStorage.setItem('jeyrou_money_settings', JSON.stringify(cloudRes[0].data));
+          }
+        }
+      } catch (err) {
+        console.log('Cloud fetch error:', err);
+      }
+    }
+
+    function applySettingsObject(data) {
+      if (data.customCategories) customCategories = data.customCategories;
+      if (data.customAccounts) customAccounts = data.customAccounts;
+      if (data.bankList && data.bankList.length > 0) bankList = data.bankList;
+      if (data.brokerList && data.brokerList.length > 0) brokerList = data.brokerList;
+      if (data.userCards) userCards = data.userCards;
+      if (data.budgetPlans) budgetPlans = data.budgetPlans;
+      if (data.aaListItems) aaListItems = data.aaListItems;
+      if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
+      if (data.stocksList) stocksList = data.stocksList;
+      if (data.laborData) laborData = data.laborData;
+      if (data.annualExpenses) annualExpenses = data.annualExpenses;
+
+      // 載入勞退介面值
+      if (document.getElementById('labor-emp-principal')) document.getElementById('labor-emp-principal').value = laborData.empPrincipal || '';
+      if (document.getElementById('labor-emp-income')) document.getElementById('labor-emp-income').value = laborData.empIncome || '';
+      if (document.getElementById('labor-self-principal')) document.getElementById('labor-self-principal').value = laborData.selfPrincipal || '';
+      if (document.getElementById('labor-self-income')) document.getElementById('labor-self-income').value = laborData.selfIncome || '';
+
+      renderCategoryOptions();
+      renderAccountOptions();
+      renderSettingLists();
+      renderCustomCardList();
+      renderBudgetPlans();
+      renderAATab();
+      renderAssets(currentAssetMember);
     }
 
     function getTodayString() {
@@ -653,16 +749,14 @@
       if (amount <= 0) return alert('請輸入有效的定存金額');
 
       fixedDeposits.push({
-        owner,
-        bank,
-        amount,
-        rate,
+        owner, bank, amount, rate,
         interest: Math.round(amount * (rate / 100)),
         date
       });
 
       closeDepositModal();
       document.getElementById('modal-dep-amount').value = '';
+      saveAllSettingsLocalAndCloud();
       renderAssets(currentAssetMember);
     }
 
@@ -692,18 +786,18 @@
       stocksList.push({
         owner,
         code: `${code} (${broker})`,
-        waveValue,
-        cashValue
+        waveValue, cashValue
       });
 
       closeStockModal();
       document.getElementById('modal-stock-code').value = '';
       document.getElementById('modal-stock-wave').value = '';
       document.getElementById('modal-stock-cash').value = '';
+      saveAllSettingsLocalAndCloud();
       renderAssets(currentAssetMember);
     }
 
-    /* --- 設定管理 CRUD 功能 --- */
+    /* --- 設定管理 CRUD 功能 (自動儲存) --- */
 
     function addBankFromSetting() {
       const input = document.getElementById('setting-bank-input');
@@ -712,6 +806,7 @@
       if (!bankList.includes(val)) {
         bankList.push(val);
         input.value = '';
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
     }
@@ -720,6 +815,7 @@
       const newName = prompt('請修改銀行名稱：', bankList[idx]);
       if (newName && newName.trim()) {
         bankList[idx] = newName.trim();
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
     }
@@ -727,6 +823,7 @@
     function deleteBank(idx) {
       if (confirm(`確定要刪除「${bankList[idx]}」嗎？`)) {
         bankList.splice(idx, 1);
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
     }
@@ -738,6 +835,7 @@
       if (!brokerList.includes(val)) {
         brokerList.push(val);
         input.value = '';
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
     }
@@ -746,6 +844,7 @@
       const newName = prompt('請修改證券商名稱：', brokerList[idx]);
       if (newName && newName.trim()) {
         brokerList[idx] = newName.trim();
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
     }
@@ -753,6 +852,7 @@
     function deleteBroker(idx) {
       if (confirm(`確定要刪除「${brokerList[idx]}」嗎？`)) {
         brokerList.splice(idx, 1);
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
       }
     }
@@ -764,6 +864,7 @@
       if (!customCategories.includes(val)) {
         customCategories.push(val);
         input.value = '';
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderCategoryOptions();
       }
@@ -773,6 +874,7 @@
       const newName = prompt('請修改分類名稱：', customCategories[idx]);
       if (newName && newName.trim()) {
         customCategories[idx] = newName.trim();
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderCategoryOptions();
       }
@@ -781,6 +883,7 @@
     function deleteCategory(idx) {
       if (confirm(`確定要刪除「${customCategories[idx]}」這個分類嗎？`)) {
         customCategories.splice(idx, 1);
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderCategoryOptions();
       }
@@ -793,6 +896,7 @@
       if (!customAccounts.some(a => a.name === val)) {
         customAccounts.push({ name: val, active: true });
         input.value = '';
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderAccountOptions();
       }
@@ -802,6 +906,7 @@
       const newName = prompt('請修改管道名稱：', customAccounts[idx].name);
       if (newName && newName.trim()) {
         customAccounts[idx].name = newName.trim();
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderAccountOptions();
       }
@@ -809,6 +914,7 @@
 
     function toggleAccountActive(idx) {
       customAccounts[idx].active = !customAccounts[idx].active;
+      saveAllSettingsLocalAndCloud();
       renderSettingLists();
       renderAccountOptions();
     }
@@ -816,6 +922,7 @@
     function deleteAccount(idx) {
       if (confirm(`確定要刪除「${customAccounts[idx].name}」管道嗎？`)) {
         customAccounts.splice(idx, 1);
+        saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderAccountOptions();
       }
@@ -898,6 +1005,7 @@
       document.getElementById('card-bank-input').value = '';
       document.getElementById('card-name-input').value = '';
 
+      saveAllSettingsLocalAndCloud();
       renderCustomCardList();
       renderAccountOptions();
       renderCalendar();
@@ -914,6 +1022,7 @@
         userCards[idx].bank = newBank.trim();
         userCards[idx].name = newName.trim();
         if (newCutoff > 0 && newCutoff <= 31) userCards[idx].cutoff = newCutoff;
+        saveAllSettingsLocalAndCloud();
         renderCustomCardList();
         renderAccountOptions();
         renderCalendar();
@@ -923,6 +1032,7 @@
     function deleteCustomCard(idx) {
       if (confirm(`確定要刪除「${userCards[idx].bank} ${userCards[idx].name}」這張信用卡嗎？`)) {
         userCards.splice(idx, 1);
+        saveAllSettingsLocalAndCloud();
         renderCustomCardList();
         renderAccountOptions();
         renderCalendar();
@@ -931,6 +1041,7 @@
 
     function toggleCardActive(idx) {
       userCards[idx].active = !userCards[idx].active;
+      saveAllSettingsLocalAndCloud();
       renderCustomCardList();
       renderAccountOptions();
     }
@@ -967,6 +1078,7 @@
       budgetPlans.push({ name, limit });
       document.getElementById('budget-item-name').value = '';
       document.getElementById('budget-item-limit').value = '';
+      saveAllSettingsLocalAndCloud();
       renderBudgetPlans();
     }
 
@@ -983,7 +1095,7 @@
           <span class="font-bold text-[#2E2C2B]">${b.name}</span>
           <div class="flex items-center gap-2">
             <span class="font-bold text-[#3D3A39]">上限: $${b.limit.toLocaleString()}</span>
-            <button onclick="budgetPlans.splice(${idx},1); renderBudgetPlans();" class="text-[#784D4E] text-xs font-bold">刪除</button>
+            <button onclick="budgetPlans.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans();" class="text-[#784D4E] text-xs font-bold">刪除</button>
           </div>
         </div>
       `).join('');
@@ -1000,11 +1112,13 @@
       document.getElementById('aa-item-title').value = '';
       document.getElementById('aa-guanhe-amount').value = '';
       document.getElementById('aa-jierou-amount').value = '';
+      saveAllSettingsLocalAndCloud();
       renderAATab();
     }
 
     function deleteAAItem(idx) {
       aaListItems.splice(idx, 1);
+      saveAllSettingsLocalAndCloud();
       renderAATab();
     }
 
@@ -1060,6 +1174,7 @@
 
       if (!annualExpenses[year]) annualExpenses[year] = [];
       annualExpenses[year].push({ name, amount });
+      saveAllSettingsLocalAndCloud();
       renderAnnualCoverage();
     }
 
@@ -1096,7 +1211,7 @@
             <span>- ${i.name}</span>
             <div class="space-x-1">
               <strong class="text-[#2E2C2B]">$${i.amount.toLocaleString()}</strong>
-              <button onclick="annualExpenses['${year}'].splice(${idx},1); renderAnnualCoverage();" class="text-[#784D4E]">刪除</button>
+              <button onclick="annualExpenses['${year}'].splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAnnualCoverage();" class="text-[#784D4E]">刪除</button>
             </div>
           </div>
         `).join('') : '<div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>';
@@ -1121,7 +1236,7 @@
               <span class="text-[#2E2C2B]">${s.owner ? `[${s.owner}] ` : ''}${s.code}</span>
               <div class="space-x-1">
                 <span class="text-[#4D5A6E] text-sm">$${total.toLocaleString()}</span>
-                <button onclick="stocksList.splice(${idx},1); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs">刪除</button>
+                <button onclick="stocksList.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs">刪除</button>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1 border-t border-[#F2ECE9]">
@@ -1146,6 +1261,7 @@
       if (document.getElementById('labor-profit-sum')) document.getElementById('labor-profit-sum').innerText = '$' + totalProfit.toLocaleString();
       if (document.getElementById('labor-rate-sum')) document.getElementById('labor-rate-sum').innerText = totalRate + '%';
 
+      saveAllSettingsLocalAndCloud();
       renderAssets(currentAssetMember);
     }
 
@@ -1167,7 +1283,7 @@
               </div>
               <div class="flex items-center gap-1">
                 <strong class="text-[#4D5A6E]">$${d.amount.toLocaleString()}</strong>
-                <button onclick="fixedDeposits.splice(${idx},1); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs ml-1">刪除</button>
+                <button onclick="fixedDeposits.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="text-[#784D4E] text-xs ml-1">刪除</button>
               </div>
             </div>
           `).join('')
@@ -1317,21 +1433,9 @@
       reader.onload = function(e) {
         try {
           const data = JSON.parse(e.target.result);
-          if (data.customCategories) customCategories = data.customCategories;
-          if (data.customAccounts) customAccounts = data.customAccounts;
-          if (data.bankList) bankList = data.bankList;
-          if (data.brokerList) brokerList = data.brokerList;
-          if (data.userCards) userCards = data.userCards;
-          if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
-          if (data.stocksList) stocksList = data.stocksList;
-          if (data.laborData) laborData = data.laborData;
-          if (data.annualExpenses) annualExpenses = data.annualExpenses;
-
-          renderCategoryOptions();
-          renderAccountOptions();
-          renderSettingLists();
-          renderAssets('全部');
-          alert('已成功還原備份資料！');
+          applySettingsObject(data);
+          saveAllSettingsLocalAndCloud();
+          alert('已成功還原備份資料並儲存至雲端！');
         } catch (err) {
           alert('備份檔案讀取失敗：' + err.message);
         }
@@ -1534,8 +1638,7 @@
 
     async function initSystem() {
       initTodayDate();
-      renderCategoryOptions();
-      renderAccountOptions();
+      await loadAllSettingsLocalAndCloud();
       const badge = document.getElementById('status-badge');
       try {
         const res = await fetch(SUPABASE_URL + '/rest/v1/transactions?select=*&limit=1', { method: 'GET', headers: fetchHeaders });
