@@ -1412,7 +1412,7 @@
       renderCalendar();
     }
 
-    /* --- 核心試算 logic (已包含 ETF 0.1% 證交稅精準修修正) --- */
+    /* --- 核心試算 logic (現值總額 100% 精準對齊「股數 * 最新單價」) --- */
     function getMemberStockHoldings(member) {
       const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
       const holdings = {};
@@ -1440,18 +1440,13 @@
         const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
         const grossValue = h.shares * latestPrice;
 
-        // ★ 自動識別 ETF（代碼或名稱以 00 開頭）：證交稅率為 0.1%，一般個股為 0.3%
-        const isETF = /^00/.test(h.code.trim());
-        const taxRate = isETF ? 0.001 : 0.003;
-        const estTax = Math.round(grossValue * taxRate);
-        const estFee = 0; // 手續費維持 0（以極致對齊真實變現數值）
-
-        const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
+        // ★ 現值總額直接以「股數 * 最新單價」計算（完全與券商/實際帳戶顯示一致）
+        const currentMarketValue = Math.round(grossValue);
         const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
         const unrealizedProfit = currentMarketValue - h.totalCost;
         const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
 
-        return { ...h, latestPrice, avgCost, grossValue: Math.round(grossValue), estTaxFee: estTax + estFee, currentMarketValue, unrealizedProfit, profitRate };
+        return { ...h, latestPrice, avgCost, grossValue: currentMarketValue, estTaxFee: 0, currentMarketValue, unrealizedProfit, profitRate };
       });
 
       return list.sort((a, b) => b.currentMarketValue - a.currentMarketValue);
