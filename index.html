@@ -471,33 +471,44 @@
           </div>
         </div>
 
-        <!-- 優化後的：未來開銷與定存覆蓋率 -->
-        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
+        <!-- 連續雙年度開銷與資金覆蓋率 -->
+        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-4 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
-            <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來開銷與定存覆蓋率</strong>
+            <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來開銷與資金覆蓋率</strong>
             <div class="flex gap-1.5 items-center shrink-0">
-              <select id="annual-year-select" onchange="renderAnnualCoverage()" class="p-1.5 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B] outline-none">
+              <select id="annual-year-select" onchange="renderAnnualCoverage()" class="p-1.5 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B] outline-none text-xs">
               </select>
             </div>
           </div>
 
-          <div id="annual-coverage-box" class="p-3 bg-white border border-[#DCD6D3] rounded-xl space-y-1.5">
+          <!-- 連續雙年度進度卡片區 -->
+          <div id="annual-coverage-dual-cards" class="space-y-3">
           </div>
 
-          <!-- 直覺式開銷輸入欄（月份 + 項目 + 金額） -->
-          <div class="editable-only grid grid-cols-12 gap-1.5 pt-1">
-            <select id="annual-input-month" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold outline-none text-xs">
-              <option value="1月">1 月</option><option value="2月">2 月</option><option value="3月">3 月</option>
-              <option value="4月">4 月</option><option value="5月">5 月</option><option value="6月">6 月</option>
-              <option value="7月">7 月</option><option value="8月">8 月</option><option value="9月">9 月</option>
-              <option value="10月">10月</option><option value="11月">11月</option><option value="12月">12月</option>
-            </select>
-            <input type="text" id="annual-input-name" placeholder="項目 (例: 爸生日)" class="col-span-4 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
-            <input type="text" id="annual-input-amount" placeholder="金額 ($)" oninput="formatInputCurrency(this)" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-xs">
-            <button onclick="saveAnnualExpenseInline()" class="col-span-2 py-2 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg shadow-2xs text-xs">新增</button>
+          <!-- 新增預備資金按鈕與開銷輸入列 -->
+          <div class="space-y-2 pt-2 border-t border-[#DCD6D3]">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-[#2E2C2B] text-xs">新增年度開銷明細</span>
+              <button onclick="openAnnualFundModal()" class="editable-only px-2.5 py-1 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded-lg text-[10px] shadow-2xs">
+                + 新增預備資金(活存/定存)
+              </button>
+            </div>
+
+            <div class="editable-only grid grid-cols-12 gap-1.5">
+              <select id="annual-input-month" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold outline-none text-xs">
+                <option value="1月">1 月</option><option value="2月">2 月</option><option value="3月">3 月</option>
+                <option value="4月">4 月</option><option value="5月">5 月</option><option value="6月">6 月</option>
+                <option value="7月">7 月</option><option value="8月">8 月</option><option value="9月">9 月</option>
+                <option value="10月">10月</option><option value="11月">11月</option><option value="12月">12月</option>
+              </select>
+              <input type="text" id="annual-input-name" placeholder="項目 (例: 爸生日)" class="col-span-4 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
+              <input type="text" id="annual-input-amount" placeholder="金額 ($)" oninput="formatInputCurrency(this)" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-xs">
+              <button onclick="saveAnnualExpenseInline()" class="col-span-2 py-2 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg shadow-2xs text-xs">新增</button>
+            </div>
           </div>
 
-          <div id="annual-items-list" class="space-y-1.5 pt-1 max-h-48 overflow-y-auto border-t border-[#DCD6D3]">
+          <!-- 附件二樣式的乾淨細項清單 (無外框，僅底線) -->
+          <div id="annual-items-list" class="space-y-1.5 pt-2 max-h-60 overflow-y-auto border-t border-[#DCD6D3]">
             <div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>
           </div>
         </div>
@@ -901,6 +912,46 @@
     </div>
   </div>
 
+  <!-- 預備資金 Modal (活存/定存) -->
+  <div id="annual-fund-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl border border-[#DCD6D3]">
+      <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增預備資金 (活存/定存)</h3>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">適用年度</label>
+          <select id="modal-fund-year" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-[#F7F4F3]">
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">哪一間銀行</label>
+          <select id="modal-fund-bank" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold mb-1 text-[#524D4B]">資金類型</label>
+            <select id="modal-fund-type" onchange="toggleFundDueDate()" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
+              <option value="活存">活存</option>
+              <option value="定存">定存</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold mb-1 text-[#524D4B]">預計金額 ($)</label>
+            <input type="text" id="modal-fund-amount" oninput="formatInputCurrency(this)" placeholder="0" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+          </div>
+        </div>
+        <div id="fund-duedate-box" class="hidden">
+          <label class="block font-bold mb-1 text-[#524D4B]">定存到期日</label>
+          <input type="date" id="modal-fund-duedate" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeAnnualFundModal()" class="flex-1 py-3 bg-[#DDD7D4] text-[#3D3A39] font-bold rounded-xl text-xs">取消</button>
+        <button onclick="saveAnnualFundModal()" class="editable-only flex-1 py-3 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs">儲存預備金</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
@@ -1002,6 +1053,7 @@
     let stocksList = [];
     let expandedStockCode = null;
     let annualExpenses = { "2027": [], "2028": [] };
+    let annualFundList = []; // 預備資金清單 (銀行、活存/定存、到期日、金額)
     let lastExportDate = null;
 
     let calYear = new Date().getFullYear();
@@ -1132,7 +1184,7 @@
         userCards, budgetPlans, aaListItems, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
-        laborDataByMember, annualExpenses, userAccounts, lastExportDate,
+        laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
         updatedAt: new Date().toISOString()
       };
 
@@ -1211,6 +1263,7 @@
       if (data.manualStockPrices) manualStockPrices = data.manualStockPrices;
       if (data.laborDataByMember) laborDataByMember = data.laborDataByMember;
       if (data.annualExpenses) annualExpenses = data.annualExpenses;
+      if (data.annualFundList) annualFundList = data.annualFundList;
       if (data.lastExportDate) lastExportDate = data.lastExportDate;
 
       renderCategoryOptions();
@@ -1451,19 +1504,16 @@
         const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
         const grossValue = h.shares * latestPrice;
 
-        // 1. 判斷是否為 ETF (00 開頭)：ETF 證交稅為 0.1%，一般個股為 0.3%
         const isETF = /^00/.test(h.code.trim());
         const taxRate = isETF ? 0.001 : 0.003;
         const estTax = Math.floor(grossValue * taxRate);
 
-        // 2. 國泰證券預估賣出手續費 (0.1425% * 28折，小額/零股設有 1~3 元門檻)
         let estFee = 0;
         if (grossValue > 0) {
           const calcFee = Math.floor(grossValue * 0.001425 * 0.28);
-          estFee = Math.max(1, calcFee); // 最低 1 元
+          estFee = Math.max(1, calcFee);
         }
 
-        // 3. 變現預估現值 = 毛市值 - 證交稅 - 券商手續費
         const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
         const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
         const unrealizedProfit = currentMarketValue - h.totalCost;
@@ -2054,6 +2104,9 @@
       const forexHoldings = getMemberForexHoldings(member);
       const forexTotalNTD = forexHoldings.reduce((sum, h) => sum + h.currentNTDValue, 0);
 
+      // 預備資金自動連動並加總至個人的「現金總資產」
+      const annualFundTotal = annualFundList.reduce((sum, f) => sum + f.amount, 0);
+
       let stockMarketVal = 0;
       let stockCashVal = 0;
 
@@ -2069,7 +2122,7 @@
       }
 
       const stockGrandTotal = stockMarketVal + stockCashVal;
-      const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal;
+      const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + annualFundTotal;
 
       let laborTotal = 0;
       if (member === '全部') {
@@ -2099,12 +2152,12 @@
           </div>
           <div class="flex items-center gap-3 py-1.5 max-w-sm mx-auto">
             <div class="shrink-0 flex items-center justify-center p-1">
-              ${renderBorderlessPieSVG(depositTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
+              ${renderBorderlessPieSVG(depositTotal + annualFundTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
             </div>
             <div class="flex-1 space-y-1.5 text-xs pl-1">
               <div class="flex justify-between items-center gap-2">
                 <span class="flex items-center gap-1.5 font-bold text-[#4D5A6E]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] shrink-0 inline-block"></span>定存
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] shrink-0 inline-block"></span>定存/預備金
                 </span>
                 <strong class="text-[#2E2C2B] font-extrabold text-xs">${depPct}%</strong>
               </div>
@@ -2153,7 +2206,7 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-[#687890] text-xs">
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
-              <strong class="text-white text-xs block">現金總資產：$${Math.round(cashAssetTotal).toLocaleString()}</strong>
+              <strong class="text-white text-xs block">現金總資產 (含預備金)：$${Math.round(cashAssetTotal).toLocaleString()}</strong>
             </div>
             
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
@@ -2169,9 +2222,9 @@
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-[#4D5A6E] inline-block"></span>
-              <span class="font-bold text-[#2E2C2B]">銀行定存總額</span>
+              <span class="font-bold text-[#2E2C2B]">銀行定存/預備資金總額</span>
             </div>
-            <strong class="text-[#4D5A6E] text-sm font-bold">$${depositTotal.toLocaleString()}</strong>
+            <strong class="text-[#4D5A6E] text-sm font-bold">$${(depositTotal + annualFundTotal).toLocaleString()}</strong>
           </div>
 
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
@@ -2751,7 +2804,7 @@
               <span class="truncate min-w-0 pr-2">- ${item.title}</span>
               <div class="flex items-center gap-1.5 shrink-0">
                 <span class="text-[#F2E5C9] font-bold">冠合 $${item.guanheAmt.toLocaleString()}</span>
-                <button onclick="editAAItem(${idx})" class="editable-only text-[#DDD7D4] hover:text-white bg-[#524B4B] px-1.5 py-0.5 rounded text-[10px]">修改</button>
+                <button onclick="editAAItem(${idx})" class="editable-only text-[#DDD7D4] hover:text-white bg-[#522B2B] px-1.5 py-0.5 rounded text-[10px]">修改</button>
                 <button onclick="deleteAAItem(${idx})" class="editable-only text-[#E8C2C3] hover:text-white bg-[#635A5A] px-1.5 py-0.5 rounded text-[10px]">刪除</button>
               </div>
             </div>
@@ -2777,52 +2830,70 @@
       navigator.clipboard.writeText(text).then(() => alert('已複製請款文字！'));
     }
 
-    /* --- 未來開銷與定存覆蓋率（動態選單/行內新增/編輯刪除/自動下一年度） --- */
-    function initAnnualYearOptions() {
-      const select = document.getElementById('annual-year-select');
-      if (!select) return;
-
-      const currentSelected = select.value;
-      const currentYear = new Date().getFullYear();
-      let years = [currentYear, currentYear + 1, currentYear + 2, currentYear + 3, currentYear + 4, currentYear + 5];
-
-      Object.keys(annualExpenses).forEach(y => {
-        const numY = Number(y);
-        if (!years.includes(numY) && !isNaN(numY)) {
-          years.push(numY);
-        }
-      });
-
-      years.sort((a, b) => a - b);
-
-      select.innerHTML = years.map(y => `<option value="${y}">${y} 年</option>`).join('');
-      if (currentSelected && years.includes(Number(currentSelected))) {
-        select.value = currentSelected;
-      } else {
-        select.value = currentYear + 1; // 預設帶入明年度
-      }
+    /* --- 預備資金與雙年度開銷邏輯 --- */
+    function toggleFundDueDate() {
+      const type = document.getElementById('modal-fund-type').value;
+      const box = document.getElementById('fund-duedate-box');
+      if (type === '定存') box.classList.remove('hidden');
+      else box.classList.add('hidden');
     }
 
-// 允許手動校正/設定「已準備定存金額」
-    let customAnnualSavedAmount = {};
+    function openAnnualFundModal() {
+      const yearSelect = document.getElementById('modal-fund-year');
+      const currentYear = new Date().getFullYear();
+      yearSelect.innerHTML = `
+        <option value="${currentYear + 1}">${currentYear + 1} 年</option>
+        <option value="${currentYear + 2}">${currentYear + 2} 年</option>
+        <option value="${currentYear + 3}">${currentYear + 3} 年</option>
+      `;
 
-    function setCustomAnnualSavedAmount(year) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const currentVal = customAnnualSavedAmount[year] !== undefined 
-        ? customAnnualSavedAmount[year] 
-        : fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
-      
-      const input = prompt(`請輸入 ${year} 年度「已準備定存 / 預備金」總額 ($)：`, currentVal);
-      if (input !== null && !isNaN(parseCurrencyNumber(input))) {
-        customAnnualSavedAmount[year] = parseCurrencyNumber(input);
+      const bankSelect = document.getElementById('modal-fund-bank');
+      bankSelect.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
+
+      document.getElementById('modal-fund-amount').value = '';
+      document.getElementById('modal-fund-duedate').value = '';
+      document.getElementById('modal-fund-type').value = '活存';
+      toggleFundDueDate();
+
+      document.getElementById('annual-fund-modal').classList.remove('hidden');
+    }
+
+    function closeAnnualFundModal() {
+      document.getElementById('annual-fund-modal').classList.add('hidden');
+    }
+
+    function saveAnnualFundModal() {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      const year = document.getElementById('modal-fund-year').value;
+      const bank = document.getElementById('modal-fund-bank').value;
+      const type = document.getElementById('modal-fund-type').value;
+      const amount = parseCurrencyNumber(document.getElementById('modal-fund-amount').value);
+      const dueDate = document.getElementById('modal-fund-duedate').value;
+
+      if (amount <= 0) return alert('請輸入金額');
+      if (type === '定存' && !dueDate) return alert('定存請選擇到期日');
+
+      annualFundList.push({ id: Date.now(), year, bank, type, amount, dueDate });
+      closeAnnualFundModal();
+      saveAllSettingsLocalAndCloud();
+      renderAnnualCoverage();
+      renderAssets(currentAssetMember);
+    }
+
+    function deleteAnnualFund(id) {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (confirm('確定要刪除這筆預備資金嗎？')) {
+        annualFundList = annualFundList.filter(f => f.id !== id);
         saveAllSettingsLocalAndCloud();
         renderAnnualCoverage();
+        renderAssets(currentAssetMember);
       }
     }
 
     function saveAnnualExpenseInline() {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const year = document.getElementById('annual-year-select')?.value || String(new Date().getFullYear() + 1);
+      const yearSelect = document.getElementById('annual-year-select');
+      const year = yearSelect?.value || String(new Date().getFullYear() + 1);
       const monthSelect = document.getElementById('annual-input-month');
       const month = monthSelect ? monthSelect.value : '1月';
       const nameEl = document.getElementById('annual-input-name');
@@ -2839,11 +2910,8 @@
       nameEl.value = '';
       amountEl.value = '';
 
-      // 自動初始化並連結下一個年度選單
       const nextYear = String(Number(year) + 1);
-      if (!annualExpenses[nextYear]) {
-        annualExpenses[nextYear] = [];
-      }
+      if (!annualExpenses[nextYear]) annualExpenses[nextYear] = [];
 
       saveAllSettingsLocalAndCloud();
       initAnnualYearOptions();
@@ -2881,13 +2949,82 @@
       }
     }
 
+    function initAnnualYearOptions() {
+      const select = document.getElementById('annual-year-select');
+      if (!select) return;
+
+      const currentSelected = select.value;
+      const currentYear = new Date().getFullYear();
+      let years = [currentYear + 1, currentYear + 2, currentYear + 3];
+
+      Object.keys(annualExpenses).forEach(y => {
+        const numY = Number(y);
+        if (!years.includes(numY) && !isNaN(numY)) years.push(numY);
+      });
+
+      years.sort((a, b) => a - b);
+      select.innerHTML = years.map(y => `<option value="${y}">${y} 年度起 (雙年度檢視)</option>`).join('');
+
+      if (currentSelected && years.includes(Number(currentSelected))) {
+        select.value = currentSelected;
+      } else {
+        select.value = currentYear + 1;
+      }
+    }
+
     function renderAnnualCoverage() {
       initAnnualYearOptions();
       const select = document.getElementById('annual-year-select');
-      const year = select?.value || String(new Date().getFullYear() + 1);
-      const items = annualExpenses[year] || [];
+      const baseYear = Number(select?.value || (new Date().getFullYear() + 1));
+      const year1 = String(baseYear);
+      const year2 = String(baseYear + 1);
 
-      // 排序邏輯：1. 月份 (1月->12月)  2. 金額 (大->小)
+      const dualContainer = document.getElementById('annual-coverage-dual-cards');
+      if (dualContainer) {
+        dualContainer.innerHTML = [year1, year2].map(year => {
+          const items = annualExpenses[year] || [];
+          const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
+
+          const userFunds = annualFundList.filter(f => f.year === year);
+          const userFundTotal = userFunds.reduce((sum, f) => sum + f.amount, 0);
+          const autoSavedAmount = fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
+          const savedAmount = userFundTotal + autoSavedAmount;
+
+          const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
+          const diff = totalExpense - savedAmount;
+
+          return `
+            <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl space-y-2">
+              <div class="flex justify-between items-center font-bold">
+                <span class="text-[#2E2C2B] text-xs">${year}年度開銷總預估：$${totalExpense.toLocaleString()}</span>
+                <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'} text-xs">達成率 ${pct}%</span>
+              </div>
+              <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
+                <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
+              </div>
+              <div class="flex justify-between text-[11px] text-[#635D5A]">
+                <span>已準備資金：$${savedAmount.toLocaleString()}</span>
+                <span>${totalExpense === 0 ? '尚無開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
+              </div>
+              ${userFunds.length > 0 ? `
+                <div class="pt-1.5 border-t border-dashed border-[#DCD6D3] space-y-1 text-[10px]">
+                  ${userFunds.map(f => `
+                    <div class="flex justify-between items-center text-[#4D5A6E]">
+                      <span>- ${f.bank} (${f.type}${f.dueDate ? ' ' + f.dueDate + '到期' : ''})</span>
+                      <div class="space-x-1">
+                        <strong class="font-bold">$${f.amount.toLocaleString()}</strong>
+                        <button onclick="deleteAnnualFund(${f.id})" class="editable-only text-[#784D4E] font-bold">刪</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+      }
+
+      const items = annualExpenses[year1] || [];
       items.sort((a, b) => {
         const numA = parseInt(String(a.month || '0').replace(/[^\d]/g, ''), 10) || 99;
         const numB = parseInt(String(b.month || '0').replace(/[^\d]/g, ''), 10) || 99;
@@ -2895,48 +3032,19 @@
         return b.amount - a.amount;
       });
 
-      const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
-
-      // 已準備定存：優先採用自訂金額，未設定時自動抓取定存庫
-      const autoSavedAmount = fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
-      const savedAmount = customAnnualSavedAmount[year] !== undefined ? customAnnualSavedAmount[year] : autoSavedAmount;
-
-      const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
-      const diff = totalExpense - savedAmount;
-
-      const coverageBox = document.getElementById('annual-coverage-box');
-      if (coverageBox) {
-        coverageBox.innerHTML = `
-          <div class="flex justify-between items-center font-bold">
-            <span class="text-[#2E2C2B]">${year}年度開銷總預估：$${totalExpense.toLocaleString()}</span>
-            <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'}">達成率 ${pct}%</span>
-          </div>
-          <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
-            <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
-          </div>
-          <div class="flex justify-between text-[11px] text-[#635D5A] items-center">
-            <span>
-              已準備定存：$${savedAmount.toLocaleString()} 
-              <button onclick="setCustomAnnualSavedAmount('${year}')" class="editable-only ml-1 text-[10px] text-[#4D5A6E] underline">校正金額</button>
-            </span>
-            <span>${totalExpense === 0 ? '尚未新增開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
-          </div>
-        `;
-      }
-
       const listContainer = document.getElementById('annual-items-list');
       if (listContainer) {
         listContainer.innerHTML = items.length > 0 ? items.map((i, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3] text-xs gap-2">
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="px-1.5 py-0.5 bg-[#F7F4F3] border border-[#DCD6D3] text-[#784D4E] font-bold rounded text-[10px] shrink-0">${i.month || '1月'}</span>
+          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2 pt-1 text-xs gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-[#784D4E] font-bold text-xs shrink-0">- ${i.month || '1月'}</span>
               <span class="font-bold text-[#2E2C2B] truncate">${i.name}</span>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <strong class="text-[#4D5A6E] font-bold">$${i.amount.toLocaleString()}</strong>
+              <strong class="text-[#2E2C2B] font-extrabold text-xs">$${i.amount.toLocaleString()}</strong>
               <div class="editable-only space-x-1">
-                <button onclick="editAnnualExpense('${year}', ${idx})" class="text-[10px] bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] px-2 py-0.5 rounded font-bold">編輯</button>
-                <button onclick="deleteAnnualExpense('${year}', ${idx})" class="text-[10px] bg-[#F7EDED] text-[#784D4E] px-2 py-0.5 rounded font-bold">刪除</button>
+                <button onclick="editAnnualExpense('${year1}', ${idx})" class="text-[10px] text-[#4D5A6E] font-bold hover:underline">修改</button>
+                <button onclick="deleteAnnualExpense('${year1}', ${idx})" class="text-[10px] text-[#784D4E] font-bold hover:underline">刪除</button>
               </div>
             </div>
           </div>
@@ -2982,7 +3090,7 @@
         userCards, budgetPlans, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
-        laborDataByMember, annualExpenses, userAccounts, lastExportDate,
+        laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
         exportDate: lastExportDate
       };
       saveAllSettingsLocalAndCloud();
