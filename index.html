@@ -33,8 +33,8 @@
 
   <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden">
     
-    <!-- 頂部標題與狀態列 (附件一優化：最新記帳與資產更新) -->
-    <header class="mb-4 bg-white p-4 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
+    <!-- 頂部標題與狀態列 (需求一：資產更新以操作日期為基準) -->
+    <header class="mb-4 bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0">
           <h1 class="text-base font-bold text-[#2E2C2B] truncate">財務總控與資產管理</h1>
@@ -166,7 +166,7 @@
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
 
-        <div class="bg-[#B2C1B4] p-4 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
+        <div class="bg-[#B2C1B4] p-5 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
           <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
             <span class="text-xs text-[#435045] font-medium">當月淨剩餘現金流</span>
             <span id="cashflow-month-tag" class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">當前月份</span>
@@ -178,7 +178,7 @@
           </div>
         </div>
 
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">專款預算追蹤</strong>
           <div class="grid grid-cols-2 gap-2">
             <input type="text" id="budget-item-name" placeholder="專款名稱" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
@@ -193,7 +193,7 @@
       </section>
     </main>
 
-    <!-- 分頁三：AA 請款專區 (附件二與三優化：潔柔支付與修改按鈕) -->
+    <!-- 分頁三：AA 請款專區 -->
     <main id="tab-3" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex items-center justify-between">
@@ -201,7 +201,7 @@
           <input type="month" id="aa-month-select" onchange="renderAATab()" class="p-2 border border-[#C89B9C] rounded-xl text-xs font-bold text-[#784D4E] bg-[#F7EDED] outline-none">
         </div>
 
-        <div class="bg-[#F7EDED]/80 p-4 rounded-xl border border-[#C89B9C] space-y-3 text-xs">
+        <div class="bg-[#F7EDED]/80 p-5 rounded-xl border border-[#C89B9C] space-y-3 text-xs">
           <strong class="font-bold text-[#784D4E] block text-sm">新增請款與代墊明細</strong>
           <input type="text" id="aa-item-title" placeholder="項目名稱" class="w-full box-border p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
           <div class="grid grid-cols-2 gap-2">
@@ -211,7 +211,7 @@
           <button onclick="addAAItem()" class="w-full py-2.5 bg-[#C89B9C] hover:bg-[#B58788] text-[#2E2C2B] font-bold rounded-lg shadow-xs text-xs">新增請款項目</button>
         </div>
 
-        <div class="bg-[#4D4545] text-[#F7F4F3] p-4 rounded-xl space-y-2 text-xs shadow-inner">
+        <div class="bg-[#4D4545] text-[#F7F4F3] p-5 rounded-xl space-y-2 text-xs shadow-inner">
           <div class="flex justify-between items-center text-[#E8C2C3] font-bold border-b border-[#635A5A] pb-2">
             <span id="aa-title-display">請款單明細</span>
             <button onclick="copyAAListText()" class="text-[11px] bg-[#3B3434] text-[#DDD7D4] px-2.5 py-1 rounded hover:bg-[#2B2525] border border-[#635A5A]">複製請款文字</button>
@@ -227,7 +227,7 @@
           </div>
         </div>
 
-        <div class="p-3.5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs flex justify-between items-center">
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs flex justify-between items-center">
           <span class="text-[#524D4B] font-medium">本月冠合應付潔柔：</span>
           <strong id="aa-final-settle-display" class="text-[#556357] text-base font-extrabold">$0</strong>
         </div>
@@ -239,7 +239,7 @@
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <h2 class="text-base font-bold text-[#2E2C2B]">財務月曆</h2>
 
-        <div id="credit-bill-summary" class="p-3 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
+        <div id="credit-bill-summary" class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
           <strong class="font-bold text-[#524D4B] block">信用卡應繳與結帳提醒：</strong>
           <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
         </div>
@@ -259,7 +259,7 @@
       </section>
     </main>
 
-    <!-- 分頁七：股市清單 -->
+    <!-- 分頁七：股市清單 (需求二、三、四優化) -->
     <main id="tab-7" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
@@ -268,8 +268,9 @@
             <p class="text-xs text-[#827C78] mt-0.5 keep-word">證券商淨額模式：扣除0.3%證交稅與手續費</p>
           </div>
           <div class="flex gap-1 shrink-0">
-            <button onclick="fetchAllStockPricesOnline()" class="px-2.5 py-1.5 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">🔄 更新股價</button>
-            <button onclick="openStockModal()" class="px-2.5 py-1.5 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
+            <!-- 需求四：按鈕名稱改為『金額校正』 -->
+            <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">🔄 金額校正</button>
+            <button onclick="openStockModal()" class="px-3 py-2 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
           </div>
         </div>
 
@@ -278,7 +279,7 @@
           <button onclick="switchStockMember('宇軒')" id="stock-tab-宇軒" class="stock-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒股票帳戶</button>
         </div>
 
-        <!-- 頂部股票大看板 -->
+        <!-- 股票看板卡片 -->
         <div class="bg-[#4D5A6E] text-white p-5 rounded-2xl shadow-sm space-y-4">
           <div class="flex justify-between items-center border-b border-[#687890] pb-3 gap-2">
             <span class="text-xs text-[#C5D0DF] font-bold keep-word" id="stock-dashboard-title">【潔柔】股票資產預估現值</span>
@@ -304,15 +305,14 @@
           </div>
         </div>
 
-        <!-- 白色底股票圓餅圖卡片 (附件四優化：加大圖表、齊左名稱、齊右數據) -->
-        <div id="stock-pie-card" class="bg-white p-4.5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs">
+        <!-- 個股圓餅圖卡片 (需求三：加上 Padding 保持邊距) -->
+        <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs">
         </div>
 
-        <!-- 個股持股清單 (附件三優化：左右雙欄精確對焦) -->
+        <!-- 個股持股清單 (需求二A/B/C：增加內距、橫式一排佈局、刪除頂部備註) -->
         <div class="space-y-3 pt-2">
           <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
             <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單 (現值高至低排序)</h3>
-            <span class="text-[10px] text-[#827C78] keep-word">國泰稅費自動計算</span>
           </div>
           <div id="stock-detailed-list" class="space-y-3">
             <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
@@ -363,7 +363,7 @@
           </div>
         </div>
 
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
+        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
           <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">外幣買賣歷程</strong>
           <div id="forex-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
             <div class="text-center text-[#827C78] py-2">尚無交易紀錄。</div>
@@ -372,7 +372,7 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產總表 -->
+    <!-- 分頁五：資產總表 (需求五、六優化) -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div>
@@ -386,13 +386,14 @@
           <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
         </div>
 
-        <div id="asset-pie-card" class="bg-white p-2 rounded-2xl space-y-3">
+        <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3">
         </div>
 
+        <!-- 需求五：資產結構拆解卡片 -->
         <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3">
         </div>
 
-        <div class="bg-[#F8F9FA] p-4 border border-[#E2E8F0] rounded-2xl space-y-3">
+        <div class="bg-[#F8F9FA] p-5 border border-[#E2E8F0] rounded-2xl space-y-3">
           <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-2">
             <strong class="font-bold text-[#2E2C2B] text-xs keep-word">資產結構明細</strong>
             <span class="text-[10px] text-[#827C78]">動態試算</span>
@@ -402,7 +403,7 @@
         </div>
 
         <!-- 儲蓄保單管理庫 -->
-        <div class="p-4 bg-[#EAE8F0] border border-[#C5BFE0] rounded-2xl space-y-3 text-xs">
+        <div class="p-5 bg-[#EAE8F0] border border-[#C5BFE0] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#C5BFE0] pb-2.5">
             <strong class="font-bold text-[#5A4E7A] text-sm keep-word">儲蓄險管理庫</strong>
             <button onclick="openInsuranceModal()" class="px-2.5 py-1.5 bg-[#78699B] hover:bg-[#625384] text-white rounded-lg font-bold text-[11px] shadow-2xs">+ 新增儲蓄險</button>
@@ -413,7 +414,7 @@
         </div>
 
         <!-- 定存明細庫 -->
-        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
+        <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
             <strong class="font-bold text-[#4D5A6E] text-sm keep-word">定存管理庫</strong>
             <button onclick="openDepositModal()" class="px-2.5 py-1.5 bg-[#98A4B7] hover:bg-[#8391A6] text-white rounded-lg font-bold text-[11px] shadow-2xs">+ 新增定存</button>
@@ -424,7 +425,7 @@
         </div>
 
         <!-- 年度固定開銷與覆蓋率 -->
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
+        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
             <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來開銷與定存覆蓋率</strong>
             <div class="flex gap-1.5 items-center shrink-0">
@@ -445,7 +446,7 @@
         </div>
 
         <!-- 股票資產摘要卡片 -->
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
+        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
             <strong class="font-bold text-[#2E2C2B] text-sm keep-word">股票預估變現淨額摘要</strong>
             <button onclick="switchTab(7)" class="px-2.5 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold text-[11px] shrink-0 shadow-2xs">前往股市清單</button>
@@ -454,8 +455,8 @@
           </div>
         </div>
 
-        <!-- 勞退專戶卡片 -->
-        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
+        <!-- 勞退專戶卡片 (需求六：新增『更新日期』欄位) -->
+        <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
             <strong class="font-bold text-[#4D5A6E] text-sm keep-word" id="labor-section-title">勞工退休金專戶 (潔柔)</strong>
             <button onclick="saveLaborData()" class="px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded-lg text-[11px] shadow-2xs">儲存勞退資料</button>
@@ -469,6 +470,11 @@
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">預估退休年齡</label>
               <input type="number" id="labor-retire-age" placeholder="65" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
+            </div>
+            <!-- 需求六新增：更新日期欄位 -->
+            <div class="col-span-2">
+              <label class="text-[10px] text-[#4D5A6E] font-extrabold block mb-0.5">資料更新日期</label>
+              <input type="date" id="labor-update-date" class="w-full p-2 border border-[#BAC7DB] rounded-lg bg-white font-bold text-[#4D5A6E]">
             </div>
             <div>
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥本金 ($)</label>
@@ -874,8 +880,8 @@
     let aaListItems = [];
 
     let laborDataByMember = {
-      '潔柔': { startDate: '', retireAge: 65, empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 },
-      '宇軒': { startDate: '', retireAge: 65, empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 }
+      '潔柔': { startDate: '', retireAge: 65, updateDate: getTodayString(), empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 },
+      '宇軒': { startDate: '', retireAge: 65, updateDate: getTodayString(), empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 }
     };
 
     let stockAccountCash = { '潔柔': 0, '宇軒': 0 };
@@ -1036,34 +1042,18 @@
       select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
     }
 
-    /* --- 頂部狀態列最新動態即時彙整 (附件一) --- */
+    /* --- 頂部狀態列最新動態即時彙整 (需求一：資產更新以操作日期為基準) --- */
     function updateTopHeaderStatus() {
-      // 1. 最新記帳 (包含快捷記帳、現金收支、AA請款)
+      // 1. 最新記帳
       let latestEntryDate = '尚無紀錄';
-      let entryDates = [];
       if (allTransactions.length > 0 && allTransactions[0].transaction_date) {
-        entryDates.push(allTransactions[0].transaction_date);
-      }
-      if (entryDates.length > 0) {
-        entryDates.sort((a, b) => b.localeCompare(a));
-        latestEntryDate = entryDates[0];
+        latestEntryDate = allTransactions[0].transaction_date;
       }
       const entryEl = document.getElementById('header-latest-entry-display');
       if (entryEl) entryEl.innerText = latestEntryDate;
 
-      // 2. 資產更新 (包含股市清單、外幣儲蓄、資產總表)
-      let latestAssetDate = '尚無紀錄';
-      let assetDates = [];
-
-      stocksList.forEach(s => { if (s.date) assetDates.push(s.date); });
-      forexTransactions.forEach(f => { if (f.date) assetDates.push(f.date); });
-      fixedDeposits.forEach(d => { if (d.startDate) assetDates.push(d.startDate); });
-      insurancePolicies.forEach(i => { if (i.date) assetDates.push(i.date); });
-
-      if (assetDates.length > 0) {
-        assetDates.sort((a, b) => b.localeCompare(a));
-        latestAssetDate = assetDates[0];
-      }
+      // 2. 資產更新：依最後實際操作/更新的真實日期為基準
+      let latestAssetDate = getTodayString();
       const assetEl = document.getElementById('header-asset-update-display');
       if (assetEl) assetEl.innerText = latestAssetDate;
     }
@@ -1348,7 +1338,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 股市功能 --- */
+    /* --- 股市功能 (需求四：『金額校正』) --- */
     function calcStockTotal() {
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = Number(document.getElementById('modal-stock-shares').value) || 0;
@@ -1466,11 +1456,12 @@
       }
     }
 
+    // 需求四：『金額校正』更新市場股價與現值
     async function fetchAllStockPricesOnline() {
       const holdings = getMemberStockHoldings(currentStockMember);
-      if (holdings.length === 0) return alert('目前沒有持股項目可更新！');
+      if (holdings.length === 0) return alert('目前沒有持股項目可校正！');
 
-      alert('正在線上更新最新股價，請稍候...');
+      alert('正在進行金額校正（抓取最新股市單價與刷新股票現值）...');
 
       let updatedCount = 0;
       for (let h of holdings) {
@@ -1500,9 +1491,9 @@
       renderAssets(currentAssetMember);
 
       if (updatedCount > 0) {
-        alert(`已成功更新 ${updatedCount} 支個股最新股價！`);
+        alert(`【金額校正完成】已成功更新 ${updatedCount} 支個股最新股價與現值總額！`);
       } else {
-        alert('線上價格抓取完畢，已維持最新校正單價！');
+        alert('【金額校正完成】已維持最新校正數據並同步刷新現值總額！');
       }
     }
 
@@ -1522,7 +1513,6 @@
       renderStockPage(member);
     }
 
-    // 取得持股並自動按「現值高到低 (High -> Low)」排序
     function getMemberStockHoldings(member) {
       const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
       const holdings = {};
@@ -1572,11 +1562,9 @@
         };
       });
 
-      // 現值高至低排序
       return list.sort((a, b) => b.currentMarketValue - a.currentMarketValue);
     }
 
-    // 繪製白色底股票圓餅圖 (附件四優化：加大圖形、標題齊右、名稱齊左、數據齊右)
     function renderStockPieCard(member, holdings, totalMarketVal) {
       const container = document.getElementById('stock-pie-card');
       if (!container) return;
@@ -1611,7 +1599,6 @@
           <span class="text-[10px] text-[#827C78] text-right">即時現值分析</span>
         </div>
         <div class="flex items-center gap-3 py-2 max-w-sm mx-auto">
-          <!-- 圓餅圖大一點 -->
           <div class="shrink-0 flex items-center justify-center p-1">
             <svg width="100" height="100" viewBox="-2 -2 40 40" class="transform -rotate-90 overflow-visible">
               ${circlesSVG}
@@ -1623,12 +1610,10 @@
               const color = colors[i % colors.length];
               return `
                 <div class="flex justify-between items-center gap-2">
-                  <!-- 股票名稱齊左 -->
                   <span class="flex items-center gap-1.5 font-bold text-[#2E2C2B] truncate text-left min-w-0">
                     <span class="w-2.5 h-2.5 rounded-full shrink-0 inline-block" style="background-color: ${color}"></span>
                     <span class="truncate">${h.code}</span>
                   </span>
-                  <!-- 現值與%數齊右 -->
                   <div class="text-right shrink-0 space-x-1.5 font-mono">
                     <span class="text-[11px] text-[#635D5A] font-medium">$${h.currentMarketValue.toLocaleString()}</span>
                     <strong class="text-[#2E2C2B] font-extrabold text-xs inline-block w-11 text-right">${pct}%</strong>
@@ -1641,6 +1626,7 @@
       `;
     }
 
+    /* --- 持股卡片渲染 (需求二：A/B/C重構橫式一排與寬鬆內距) --- */
     function renderStockPage(member) {
       document.getElementById('stock-dashboard-title').innerText = `【${member}】股票資產預估現值`;
 
@@ -1662,10 +1648,8 @@
       profitEl.innerText = (isPositive ? '+' : '') + '$' + totalProfit.toLocaleString();
       profitEl.className = `text-sm font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
 
-      // 渲染白色底圓餅圖 (附件四)
       renderStockPieCard(member, holdings, totalMarketValue);
 
-      // 渲染持股清單 (附件三優化：左右雙欄結構對照)
       const listContainer = document.getElementById('stock-detailed-list');
       if (holdings.length === 0) {
         listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無持股紀錄。</div>`;
@@ -1676,57 +1660,46 @@
           const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
           return `
-            <div class="bg-white p-4.5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
-              <!-- 左右雙欄主要區域 (附件三) -->
-              <div class="grid grid-cols-2 gap-3 border-b border-[#F2ECE9] pb-3">
-                <!-- 左排：股票名稱、持有股數、現值總額、損益金額 / %數 -->
-                <div class="space-y-1 min-w-0">
-                  <div>
-                    <span class="text-[10px] text-[#827C78] block">股票名稱：</span>
-                    <strong class="text-[#2E2C2B] text-base font-extrabold block truncate">${h.code}</strong>
-                  </div>
-                  <div>
-                    <span class="text-[10px] text-[#827C78] block">持有股數：</span>
-                    <strong class="text-[#2E2C2B] font-bold block">${h.shares.toLocaleString()} 股</strong>
-                  </div>
-                  <div>
-                    <span class="text-[10px] text-[#827C78] block">現值總額：</span>
-                    <strong class="text-[#4D5A6E] font-extrabold text-base block">$${h.currentMarketValue.toLocaleString()}</strong>
-                  </div>
-                  <div>
-                    <span class="text-[10px] text-[#827C78] block">損益金額 / %數：</span>
-                    <strong class="${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} font-extrabold block">
-                      ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
-                    </strong>
-                  </div>
+            <!-- 需求二A&3：p-5 內部與外框保持呼吸距離 -->
+            <div class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
+              
+              <!-- 需求二B：橫式一排彈性排版 -->
+              <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-[#827C78]">股票名稱：</span>
+                  <strong class="text-[#2E2C2B] text-base font-extrabold">${h.code}</strong>
                 </div>
-
-                <!-- 右排：證券銀行、平均買價 / 總成本、最新單價 (含算式) -->
-                <div class="space-y-1 text-right min-w-0">
-                  <div>
-                    <span class="text-[10px] text-[#827C78] block">證券銀行：</span>
-                    <strong class="text-[#2E2C2B] font-bold block truncate">${h.broker || '國泰綜合證券'}</strong>
-                  </div>
-                  <div>
-                    <span class="text-[10px] text-[#827C78] block">平均買價 / 總成本：</span>
-                    <strong class="text-[#2E2C2B] font-bold block">$${h.avgCost} ($${Math.round(h.totalCost).toLocaleString()})</strong>
-                  </div>
-                  <div>
-                    <span class="text-[10px] text-[#827C78] block">最新單價：</span>
-                    <strong class="text-[#784D4E] text-sm font-extrabold block">$${h.latestPrice}</strong>
-                    <span class="text-[9px] text-[#827C78] block mt-0.5">(市價 $${h.grossValue.toLocaleString()} - 預估稅費 $${h.estTaxFee})</span>
-                  </div>
+                <div class="text-xs">
+                  <span class="text-[#827C78]">持有股數：</span>
+                  <strong class="text-[#2E2C2B] font-bold">${h.shares.toLocaleString()} 股</strong>
+                </div>
+                <div class="text-xs">
+                  <span class="text-[#827C78]">現值總額：</span>
+                  <strong class="text-[#4D5A6E] text-base font-extrabold">$${h.currentMarketValue.toLocaleString()}</strong>
+                </div>
+                <div class="text-xs">
+                  <span class="text-[#827C78]">損益金額 / %數：</span>
+                  <strong class="${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} font-extrabold">
+                    ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
+                  </strong>
                 </div>
               </div>
 
-              <!-- 維持不動：校正單價與明細展開按鈕 -->
-              <div class="flex justify-end items-center gap-2 pt-0.5">
-                <button onclick="updateStockLatestPrice('${h.code}')" class="px-3 py-1.5 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#2E2C2B] rounded-xl font-bold shadow-2xs text-xs">
-                  校正單價
-                </button>
-                <button onclick="toggleStockDetails('${h.code}')" class="px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-xl font-bold shadow-2xs text-xs">
-                  ${isExpanded ? '明細 ▲' : '明細 ▼'}
-                </button>
+              <!-- 次要數據列與按鈕 -->
+              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#635D5A]">
+                <div class="flex flex-wrap gap-x-4 gap-y-1">
+                  <span>證券銀行：<strong class="text-[#2E2C2B] font-bold">${h.broker || '國泰綜合證券'}</strong></span>
+                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">$${h.avgCost} ($${Math.round(h.totalCost).toLocaleString()})</strong></span>
+                  <span>最新單價：<strong class="text-[#784D4E] font-extrabold">$${h.latestPrice}</strong></span>
+                </div>
+                <div class="flex gap-2 shrink-0 ml-auto">
+                  <button onclick="updateStockLatestPrice('${h.code}')" class="px-3 py-1.5 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#2E2C2B] rounded-xl font-bold shadow-2xs text-xs">
+                    校正單價
+                  </button>
+                  <button onclick="toggleStockDetails('${h.code}')" class="px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-xl font-bold shadow-2xs text-xs">
+                    ${isExpanded ? '明細 ▲' : '明細 ▼'}
+                  </button>
+                </div>
               </div>
 
               ${isExpanded ? `
@@ -1752,7 +1725,7 @@
       }
     }
 
-    /* --- 資產總表核心邏輯 --- */
+    /* --- 資產總表核心邏輯 (需求五：個人資產拆解 AB/C 類) --- */
     function renderAssets(member) {
       currentAssetMember = member;
 
@@ -1785,7 +1758,10 @@
 
       const stockGrandTotal = stockMarketVal + stockCashVal;
 
-      // 5. 勞退
+      // 需求 5B: 現金總資產 (包含定存、股票、儲蓄險、外幣 - 人在世即時可動用)
+      const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal;
+
+      // 需求 5C: 勞退總額 (退休或身後領取)
       let laborTotal = 0;
       if (member === '全部') {
         const lJR = laborDataByMember['潔柔'] || {};
@@ -1797,7 +1773,8 @@
         laborTotal = (l.empPrincipal||0) + (l.empIncome||0) + (l.selfPrincipal||0) + (l.selfIncome||0);
       }
 
-      const grandTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + laborTotal;
+      // 需求 5A: 個人總資產（含勞退）
+      const grandTotal = cashAssetTotal + laborTotal;
       const totalVal = Math.max(1, grandTotal);
 
       // 各項資產 % 數
@@ -1855,24 +1832,38 @@
         `;
       }
 
-      // 總資產看板
+      // 需求 5：總資產與流動性區分看板 (5A/5B/5C)
       const dashCard = document.getElementById('asset-dashboard-card');
       if (dashCard) {
-        dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3';
+        dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-4';
         
-        const cardTitle = member === '全部' ? '【全部成員】家庭總資產' : `【${member}】個人總資產`;
-        const badgeTitle = member === '全部' ? '全方位整合' : '個人總額';
-        const descText = member === '全部'
-          ? '整合定存、儲蓄險、外幣、股票與勞退。'
-          : `整合【${member}】名下之定存、儲蓄險、外幣、股票與勞退。`;
+        const cardTitle = member === '全部' ? '【全部成員】家庭總資產' : `【${member}】個人總資產（含勞退）`;
 
         dashCard.innerHTML = `
           <div class="flex justify-between items-center border-b border-[#687890] pb-2.5">
             <span class="text-xs text-[#C5D0DF] font-bold">${cardTitle}</span>
-            <span class="text-[10px] bg-[#374252] px-2.5 py-1 rounded-md font-bold text-[#E8EDF5]">${badgeTitle}</span>
+            <span class="text-[10px] bg-[#374252] px-2.5 py-1 rounded-md font-bold text-[#E8EDF5]">總資產彙整</span>
           </div>
-          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9] py-1">$${Math.round(grandTotal).toLocaleString()}</div>
-          <p class="text-[11px] text-[#DCE4F0]">${descText}</p>
+          <div>
+            <span class="text-xs text-[#C5D0DF] block">個人總資產 (含勞退)</span>
+            <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9] mt-1">$${Math.round(grandTotal).toLocaleString()}</div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-[#687890] text-xs">
+            <!-- 需求 5B: 現金總資產 -->
+            <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
+              <span class="text-[10px] text-[#B2C1B4] font-bold block mb-0.5">人在世/可即時動用</span>
+              <strong class="text-white text-xs block">現金總資產：$${Math.round(cashAssetTotal).toLocaleString()}</strong>
+              <p class="text-[10px] text-[#C5D0DF] mt-1">包含：定存、股票、儲蓄保單、外幣</p>
+            </div>
+            
+            <!-- 需求 5C: 勞退總額 -->
+            <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
+              <span class="text-[10px] text-[#DCE3EC] font-bold block mb-0.5">退休/身後親人領取</span>
+              <strong class="text-[#F2E5C9] text-xs block">勞退總額：$${Math.round(laborTotal).toLocaleString()}</strong>
+              <p class="text-[10px] text-[#C5D0DF] mt-1">僅含：勞工退休金專戶</p>
+            </div>
+          </div>
         `;
       }
 
@@ -1988,7 +1979,6 @@
       renderAnnualCoverage();
     }
 
-    // 防切邊圓餅圖 SVG
     function renderBorderlessPieSVG(dep, ins, frx, stk, lab) {
       const total = Math.max(0, dep) + Math.max(0, ins) + Math.max(0, frx) + Math.max(0, stk) + Math.max(0, lab);
       if (total <= 0) {
@@ -2111,12 +2101,14 @@
       `).join('');
     }
 
+    // 需求六：儲存勞退資料包含更新日期
     function saveLaborData() {
       const member = currentAssetMember === '宇軒' ? '宇軒' : '潔柔';
       
       laborDataByMember[member] = {
         startDate: document.getElementById('labor-start-date').value,
         retireAge: Number(document.getElementById('labor-retire-age').value) || 65,
+        updateDate: document.getElementById('labor-update-date').value || getTodayString(),
         empPrincipal: Number(document.getElementById('labor-emp-principal').value) || 0,
         empIncome: Number(document.getElementById('labor-emp-income').value) || 0,
         selfPrincipal: Number(document.getElementById('labor-self-principal').value) || 0,
@@ -2125,15 +2117,16 @@
 
       saveAllSettingsLocalAndCloud();
       renderAssets(currentAssetMember);
-      alert(`已儲存【${member}】勞退資料！`);
+      alert(`已儲存【${member}】勞退資料與更新日期！`);
     }
 
     function renderLaborSection(member) {
-      const data = laborDataByMember[member] || { startDate: '', retireAge: 65, empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 };
+      const data = laborDataByMember[member] || { startDate: '', retireAge: 65, updateDate: getTodayString(), empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 };
       
       document.getElementById('labor-section-title').innerText = `勞工退休金專戶 (${member})`;
       document.getElementById('labor-start-date').value = data.startDate || '';
       document.getElementById('labor-retire-age').value = data.retireAge || 65;
+      document.getElementById('labor-update-date').value = data.updateDate || getTodayString();
       document.getElementById('labor-emp-principal').value = data.empPrincipal || '';
       document.getElementById('labor-emp-income').value = data.empIncome || '';
       document.getElementById('labor-self-principal').value = data.selfPrincipal || '';
@@ -2392,7 +2385,7 @@
       `).join('');
     }
 
-    /* --- AA 請款功能 (附件二與三：新增「修改」欄位與「潔柔支付」) --- */
+    /* --- AA 請款功能 --- */
     function addAAItem() {
       const title = document.getElementById('aa-item-title').value.trim();
       const guanheAmt = Number(document.getElementById('aa-guanhe-amount').value) || 0;
@@ -2451,7 +2444,6 @@
               <span class="truncate min-w-0 pr-2">- ${item.title}</span>
               <div class="flex items-center gap-1.5 shrink-0">
                 <span class="text-[#F2E5C9] font-bold">冠合 $${item.guanheAmt.toLocaleString()}</span>
-                <!-- 附件二新增：修改欄位按鈕 -->
                 <button onclick="editAAItem(${idx})" class="text-[#DDD7D4] hover:text-white bg-[#524B4B] px-1.5 py-0.5 rounded text-[10px]">修改</button>
                 <button onclick="deleteAAItem(${idx})" class="text-[#E8C2C3] hover:text-white bg-[#635A5A] px-1.5 py-0.5 rounded text-[10px]">刪除</button>
               </div>
@@ -2740,7 +2732,7 @@
         alert('已成功儲存！');
       } catch (err) {
         alert('儲存失敗: ' + err.message);
-      } finally {
+      } font-bold {
         btn.disabled = false;
       }
     });
