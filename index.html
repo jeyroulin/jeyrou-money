@@ -484,11 +484,17 @@
           <div id="annual-coverage-box" class="p-3 bg-white border border-[#DCD6D3] rounded-xl space-y-1.5">
           </div>
 
-          <!-- 直覺式開銷輸入欄 -->
-          <div class="editable-only grid grid-cols-5 gap-2 pt-1">
-            <input type="text" id="annual-input-name" placeholder="開銷名稱 (例: 車款尾款)" class="col-span-2 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none">
-            <input type="text" id="annual-input-amount" placeholder="金額 ($)" oninput="formatInputCurrency(this)" class="col-span-2 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
-            <button onclick="saveAnnualExpenseInline()" class="col-span-1 py-2 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg shadow-2xs">新增</button>
+          <!-- 直覺式開銷輸入欄（月份 + 項目 + 金額） -->
+          <div class="editable-only grid grid-cols-12 gap-1.5 pt-1">
+            <select id="annual-input-month" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold outline-none text-xs">
+              <option value="1月">1 月</option><option value="2月">2 月</option><option value="3月">3 月</option>
+              <option value="4月">4 月</option><option value="5月">5 月</option><option value="6月">6 月</option>
+              <option value="7月">7 月</option><option value="8月">8 月</option><option value="9月">9 月</option>
+              <option value="10月">10月</option><option value="11月">11月</option><option value="12月">12月</option>
+            </select>
+            <input type="text" id="annual-input-name" placeholder="項目 (例: 爸生日)" class="col-span-4 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
+            <input type="text" id="annual-input-amount" placeholder="金額 ($)" oninput="formatInputCurrency(this)" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-xs">
+            <button onclick="saveAnnualExpenseInline()" class="col-span-2 py-2 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg shadow-2xs text-xs">新增</button>
           </div>
 
           <div id="annual-items-list" class="space-y-1.5 pt-1 max-h-48 overflow-y-auto border-t border-[#DCD6D3]">
@@ -2800,16 +2806,17 @@
     function saveAnnualExpenseInline() {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
       const year = document.getElementById('annual-year-select')?.value || String(new Date().getFullYear() + 1);
+      const month = document.getElementById('annual-input-month')?.value || '1月';
       const nameEl = document.getElementById('annual-input-name');
       const amountEl = document.getElementById('annual-input-amount');
 
       const name = nameEl.value.trim();
       const amount = parseCurrencyNumber(amountEl.value);
 
-      if (!name || amount <= 0) return alert('請填寫完整的開銷名稱與金額');
+      if (!name || amount <= 0) return alert('請填寫完整的開銷項目與金額');
 
       if (!annualExpenses[year]) annualExpenses[year] = [];
-      annualExpenses[year].push({ id: Date.now(), name, amount });
+      annualExpenses[year].push({ id: Date.now(), month, name, amount });
 
       nameEl.value = '';
       amountEl.value = '';
@@ -2823,6 +2830,85 @@
       saveAllSettingsLocalAndCloud();
       initAnnualYearOptions();
       renderAnnualCoverage();
+    }
+
+    function editAnnualExpense(year, idx) {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
+      const item = annualExpenses[year]?.[idx];
+      if (!item) return;
+
+      const newMonth = prompt('請修改月份 (例: 11月)：', item.month || '1月');
+      if (newMonth === null) return;
+      const newName = prompt('請修改開銷項目名稱：', item.name);
+      if (newName === null) return;
+      const newAmountStr = prompt('請修改預估金額 ($)：', item.amount);
+      if (newAmountStr === null) return;
+
+      const newAmount = parseCurrencyNumber(newAmountStr);
+      if (newName.trim() && newAmount > 0) {
+        annualExpenses[year][idx].month = newMonth.trim();
+        annualExpenses[year][idx].name = newName.trim();
+        annualExpenses[year][idx].amount = newAmount;
+        saveAllSettingsLocalAndCloud();
+        renderAnnualCoverage();
+      }
+    }
+
+    function deleteAnnualExpense(year, idx) {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (confirm(`確定要刪除「${annualExpenses[year][idx].month || ''} ${annualExpenses[year][idx].name}」嗎？`)) {
+        annualExpenses[year].splice(idx, 1);
+        saveAllSettingsLocalAndCloud();
+        renderAnnualCoverage();
+      }
+    }
+
+    function renderAnnualCoverage() {
+      initAnnualYearOptions();
+      const select = document.getElementById('annual-year-select');
+      const year = select?.value || String(new Date().getFullYear() + 1);
+      const items = annualExpenses[year] || [];
+      const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
+
+      const savedAmount = fixedDeposits.filter(d => d.date && d.date.startsWith(year)).reduce((sum, d) => sum + d.amount, 0);
+      const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
+      const diff = totalExpense - savedAmount;
+
+      const coverageBox = document.getElementById('annual-coverage-box');
+      if (coverageBox) {
+        coverageBox.innerHTML = `
+          <div class="flex justify-between items-center font-bold">
+            <span class="text-[#2E2C2B]">${year}年度開銷總預估：$${totalExpense.toLocaleString()}</span>
+            <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'}">達成率 ${pct}%</span>
+          </div>
+          <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
+            <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-[#635D5A]">
+            <span>已準備定存：$${savedAmount.toLocaleString()}</span>
+            <span>${totalExpense === 0 ? '尚未新增開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
+          </div>
+        `;
+      }
+
+      const listContainer = document.getElementById('annual-items-list');
+      if (listContainer) {
+        listContainer.innerHTML = items.length > 0 ? items.map((i, idx) => `
+          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3] text-xs gap-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="px-1.5 py-0.5 bg-[#F7F4F3] border border-[#DCD6D3] text-[#784D4E] font-bold rounded text-[10px] shrink-0">${i.month || '未定'}</span>
+              <span class="font-bold text-[#2E2C2B] truncate">${i.name}</span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <strong class="text-[#4D5A6E] font-bold">$${i.amount.toLocaleString()}</strong>
+              <div class="editable-only space-x-1">
+                <button onclick="editAnnualExpense('${year}', ${idx})" class="text-[10px] bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] px-2 py-0.5 rounded font-bold">編輯</button>
+                <button onclick="deleteAnnualExpense('${year}', ${idx})" class="text-[10px] bg-[#F7EDED] text-[#784D4E] px-2 py-0.5 rounded font-bold">刪除</button>
+              </div>
+            </div>
+          </div>
+        `).join('') : '<div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>';
+      }
     }
 
     function editAnnualExpense(year, idx) {
