@@ -1413,44 +1413,63 @@
     }
 
     /* --- 核心試算 logic (現值總額 100% 精準對齊「股數 * 最新單價」) --- */
-    function getMemberStockHoldings(member) {
-      const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
-      const holdings = {};
+   function getMemberStockHoldings(member) {
+  const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
+  const holdings = {};
 
-      userTransactions.forEach(t => {
-        if (!holdings[t.code]) {
-          holdings[t.code] = {
-            code: t.code, shares: 0, totalCost: 0,
-            lastBuyPrice: t.price, broker: t.broker, owner: t.owner,
-            txList: []
-          };
-        }
-        holdings[t.code].txList.push(t);
-        if (t.type === '買入') {
-          holdings[t.code].shares += t.shares;
-          holdings[t.code].totalCost += t.total;
-        } else {
-          holdings[t.code].shares -= t.shares;
-          holdings[t.code].totalCost -= t.total;
-        }
-        holdings[t.code].lastBuyPrice = t.price;
-      });
-
-      const list = Object.values(holdings).filter(h => h.shares > 0).map(h => {
-        const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
-        const grossValue = h.shares * latestPrice;
-
-        // ★ 現值總額直接以「股數 * 最新單價」計算（完全與券商/實際帳戶顯示一致）
-        const currentMarketValue = Math.round(grossValue);
-        const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
-        const unrealizedProfit = currentMarketValue - h.totalCost;
-        const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
-
-        return { ...h, latestPrice, avgCost, grossValue: currentMarketValue, estTaxFee: 0, currentMarketValue, unrealizedProfit, profitRate };
-      });
-
-      return list.sort((a, b) => b.currentMarketValue - a.currentMarketValue);
+  userTransactions.forEach(t => {
+    if (!holdings[t.code]) {
+      holdings[t.code] = {
+        code: t.code, shares: 0, totalCost: 0,
+        lastBuyPrice: t.price, broker: t.broker, owner: t.owner,
+        txList: []
+      };
     }
+    holdings[t.code].txList.push(t);
+    if (t.type === '買入') {
+      holdings[t.code].shares += t.shares;
+      holdings[t.code].totalCost += t.total;
+    } else {
+      holdings[t.code].shares -= t.shares;
+      holdings[t.code].totalCost -= t.total;
+    }
+    holdings[t.code].lastBuyPrice = t.price;
+  });
+
+  return Object.values(holdings).filter(h => h.shares > 0).map(h => {
+    const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
+    const grossValue = h.shares * latestPrice;
+
+    // 1. 判斷是否為 ETF (00 開頭)：ETF 證交稅為 0.1%，一般個股為 0.3%
+    const isETF = /^00/.test(h.code.trim());
+    const taxRate = isETF ? 0.001 : 0.003;
+    const estTax = Math.floor(grossValue * taxRate);
+
+    // 2. 國泰證券預估賣出手續費 (0.1425% * 28折，小額/零股設有 1~3 元門檻)
+    let estFee = 0;
+    if (grossValue > 0) {
+      const calcFee = Math.floor(grossValue * 0.001425 * 0.28);
+      estFee = Math.max(1, calcFee); // 最低 1 元
+    }
+
+    // 3. 變現預估現值 = 毛市值 - 證交稅 - 券商手續費
+    const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
+    const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
+    const unrealizedProfit = currentMarketValue - h.totalCost;
+    const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
+
+    return { 
+      ...h, 
+      latestPrice, 
+      avgCost, 
+      grossValue: Math.round(grossValue), 
+      estTaxFee: estTax + estFee, 
+      currentMarketValue, 
+      unrealizedProfit, 
+      profitRate 
+    };
+  }).sort((a, b) => b.currentMarketValue - a.currentMarketValue);
+}
 
     function autoFillForexRate() {
       const curr = document.getElementById('modal-forex-currency').value;
