@@ -33,7 +33,7 @@
 
   <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden">
     
-    <!-- 頂部標題與狀態列 (需求一：資產更新以操作日期為基準) -->
+    <!-- 頂部標題與狀態列 -->
     <header class="mb-4 bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0">
@@ -259,7 +259,7 @@
       </section>
     </main>
 
-    <!-- 分頁七：股市清單 (需求二、三、四優化) -->
+    <!-- 分頁七：股市清單 -->
     <main id="tab-7" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
@@ -268,7 +268,6 @@
             <p class="text-xs text-[#827C78] mt-0.5 keep-word">證券商淨額模式：扣除0.3%證交稅與手續費</p>
           </div>
           <div class="flex gap-1 shrink-0">
-            <!-- 需求四：按鈕名稱改為『金額校正』 -->
             <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">🔄 金額校正</button>
             <button onclick="openStockModal()" class="px-3 py-2 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
           </div>
@@ -305,11 +304,11 @@
           </div>
         </div>
 
-        <!-- 個股圓餅圖卡片 (需求三：加上 Padding 保持邊距) -->
+        <!-- 個股圓餅圖卡片 -->
         <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs">
         </div>
 
-        <!-- 個股持股清單 (需求二A/B/C：增加內距、橫式一排佈局、刪除頂部備註) -->
+        <!-- 個股持股清單 -->
         <div class="space-y-3 pt-2">
           <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
             <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單 (現值高至低排序)</h3>
@@ -372,7 +371,7 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產總表 (需求五、六優化) -->
+    <!-- 分頁五：資產總表 -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div>
@@ -389,7 +388,7 @@
         <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3">
         </div>
 
-        <!-- 需求五：資產結構拆解卡片 -->
+        <!-- 資產結構拆解卡片 -->
         <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3">
         </div>
 
@@ -455,7 +454,7 @@
           </div>
         </div>
 
-        <!-- 勞退專戶卡片 (需求六：新增『更新日期』欄位) -->
+        <!-- 勞退專戶卡片 -->
         <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
             <strong class="font-bold text-[#4D5A6E] text-sm keep-word" id="labor-section-title">勞工退休金專戶 (潔柔)</strong>
@@ -471,7 +470,6 @@
               <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">預估退休年齡</label>
               <input type="number" id="labor-retire-age" placeholder="65" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
             </div>
-            <!-- 需求六新增：更新日期欄位 -->
             <div class="col-span-2">
               <label class="text-[10px] text-[#4D5A6E] font-extrabold block mb-0.5">資料更新日期</label>
               <input type="date" id="labor-update-date" class="w-full p-2 border border-[#BAC7DB] rounded-lg bg-white font-bold text-[#4D5A6E]">
@@ -1042,9 +1040,7 @@
       select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
     }
 
-    /* --- 頂部狀態列最新動態即時彙整 (需求一：資產更新以操作日期為基準) --- */
     function updateTopHeaderStatus() {
-      // 1. 最新記帳
       let latestEntryDate = '尚無紀錄';
       if (allTransactions.length > 0 && allTransactions[0].transaction_date) {
         latestEntryDate = allTransactions[0].transaction_date;
@@ -1052,7 +1048,6 @@
       const entryEl = document.getElementById('header-latest-entry-display');
       if (entryEl) entryEl.innerText = latestEntryDate;
 
-      // 2. 資產更新：依最後實際操作/更新的真實日期為基準
       let latestAssetDate = getTodayString();
       const assetEl = document.getElementById('header-asset-update-display');
       if (assetEl) assetEl.innerText = latestAssetDate;
@@ -1338,7 +1333,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 股市功能 (需求四：『金額校正』) --- */
+    /* --- 股市功能 --- */
     function calcStockTotal() {
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = Number(document.getElementById('modal-stock-shares').value) || 0;
@@ -1456,7 +1451,6 @@
       }
     }
 
-    // 需求四：『金額校正』更新市場股價與現值
     async function fetchAllStockPricesOnline() {
       const holdings = getMemberStockHoldings(currentStockMember);
       if (holdings.length === 0) return alert('目前沒有持股項目可校正！');
@@ -1626,7 +1620,6 @@
       `;
     }
 
-    /* --- 持股卡片渲染 (需求二：A/B/C重構橫式一排與寬鬆內距) --- */
     function renderStockPage(member) {
       document.getElementById('stock-dashboard-title').innerText = `【${member}】股票資產預估現值`;
 
@@ -1660,10 +1653,8 @@
           const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
           return `
-            <!-- 需求二A&3：p-5 內部與外框保持呼吸距離 -->
             <div class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
               
-              <!-- 需求二B：橫式一排彈性排版 -->
               <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-[#827C78]">股票名稱：</span>
@@ -1685,7 +1676,6 @@
                 </div>
               </div>
 
-              <!-- 次要數據列與按鈕 -->
               <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#635D5A]">
                 <div class="flex flex-wrap gap-x-4 gap-y-1">
                   <span>證券銀行：<strong class="text-[#2E2C2B] font-bold">${h.broker || '國泰綜合證券'}</strong></span>
@@ -1725,7 +1715,7 @@
       }
     }
 
-    /* --- 資產總表核心邏輯 (需求五：個人資產拆解 AB/C 類) --- */
+    /* --- 資產總表核心邏輯 --- */
     function renderAssets(member) {
       currentAssetMember = member;
 
@@ -1758,10 +1748,10 @@
 
       const stockGrandTotal = stockMarketVal + stockCashVal;
 
-      // 需求 5B: 現金總資產 (包含定存、股票、儲蓄險、外幣 - 人在世即時可動用)
+      // 現金總資產 (包含定存、股票、儲蓄險、外幣)
       const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal;
 
-      // 需求 5C: 勞退總額 (退休或身後領取)
+      // 勞退總額
       let laborTotal = 0;
       if (member === '全部') {
         const lJR = laborDataByMember['潔柔'] || {};
@@ -1773,7 +1763,7 @@
         laborTotal = (l.empPrincipal||0) + (l.empIncome||0) + (l.selfPrincipal||0) + (l.selfIncome||0);
       }
 
-      // 需求 5A: 個人總資產（含勞退）
+      // 個人總資產（含勞退）
       const grandTotal = cashAssetTotal + laborTotal;
       const totalVal = Math.max(1, grandTotal);
 
@@ -1832,7 +1822,7 @@
         `;
       }
 
-      // 需求 5：總資產與流動性區分看板 (5A/5B/5C)
+      // 總資產與流動性區分看板
       const dashCard = document.getElementById('asset-dashboard-card');
       if (dashCard) {
         dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-4';
@@ -1850,14 +1840,12 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-[#687890] text-xs">
-            <!-- 需求 5B: 現金總資產 -->
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
               <span class="text-[10px] text-[#B2C1B4] font-bold block mb-0.5">人在世/可即時動用</span>
               <strong class="text-white text-xs block">現金總資產：$${Math.round(cashAssetTotal).toLocaleString()}</strong>
               <p class="text-[10px] text-[#C5D0DF] mt-1">包含：定存、股票、儲蓄保單、外幣</p>
             </div>
             
-            <!-- 需求 5C: 勞退總額 -->
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
               <span class="text-[10px] text-[#DCE3EC] font-bold block mb-0.5">退休/身後親人領取</span>
               <strong class="text-[#F2E5C9] text-xs block">勞退總額：$${Math.round(laborTotal).toLocaleString()}</strong>
@@ -2101,7 +2089,6 @@
       `).join('');
     }
 
-    // 需求六：儲存勞退資料包含更新日期
     function saveLaborData() {
       const member = currentAssetMember === '宇軒' ? '宇軒' : '潔柔';
       
@@ -2732,7 +2719,7 @@
         alert('已成功儲存！');
       } catch (err) {
         alert('儲存失敗: ' + err.message);
-      } font-bold {
+      } finally {
         btn.disabled = false;
       }
     });
