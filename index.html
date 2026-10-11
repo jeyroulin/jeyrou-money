@@ -275,11 +275,10 @@
       </section>
     </main>
 
-    <!-- 分頁四：財務月曆 (月曆置頂，純文字無表情符號) -->
+    <!-- 分頁四：財務月曆 -->
     <main id="tab-4" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         
-        <!-- 1. 月曆主體與切換控制欄 -->
         <div class="space-y-3">
           <div class="flex justify-between items-center">
             <h2 class="text-base font-bold text-[#2E2C2B]">財務月曆與 Google 行程</h2>
@@ -300,7 +299,6 @@
           </div>
         </div>
 
-        <!-- 2. 月度收支與分類視覺化卡片 -->
         <div class="bg-[#F7F4F3] p-4 rounded-xl border border-[#DCD6D3] space-y-4 pt-4 border-t border-[#DCD6D3]">
           <strong class="text-xs font-bold text-[#2E2C2B] block border-b border-[#DCD6D3] pb-2">近六個月收支趨勢圖</strong>
           <div id="six-month-chart-box" class="h-32 flex items-end justify-between gap-1 pt-4 px-1">
@@ -311,7 +309,6 @@
           </div>
         </div>
 
-        <!-- 3. 信用卡應繳提醒 -->
         <div id="credit-bill-summary" class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
           <strong class="font-bold text-[#524D4B] block">信用卡應繳與結帳提醒：</strong>
           <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
@@ -1275,7 +1272,6 @@
       if (assetEl) assetEl.innerText = latestAssetDate;
     }
 
-    /* --- 月曆繪製與 Google Calendar 標籤渲染 (純文字無表情符號) --- */
     function renderCalendar() {
       const titleEl = document.getElementById('calendar-month-title');
       if (!titleEl) return;
@@ -1416,7 +1412,51 @@
       renderCalendar();
     }
 
-    /* --- 其餘核心業務邏輯 --- */
+    /* --- 核心試算 logic (已包含 ETF 0.1% 證交稅精準修修正) --- */
+    function getMemberStockHoldings(member) {
+      const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
+      const holdings = {};
+
+      userTransactions.forEach(t => {
+        if (!holdings[t.code]) {
+          holdings[t.code] = {
+            code: t.code, shares: 0, totalCost: 0,
+            lastBuyPrice: t.price, broker: t.broker, owner: t.owner,
+            txList: []
+          };
+        }
+        holdings[t.code].txList.push(t);
+        if (t.type === '買入') {
+          holdings[t.code].shares += t.shares;
+          holdings[t.code].totalCost += t.total;
+        } else {
+          holdings[t.code].shares -= t.shares;
+          holdings[t.code].totalCost -= t.total;
+        }
+        holdings[t.code].lastBuyPrice = t.price;
+      });
+
+      const list = Object.values(holdings).filter(h => h.shares > 0).map(h => {
+        const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
+        const grossValue = h.shares * latestPrice;
+
+        // ★ 自動識別 ETF（代碼或名稱以 00 開頭）：證交稅率為 0.1%，一般個股為 0.3%
+        const isETF = /^00/.test(h.code.trim());
+        const taxRate = isETF ? 0.001 : 0.003;
+        const estTax = Math.round(grossValue * taxRate);
+        const estFee = 0; // 手續費維持 0（以極致對齊真實變現數值）
+
+        const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
+        const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
+        const unrealizedProfit = currentMarketValue - h.totalCost;
+        const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
+
+        return { ...h, latestPrice, avgCost, grossValue: Math.round(grossValue), estTaxFee: estTax + estFee, currentMarketValue, unrealizedProfit, profitRate };
+      });
+
+      return list.sort((a, b) => b.currentMarketValue - a.currentMarketValue);
+    }
+
     function autoFillForexRate() {
       const curr = document.getElementById('modal-forex-currency').value;
       const rate = forexLatestRates[curr] || 1.0;
@@ -1822,48 +1862,6 @@
       const btn = document.getElementById(`stock-tab-${member}`);
       if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
       renderStockPage(member);
-    }
-
-    function getMemberStockHoldings(member) {
-      const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
-      const holdings = {};
-
-      userTransactions.forEach(t => {
-        if (!holdings[t.code]) {
-          holdings[t.code] = {
-            code: t.code, shares: 0, totalCost: 0,
-            lastBuyPrice: t.price, broker: t.broker, owner: t.owner,
-            txList: []
-          };
-        }
-        holdings[t.code].txList.push(t);
-        if (t.type === '買入') {
-          holdings[t.code].shares += t.shares;
-          holdings[t.code].totalCost += t.total;
-        } else {
-          holdings[t.code].shares -= t.shares;
-          holdings[t.code].totalCost -= t.total;
-        }
-        holdings[t.code].lastBuyPrice = t.price;
-      });
-
-      const list = Object.values(holdings).filter(h => h.shares > 0).map(h => {
-        const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
-        const grossValue = h.shares * latestPrice;
-        const estTax = Math.round(grossValue * 0.003);
-        let estFee = 2;
-        if (grossValue < 1000) estFee = 0;
-        else if (grossValue < 2000) estFee = 1;
-
-        const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
-        const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
-        const unrealizedProfit = currentMarketValue - h.totalCost;
-        const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
-
-        return { ...h, latestPrice, avgCost, grossValue: Math.round(grossValue), estTaxFee: estTax + estFee, currentMarketValue, unrealizedProfit, profitRate };
-      });
-
-      return list.sort((a, b) => b.currentMarketValue - a.currentMarketValue);
     }
 
     function renderStockPieCard(member, holdings, totalMarketVal) {
