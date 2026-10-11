@@ -76,7 +76,6 @@
         <div class="border-b border-[#F2ECE9] pb-3 flex justify-between items-center">
           <div>
             <h2 class="text-base font-bold text-[#784D4E]" id="form-mode-title">快捷記帳 (支出)</h2>
-            <p class="text-xs text-[#827C78] mt-0.5">紀錄消費與收入管道</p>
           </div>
           <div class="flex bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
             <button type="button" onclick="setEntryMode('支出')" id="mode-btn-expense" class="px-3 py-1.5 rounded-lg bg-[#C89B9C] text-[#2E2C2B] shadow-2xs">支出</button>
@@ -161,7 +160,6 @@
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
           <div>
             <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與預算專款</h2>
-            <p class="text-xs text-[#827C78] mt-0.5">統計剩餘現金流與專款</p>
           </div>
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
@@ -265,7 +263,6 @@
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
           <div class="min-w-0">
             <h2 class="text-base font-bold text-[#2E2C2B] keep-word">股票資產分析與預估現值</h2>
-            <p class="text-xs text-[#827C78] mt-0.5 keep-word">證券商淨額模式：扣除0.3%證交稅與手續費</p>
           </div>
           <div class="flex gap-1 shrink-0">
             <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">🔄 金額校正</button>
@@ -326,7 +323,6 @@
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
           <div class="min-w-0">
             <h2 class="text-base font-bold text-[#4A5B6E] keep-word">外幣儲蓄與投資</h2>
-            <p class="text-xs text-[#827C78] mt-0.5 keep-word">外幣資產與損益管理</p>
           </div>
           <button onclick="openForexModal()" class="px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
         </div>
@@ -376,7 +372,6 @@
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div>
           <h2 class="text-base font-bold text-[#4D5A6E] keep-word">資產總表</h2>
-          <p class="text-xs text-[#827C78] mt-0.5 keep-word">整合定存、儲蓄險、外幣、股票與勞退</p>
         </div>
 
         <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
@@ -395,7 +390,6 @@
         <div class="bg-[#F8F9FA] p-5 border border-[#E2E8F0] rounded-2xl space-y-3">
           <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-2">
             <strong class="font-bold text-[#2E2C2B] text-xs keep-word">資產結構明細</strong>
-            <span class="text-[10px] text-[#827C78]">動態試算</span>
           </div>
           <div id="asset-breakdown-list" class="space-y-2 text-xs">
           </div>
@@ -502,7 +496,6 @@
               <span>現有專戶總額：<strong id="labor-current-total">$0</strong></span>
               <span>預估退休總額：<strong id="labor-est-future-total" class="text-[#4D5A6E]">$0</strong></span>
             </div>
-            <p class="text-[10px] text-[#635D5A] font-normal mt-0.5">*(依年化收益率3%及每月持續提撥估算)</p>
           </div>
         </div>
       </section>
@@ -513,12 +506,10 @@
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
         <div>
           <h2 class="text-base font-bold text-[#5C5069]">設定管理</h2>
-          <p class="text-xs text-[#827C78] mt-0.5">管理銀行、券商、卡片與備份</p>
         </div>
 
         <div class="p-4 bg-[#CEC7DB] border border-[#BBB3CB] rounded-xl space-y-2 text-xs text-[#2E2C2B]">
           <strong class="font-bold text-[#453A52] block text-sm">全站備份與還原</strong>
-          <p class="text-[#52495E] text-[11px]">可下載備份檔並跨裝置重新載入還原。</p>
           <div class="flex gap-2 pt-1">
             <button onclick="exportBackupJSON()" class="flex-1 py-2 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-lg">匯出 JSON 備份檔</button>
             <label class="flex-1 py-2 bg-[#3D3A39] text-white font-bold rounded-lg text-center cursor-pointer">
@@ -529,10 +520,7 @@
         </div>
 
         <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
-            <span>銀行資訊管理</span>
-            <span class="text-[10px] text-[#827C78] font-normal">依代碼排序</span>
-          </h3>
+          <h3 class="text-xs font-bold text-[#2E2C2B]">銀行資訊管理</h3>
           <div class="flex gap-2">
             <input type="text" id="setting-bank-input" placeholder="輸入銀行 (例: 812 台新銀行)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
             <button onclick="addBankFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增銀行</button>
@@ -541,10 +529,7 @@
         </div>
 
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
-            <span>證券商管理</span>
-            <span class="text-[10px] text-[#827C78] font-normal">依代碼排序</span>
-          </h3>
+          <h3 class="text-xs font-bold text-[#2E2C2B]">證券商管理</h3>
           <div class="flex gap-2">
             <input type="text" id="setting-broker-input" placeholder="輸入證券商 (例: 9800 國泰綜合證券)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
             <button onclick="addBrokerFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增證券商</button>
@@ -553,10 +538,7 @@
         </div>
 
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#4D5A6E] flex justify-between items-center">
-            <span>信用卡管理</span>
-            <span class="text-[10px] text-[#827C78] font-normal">依代碼+到期日排序</span>
-          </h3>
+          <h3 class="text-xs font-bold text-[#4D5A6E]">信用卡管理</h3>
 
           <div class="p-3.5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-2.5 text-xs">
             <strong class="font-bold text-[#4D5A6E] block">新增信用卡</strong>
@@ -1567,7 +1549,6 @@
         container.innerHTML = `
           <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
             <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】個股資產配置佔比 (%)</strong>
-            <span class="text-[10px] text-[#827C78] text-right">即時現值分析</span>
           </div>
           <div class="text-center text-[#827C78] py-4 text-xs">尚無持股數據。</div>
         `;
@@ -1590,7 +1571,6 @@
       container.innerHTML = `
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
           <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】個股資產配置佔比 (%)</strong>
-          <span class="text-[10px] text-[#827C78] text-right">即時現值分析</span>
         </div>
         <div class="flex items-center gap-3 py-2 max-w-sm mx-auto">
           <div class="shrink-0 flex items-center justify-center p-1">
@@ -1780,7 +1760,6 @@
         pieCard.innerHTML = `
           <div class="flex justify-between items-center pb-1">
             <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】資產配置佔比 (%)</strong>
-            <span class="text-[10px] text-[#827C78]">視覺比例分析</span>
           </div>
           <div class="flex items-center gap-3 py-1.5 max-w-sm mx-auto">
             <div class="shrink-0 flex items-center justify-center p-1">
@@ -1822,7 +1801,7 @@
         `;
       }
 
-      // 總資產與流動性區分看板
+      // 總資產與流動性區分看板（完全精簡，移除所有輔助文字標籤與註解）
       const dashCard = document.getElementById('asset-dashboard-card');
       if (dashCard) {
         dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-4';
@@ -1832,7 +1811,6 @@
         dashCard.innerHTML = `
           <div class="flex justify-between items-center border-b border-[#687890] pb-2.5">
             <span class="text-xs text-[#C5D0DF] font-bold">${cardTitle}</span>
-            <span class="text-[10px] bg-[#374252] px-2.5 py-1 rounded-md font-bold text-[#E8EDF5]">總資產彙整</span>
           </div>
           <div>
             <span class="text-xs text-[#C5D0DF] block">個人總資產 (含勞退)</span>
@@ -1841,15 +1819,11 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-[#687890] text-xs">
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
-              <span class="text-[10px] text-[#B2C1B4] font-bold block mb-0.5">人在世/可即時動用</span>
               <strong class="text-white text-xs block">現金總資產：$${Math.round(cashAssetTotal).toLocaleString()}</strong>
-              <p class="text-[10px] text-[#C5D0DF] mt-1">包含：定存、股票、儲蓄保單、外幣</p>
             </div>
             
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
-              <span class="text-[10px] text-[#DCE3EC] font-bold block mb-0.5">退休/身後親人領取</span>
               <strong class="text-[#F2E5C9] text-xs block">勞退總額：$${Math.round(laborTotal).toLocaleString()}</strong>
-              <p class="text-[10px] text-[#C5D0DF] mt-1">僅含：勞工退休金專戶</p>
             </div>
           </div>
         `;
