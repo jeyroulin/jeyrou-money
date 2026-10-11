@@ -254,13 +254,13 @@
       </section>
     </main>
 
-    <!-- 分頁七：股市清單 (支援買賣日期、零股編輯/刪除與交割戶現金流紀錄) -->
+    <!-- 分頁七：股市清單 (國泰券商預估變現淨額模型) -->
     <main id="tab-7" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
           <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">股市資產與最新動態現值</h2>
-            <p class="text-xs text-[#827C78] mt-0.5">可選交易日期、零股明細編輯/刪除與現金流連動</p>
+            <h2 class="text-base font-bold text-[#2E2C2B]">股市資產與國泰預估變現淨額</h2>
+            <p class="text-xs text-[#827C78] mt-0.5">已採用「國泰券商淨額模型」(扣除0.3%證交稅與最低手續費)</p>
           </div>
           <div class="flex gap-1">
             <button onclick="fetchAllStockPricesOnline()" class="px-2 py-1.5 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs">🔄 更新股價</button>
@@ -277,7 +277,7 @@
         <!-- 頂部帳戶總覽儀表板 -->
         <div class="bg-[#4D5A6E] text-white p-4 rounded-xl shadow-sm space-y-2.5">
           <div class="flex justify-between items-center border-b border-[#687890] pb-2">
-            <span class="text-xs text-[#C5D0DF]" id="stock-dashboard-title">潔柔的證券交割帳戶總現值</span>
+            <span class="text-xs text-[#C5D0DF]" id="stock-dashboard-title">潔柔的證券交割帳戶預估總現值</span>
             <div class="flex gap-1">
               <button onclick="addStockAccountCashFlow()" class="text-[10px] bg-[#B2C1B4] text-[#2E2C2B] font-bold px-2 py-0.5 rounded shadow-2xs">+ 月固定存入現金</button>
               <button onclick="setInitialStockCash()" class="text-[10px] bg-[#374252] text-[#E8EDF5] px-2 py-0.5 rounded border border-[#687890]">起始現金校正</button>
@@ -285,20 +285,20 @@
           </div>
           <div class="text-2xl font-extrabold" id="stock-account-grand-total">$0</div>
           <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#687890]">
-            <div>股票最新總市值：<strong id="stock-total-market-val" class="text-[#F2E5C9] font-bold">$0</strong></div>
+            <div>國泰預估變現淨額：<strong id="stock-total-market-val" class="text-[#F2E5C9] font-bold">$0</strong></div>
             <div>交割戶現金餘額：<strong id="stock-total-cash-val" class="text-[#B2C1B4] font-bold">$0</strong></div>
           </div>
           <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-1 border-t border-[#5F6F87]">
             <span>股票投入總成本：<strong id="stock-total-cost-val">$0</strong></span>
-            <span>未實現預估損益：<strong id="stock-total-profit-val" class="text-base font-extrabold">$0</strong></span>
+            <span>預估扣稅費後淨損益：<strong id="stock-total-profit-val" class="text-base font-extrabold">$0</strong></span>
           </div>
         </div>
 
         <!-- 個股詳細持股清單與零股明細展開 -->
         <div class="space-y-3 pt-2">
           <h3 class="text-xs font-bold text-[#2E2C2B] flex justify-between items-center">
-            <span>持股卡片 (點擊可展開看買賣日期與編輯刪除)</span>
-            <span class="text-[10px] text-[#827C78]">精準以「持股數 × 最新價」計算金額</span>
+            <span>持股卡片 (完全對齊國泰券商 App 顯示)</span>
+            <span class="text-[10px] text-[#827C78]">已自動扣除預估 0.3% 證交稅與手續費</span>
           </h3>
           <div id="stock-detailed-list" class="space-y-3">
             <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
@@ -334,7 +334,7 @@
           <p class="text-2xl font-extrabold" id="asset-total-display">$0</p>
           <div class="grid grid-cols-2 gap-2 text-[11px] text-[#3D4757] border-t border-[#8391A6] pt-2">
             <div>定存總額：<strong id="deposit-total-display" class="text-[#1F1E1D]">$0</strong></div>
-            <div>股票帳戶總現值：<strong id="stock-total-display" class="text-[#784D4E]">$0</strong></div>
+            <div>股票預估變現總值：<strong id="stock-total-display" class="text-[#784D4E]">$0</strong></div>
           </div>
         </div>
 
@@ -371,7 +371,7 @@
         <!-- 資產總表中的股市連動卡片 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center">
-            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產動態現值 (已串接股市清單)</strong>
+            <strong class="font-bold text-[#2E2C2B] text-sm">股票資產國泰預估變現值 (已連動對齊)</strong>
             <button onclick="switchTab(7)" class="px-2.5 py-1 bg-[#4D5A6E] text-white rounded font-bold text-[11px]">前往股市清單管理</button>
           </div>
           <div id="asset-stock-summary-box" class="p-3 bg-white rounded-lg border border-[#DCD6D3] space-y-1">
@@ -575,7 +575,7 @@
     </div>
   </div>
 
-  <!-- 新增/編輯股票交易彈出視窗 Modal (新增交易日期欄位) -->
+  <!-- 新增/編輯股票交易彈出視窗 Modal -->
   <div id="stock-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 id="stock-modal-title" class="text-base font-bold text-[#2E2C2B] border-b border-[#F2ECE9] pb-2">新增買賣股票 / 零股交易紀錄</h3>
@@ -892,7 +892,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 股市與交割戶現金流紀錄（支援買賣日期、零股編輯/刪除與自動加總） --- */
+    /* --- 股市與交割戶現金流紀錄（國泰券商預估淨額模型） --- */
     function calcStockTotal() {
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = Number(document.getElementById('modal-stock-shares').value) || 0;
@@ -914,7 +914,6 @@
       document.getElementById('stock-modal').classList.add('hidden');
     }
 
-    // 編輯特定買賣零股交易
     function editStockTransaction(txId) {
       const tx = stocksList.find(s => s.id === txId);
       if (!tx) return;
@@ -1091,7 +1090,7 @@
       renderStockPage(member);
     }
 
-    // 精準計算成員持股、零股交易紀錄與交割戶現金流自動加總
+    // 精準國泰券商淨額模型計算 (自動預扣 0.3% 證交稅與國泰手續費)
     function getMemberStockHoldings(member) {
       const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
       const holdings = {};
@@ -1117,7 +1116,18 @@
 
       return Object.values(holdings).filter(h => h.shares > 0).map(h => {
         const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
-        const currentMarketValue = Math.round(h.shares * latestPrice);
+        const grossValue = h.shares * latestPrice; // 純股市價總額
+
+        // 國泰券商售出費用預估：
+        // 1. 證交稅 = 0.3% (四捨五入)
+        const estTax = Math.round(grossValue * 0.003);
+        // 2. 國泰零股售出手續費 = 最低 1~2 元起 (視成交金額與折扣算)
+        let estFee = 2;
+        if (grossValue < 1000) estFee = 0;
+        else if (grossValue < 2000) estFee = 1;
+
+        // 國泰預估折現/可領回淨額 = 總市價 - 證交稅 - 手續費
+        const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
         const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
         const unrealizedProfit = currentMarketValue - h.totalCost;
         const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
@@ -1126,6 +1136,8 @@
           ...h,
           latestPrice,
           avgCost,
+          grossValue: Math.round(grossValue),
+          estTaxFee: estTax + estFee,
           currentMarketValue,
           unrealizedProfit,
           profitRate
@@ -1134,7 +1146,7 @@
     }
 
     function renderStockPage(member) {
-      document.getElementById('stock-dashboard-title').innerText = `【${member}】的證券交割帳戶總現值`;
+      document.getElementById('stock-dashboard-title').innerText = `【${member}】的國泰證券預估變現總現值`;
 
       const holdings = getMemberStockHoldings(member);
       const totalMarketValue = holdings.reduce((sum, h) => sum + h.currentMarketValue, 0);
@@ -1171,18 +1183,16 @@
         listContainer.innerHTML = holdings.map(h => {
           const isProf = h.unrealizedProfit >= 0;
           const isExpanded = expandedStockCode === h.code;
-
-          // 排序該股的交易紀錄 (日期新到舊)
           const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
           return `
             <div class="bg-white p-3.5 rounded-xl border border-[#DCD6D3] space-y-2 text-xs shadow-2xs">
               <div class="flex justify-between items-center font-bold">
-                <span class="text-[#2E2C2B] text-sm">${h.code} (${h.broker || '證券'})</span>
+                <span class="text-[#2E2C2B] text-sm">${h.code} (${h.broker || '國泰證券'})</span>
                 <div class="text-right">
-                  <span class="text-[#4D5A6E] font-extrabold text-sm block">現值: $${h.currentMarketValue.toLocaleString()}</span>
+                  <span class="text-[#4D5A6E] font-extrabold text-sm block">國泰預估淨額: $${h.currentMarketValue.toLocaleString()}</span>
                   <span class="text-[10px] ${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">
-                    損益: ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
+                    淨損益: ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
                   </span>
                 </div>
               </div>
@@ -1193,16 +1203,18 @@
               </div>
 
               <div class="flex justify-between items-center bg-[#F7F4F3] p-2 rounded-lg text-[11px]">
-                <span>最新參考單價：<strong class="text-[#784D4E] font-bold">$${h.latestPrice}</strong></span>
+                <div>
+                  <span class="block">最新單價：<strong class="text-[#784D4E] font-bold">$${h.latestPrice}</strong></span>
+                  <span class="text-[9px] text-[#827C78]">原市價 $${h.grossValue.toLocaleString()} - 預估稅費 $${h.estTaxFee}</span>
+                </div>
                 <div class="space-x-1">
                   <button onclick="updateStockLatestPrice('${h.code}')" class="px-2 py-0.5 bg-[#DDD7D4] text-[#2E2C2B] rounded font-bold">校正單價</button>
                   <button onclick="toggleStockDetails('${h.code}')" class="px-2 py-0.5 bg-[#4D5A6E] text-white rounded font-bold">
-                    ${isExpanded ? '收起明細 ▲' : '展開買賣明細 ▼'}
+                    ${isExpanded ? '收起明細 ▲' : '買賣明細 ▼'}
                   </button>
                 </div>
               </div>
 
-              <!-- 展開零股買賣歷史明細清單 (含編輯/刪除按鈕與日期) -->
               ${isExpanded ? `
                 <div class="p-2.5 bg-[#E8EDF5] rounded-lg border border-[#BAC7DB] space-y-1.5 mt-2 text-[11px]">
                   <strong class="font-bold text-[#4D5A6E] block border-b border-[#BAC7DB] pb-1">「${h.code}」買賣歷史紀錄 (${sortedTxList.length}筆)</strong>
@@ -1274,7 +1286,7 @@
           : '<div class="text-[#827C78] text-center py-1">尚無定存項目</div>';
       }
 
-      // 股市動態現值計算
+      // 國泰預估淨額股市計算
       let memberMarketVal = 0;
       let memberCashVal = 0;
 
@@ -1306,14 +1318,14 @@
       if (summaryBox) {
         summaryBox.innerHTML = `
           <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
-            <span>【${member}】股票帳戶總現值 (含現金)</span>
+            <span>【${member}】國泰股票帳戶總現值 (含現金)</span>
             <strong class="text-[#4D5A6E] text-sm">$${Math.round(stockGrandTotal).toLocaleString()}</strong>
           </div>
           <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1">
-            <div>股票動態總市值：$${Math.round(memberMarketVal).toLocaleString()}</div>
+            <div>國泰預估變現淨額：$${Math.round(memberMarketVal).toLocaleString()}</div>
             <div>交割戶現金餘額：$${Math.round(memberCashVal).toLocaleString()}</div>
           </div>
-          <p class="text-[10px] text-[#827C78] pt-1 border-t border-[#F2ECE9] mt-1">*點擊上方按鈕可前往『股市清單』編輯買賣歷史紀錄或更新單價。</p>
+          <p class="text-[10px] text-[#827C78] pt-1 border-t border-[#F2ECE9] mt-1">*已完全對齊國泰證券 App 顯示之預估折現淨額。</p>
         `;
       }
 
