@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>財務總控與全方位資產管理系統</title>
   
-  <link rel="manifest" href="./manifest.json">
+  <link rel="manifest" hｆref="./manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1336,7 +1336,7 @@
       if (assetEl) assetEl.innerText = latestAssetDate;
     }
 
-    function renderCalendar() {
+function renderCalendar() {
       const titleEl = document.getElementById('calendar-month-title');
       if (!titleEl) return;
       titleEl.innerText = `${calYear}年${calMonth + 1}月`;
@@ -1358,7 +1358,7 @@
         userCards.forEach(c => { if (c.cutoff === day) isCutoffDay = true; });
 
         const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
+
         const dayEvents = googleCalendarEvents.filter(e => {
           const start = e.start?.date || e.start?.dateTime?.substring(0, 10);
           return start === dateStr;
@@ -1376,8 +1376,8 @@
                 const eventTitle = e.summary || e.description || (e.status === 'confirmed' ? '已排定行程' : '日曆事件');
                 const cleanTitle = eventTitle.replace(/'/g, "\\'");
                 return `
-                  <span onclick="alert('行程明細：\\n\\n名稱：${cleanTitle}\\n日期：${dateStr}')" 
-                        class="block text-[9px] bg-[#EAE8F0] text-[#5A4E7A] border border-[#C5BFE0] px-1 py-0.5 rounded truncate font-medium cursor-pointer hover:bg-[#DCD6E8]" 
+                  <span onclick="alert('行程明細：\\n\\n名稱：${cleanTitle}\\n日期：${dateStr}')"
+                        class="block text-[9px] bg-[#EAE8F0] text-[#5A4E7A] border border-[#C5BFE0] px-1 py-0.5 rounded truncate font-medium cursor-pointer hover:bg-[#DCD6E8]"
                         title="${cleanTitle}">
                     ${eventTitle}
                   </span>
@@ -1393,8 +1393,23 @@
         if (userCards.length === 0) {
           creditDetailBox.innerText = '尚無信用卡資料。';
         } else {
-          creditDetailBox.innerHTML = userCards.map(c => `
-            <div>- <strong>${c.bank} ${c.name}</strong> (每月${c.cutoff}號結帳 / 到期:${c.expiry||'--'})</div>
+          // 依發卡銀行進行歸類整合 (優化後版本)
+          const groupedCards = {};
+          userCards.forEach(c => {
+            if (!groupedCards[c.bank]) {
+              groupedCards[c.bank] = { cutoff: c.cutoff, cards: [] };
+            }
+            groupedCards[c.bank].cards.push(`${c.name} (${c.expiry || '--'})`);
+          });
+
+          creditDetailBox.innerHTML = Object.entries(groupedCards).map(([bank, group]) => `
+            <div class="py-1 border-b border-dashed border-[#DCD6D3] last:border-0">
+              <strong class="text-[#2E2C2B] font-bold">- ${bank}</strong> 
+              <span class="text-[#784D4E] font-bold">(每月 ${group.cutoff} 號結帳)</span>
+              <div class="pl-3 text-[11px] text-[#635D5A]">
+                ${group.cards.join(' / ')}
+              </div>
+            </div>
           `).join('');
         }
       }
