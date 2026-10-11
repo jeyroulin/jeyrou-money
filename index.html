@@ -366,7 +366,7 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產總表 (圓餅圖獨立大卡片全新版) -->
+    <!-- 分頁五：資產總表 (圓餅圖極簡無框版) -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div>
@@ -381,9 +381,9 @@
           <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
         </div>
 
-        <!-- 1. 獨立圓餅圖與資產佔比卡片 (白色底) -->
-        <div id="asset-pie-card" class="bg-white p-4.5 rounded-2xl border border-[#DCD6D3] shadow-xs space-y-3">
-          <!-- 由 JS 動態渲染大圓餅圖與各項 % 數標籤 -->
+        <!-- 1. 獨立圓餅圖與資產佔比卡片 (無邊框 / 無外框極簡視覺) -->
+        <div id="asset-pie-card" class="bg-white p-2 rounded-2xl space-y-3">
+          <!-- 由 JS 動態渲染無邊框圓餅圖與各項 % 數標籤 -->
         </div>
 
         <!-- 2. 總資產看板 (對齊圖片二樣式：藍灰色深色大看板) -->
@@ -1671,7 +1671,7 @@
       }
     }
 
-    /* --- 資產總表核心邏輯 (獨立白色圓餅圖卡片 + 附件二樣式個人總資產看板) --- */
+    /* --- 資產總表核心邏輯 (完全無邊框、乾極簡圓餅圖 + 附件二看板) --- */
     function renderAssets(member) {
       currentAssetMember = member;
 
@@ -1737,17 +1737,17 @@
       const stkPct = (Math.max(0, stockGrandTotal / totalVal) * 100).toFixed(1);
       const labPct = ((laborTotal / totalVal) * 100).toFixed(1);
 
-      // --- 1. 渲染獨立白色圓餅圖卡片 (位於總資產上方) ---
+      // --- 1. 渲染無邊框圓餅圖卡片 ---
       const pieCard = document.getElementById('asset-pie-card');
       if (pieCard) {
         pieCard.innerHTML = `
-          <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
-            <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】資產配置佔比 (％)</strong>
+          <div class="flex justify-between items-center pb-1">
+            <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】資產配置佔比 (%)</strong>
             <span class="text-[10px] text-[#827C78]">資產比例視覺分析</span>
           </div>
           <div class="flex items-center gap-4 py-1">
-            <div class="shrink-0 flex items-center justify-center p-1 bg-[#F8F9FA] rounded-2xl border border-[#E2E8F0]">
-              ${renderLargePieSVG(depositTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
+            <div class="shrink-0 flex items-center justify-center p-1">
+              ${renderBorderlessPieSVG(depositTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
             </div>
             <div class="flex-1 space-y-1.5 text-xs">
               <div class="flex justify-between items-center">
@@ -1785,7 +1785,7 @@
         `;
       }
 
-      // --- 2. 渲染總資產大看板 (完全一致對齊圖片二/附件二樣式) ---
+      // --- 2. 渲染總資產大看板 (附件二樣式) ---
       const dashCard = document.getElementById('asset-dashboard-card');
       if (dashCard) {
         dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3';
@@ -1910,11 +1910,11 @@
       renderAnnualCoverage();
     }
 
-    // 白色卡片使用的高解析放大版 SVG 環狀圓餅圖
-    function renderLargePieSVG(dep, ins, frx, stk, lab) {
+    // 純圓餅圖 SVG，完全移除外框與背景圓框
+    function renderBorderlessPieSVG(dep, ins, frx, stk, lab) {
       const total = Math.max(0, dep) + Math.max(0, ins) + Math.max(0, frx) + Math.max(0, stk) + Math.max(0, lab);
       if (total <= 0) {
-        return '<svg width="72" height="72" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#E2E8F0" stroke-width="5.5"/></svg>';
+        return '<svg width="80" height="80" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#E2E8F0" stroke-width="5.5"/></svg>';
       }
 
       const pDep = (Math.max(0, dep) / total) * 100;
@@ -1929,11 +1929,11 @@
         const dash = `${pct} ${100 - pct}`;
         const strokeOffset = 100 - offset + 25;
         offset += pct;
-        return `<circle cx="18" cy="18" r="15.9" fill="none" stroke="${color}" stroke-width="5.5" stroke-dasharray="${dash}" stroke-dashoffset="${strokeOffset}"/>`;
+        return `<circle cx="18" cy="18" r="15.9" fill="none" stroke="${color}" stroke-width="5.8" stroke-dasharray="${dash}" stroke-dashoffset="${strokeOffset}"/>`;
       }
 
       return `
-        <svg width="76" height="76" viewBox="0 0 36 36" class="transform -rotate-90">
+        <svg width="84" height="84" viewBox="0 0 36 36" class="transform -rotate-90">
           ${getPath(pDep, '#4D5A6E')}
           ${getPath(pIns, '#78699B')}
           ${getPath(pFrx, '#3B5998')}
