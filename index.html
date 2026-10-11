@@ -49,16 +49,16 @@
       </div>
     </header>
 
-    <!-- 分頁導覽列 (精準重排為兩排各四項) -->
+    <!-- 分頁導覽列 (兩排各四項) -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
-      <!-- 第一排：快捷記帳、現金收支、AA請款、財務月曆 -->
+      <!-- 第一排 -->
       <div class="grid grid-cols-4 gap-1 text-center text-[11px] font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
         <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">現金收支</button>
         <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">AA請款</button>
         <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">財務月曆</button>
       </div>
-      <!-- 第二排：股市清單、外幣儲蓄、資產總表、設定管理 -->
+      <!-- 第二排 -->
       <div class="grid grid-cols-4 gap-1 text-center text-[11px] font-bold">
         <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
         <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
@@ -301,7 +301,7 @@
           </div>
         </div>
 
-        <!-- 個股詳細持股清單與零股明細展開 -->
+        <!-- 個股持股清單 -->
         <div class="space-y-3 pt-2">
           <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
             <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單</h3>
@@ -312,7 +312,7 @@
           </div>
         </div>
 
-        <!-- 交割戶現金變動歷史紀錄清單 -->
+        <!-- 現金變動歷史清單 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
           <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">證券交割戶現金異動歷程 (全自動加總)</strong>
           <div id="stock-cash-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
@@ -322,7 +322,7 @@
       </section>
     </main>
 
-    <!-- 分頁八：外幣儲蓄與投資 (全新增設) -->
+    <!-- 分頁八：外幣儲蓄與投資 -->
     <main id="tab-8" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
@@ -333,13 +333,11 @@
           <button onclick="openForexModal()" class="px-3 py-1.5 bg-[#3B5998] hover:bg-[#2D4373] text-white font-bold rounded-xl text-xs shadow-xs shrink-0">+ 交易外幣</button>
         </div>
 
-        <!-- 外幣成員切換 -->
         <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
           <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#3B5998] shadow-2xs">潔柔外幣帳戶</button>
           <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒外幣帳戶</button>
         </div>
 
-        <!-- 外幣帳戶儀表板 -->
         <div class="bg-[#3B5998] text-white p-4.5 rounded-2xl shadow-sm space-y-3">
           <div class="flex justify-between items-center border-b border-[#5270B0] pb-2.5">
             <span class="text-xs text-[#DCE4F5] font-bold" id="forex-dashboard-title">潔柔的外幣資產折合台幣總值</span>
@@ -352,7 +350,6 @@
           </div>
         </div>
 
-        <!-- 外幣持份卡片清單 -->
         <div class="space-y-3">
           <strong class="font-bold text-[#2E2C2B] block text-xs border-b border-[#F2ECE9] pb-2">外幣持份與損益清單</strong>
           <div id="forex-holdings-list" class="space-y-2.5">
@@ -360,7 +357,6 @@
           </div>
         </div>
 
-        <!-- 外幣交易明細歷史紀錄 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
           <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">外幣買賣/提領歷史明細</strong>
           <div id="forex-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
@@ -370,37 +366,42 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產總表 (全新升級版) -->
+    <!-- 分頁五：資產總表 (圓餅圖獨立大卡片全新版) -->
     <main id="tab-5" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div>
           <h2 class="text-base font-bold text-[#4D5A6E] keep-word">資產總表與覆蓋率概況</h2>
           <p class="text-xs text-[#827C78] mt-0.5 keep-word">整合定存、儲蓄保單、外幣資產、股票折現值與勞退帳戶</p>
         </div>
 
+        <!-- 頁籤切換 -->
         <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
           <button onclick="switchAssetMember('全部')" id="asset-tab-全部" class="asset-member-btn flex-1 py-2 rounded-lg bg-white shadow-2xs text-[#4D5A6E]">全部</button>
           <button onclick="switchAssetMember('潔柔')" id="asset-tab-潔柔" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">潔柔</button>
           <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
         </div>
 
-        <!-- 總資產金額核心儀表板 -->
-        <div id="asset-dashboard-card" class="bg-[#788596] p-5 rounded-2xl text-white shadow-sm space-y-4">
-          <!-- JS 動態渲染內部圖表與儀表 -->
+        <!-- 1. 獨立圓餅圖與資產佔比卡片 (白色底) -->
+        <div id="asset-pie-card" class="bg-white p-4.5 rounded-2xl border border-[#DCD6D3] shadow-xs space-y-3">
+          <!-- 由 JS 動態渲染大圓餅圖與各項 % 數標籤 -->
         </div>
 
-        <!-- 條列式資產明細 -->
+        <!-- 2. 總資產看板 (對齊圖片二樣式：藍灰色深色大看板) -->
+        <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3">
+          <!-- 由 JS 動態渲染大數字與說明 -->
+        </div>
+
+        <!-- 3. 條列式資產明細 -->
         <div class="bg-[#F8F9FA] p-4 border border-[#E2E8F0] rounded-2xl space-y-3">
           <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-2">
             <strong class="font-bold text-[#2E2C2B] text-xs keep-word">資產配置結構明細 (條列式)</strong>
             <span class="text-[10px] text-[#827C78]">動態即時試算</span>
           </div>
           <div id="asset-breakdown-list" class="space-y-2 text-xs">
-            <!-- 條列式明細由 JS 動態渲染 -->
           </div>
         </div>
 
-        <!-- 儲蓄保單管理庫專區 -->
+        <!-- 4. 儲蓄保單管理庫 -->
         <div class="p-4 bg-[#EAE8F0] border border-[#C5BFE0] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#C5BFE0] pb-2.5">
             <strong class="font-bold text-[#5A4E7A] text-sm keep-word">儲蓄保單管理庫</strong>
@@ -411,7 +412,7 @@
           </div>
         </div>
 
-        <!-- 定存明細庫 -->
+        <!-- 5. 定存明細庫 -->
         <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
             <strong class="font-bold text-[#4D5A6E] text-sm keep-word">定存明細庫 (動態精算利息/用途)</strong>
@@ -422,7 +423,7 @@
           </div>
         </div>
 
-        <!-- 未來年度固定開銷與覆蓋率 -->
+        <!-- 6. 年度固定開銷與覆蓋率 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
             <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來年度固定開銷與定存覆蓋率</strong>
@@ -443,7 +444,7 @@
           </div>
         </div>
 
-        <!-- 股票資產摘要連動卡片 -->
+        <!-- 7. 股票資產摘要卡片 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
             <strong class="font-bold text-[#2E2C2B] text-sm keep-word">股票資產國泰預估變現值</strong>
@@ -453,7 +454,7 @@
           </div>
         </div>
 
-        <!-- 勞退專戶卡片 -->
+        <!-- 8. 勞退專戶卡片 -->
         <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
             <strong class="font-bold text-[#4D5A6E] text-sm keep-word" id="labor-section-title">勞工退休金個人專戶 (潔柔)</strong>
@@ -604,7 +605,7 @@
 
   </div>
 
-  <!-- 新增/交易外幣 Modal (全新增設) -->
+  <!-- 外幣 Modal -->
   <div id="forex-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 class="text-base font-bold text-[#3B5998] border-b border-[#F2ECE9] pb-2">新增外幣儲蓄與投資交易紀錄</h3>
@@ -668,7 +669,7 @@
     </div>
   </div>
 
-  <!-- 新增/編輯儲蓄保單 Modal -->
+  <!-- 儲蓄險 Modal -->
   <div id="insurance-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 class="text-base font-bold text-[#5A4E7A] border-b border-[#F2ECE9] pb-2">新增儲蓄保單 (儲蓄險資產)</h3>
@@ -710,7 +711,7 @@
     </div>
   </div>
 
-  <!-- 新增定存彈出視窗 Modal -->
+  <!-- 定存 Modal -->
   <div id="deposit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增定存單 (支援時間自動精算利息)</h3>
@@ -746,7 +747,7 @@
           <input type="number" step="0.01" id="modal-dep-rate" oninput="calcEstInterest()" placeholder="1.72" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
         </div>
         <div>
-          <label class="block font-bold mb-1 text-[#784D4E]">預估總利息 ($) [系統依時間精算，亦可手動修改]</label>
+          <label class="block font-bold mb-1 text-[#784D4E]">預估總利息 ($)</label>
           <input type="number" id="modal-dep-interest" placeholder="系統自動依起訖日與利率試算" class="w-full p-2.5 border border-[#C89B9C] rounded-xl bg-[#F7EDED] font-bold text-[#784D4E]">
         </div>
       </div>
@@ -757,7 +758,7 @@
     </div>
   </div>
 
-  <!-- 新增/編輯股票交易彈出視窗 Modal -->
+  <!-- 股票 Modal -->
   <div id="stock-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl">
       <h3 id="stock-modal-title" class="text-base font-bold text-[#2E2C2B] border-b border-[#F2ECE9] pb-2">新增買賣股票 / 零股交易紀錄</h3>
@@ -793,7 +794,7 @@
         </div>
 
         <div>
-          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號 (例: 大銀微系統 或 4576)</label>
+          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號</label>
           <input type="text" id="modal-stock-code" placeholder="例: 大銀微系統 或 4576" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
         </div>
 
@@ -809,7 +810,7 @@
         </div>
 
         <div>
-          <label class="block font-bold mb-1 text-[#4D5A6E]">實際交割/成交總金額 ($) [包含手續費/可手動修正]</label>
+          <label class="block font-bold mb-1 text-[#4D5A6E]">實際交割/成交總金額 ($)</label>
           <input type="number" id="modal-stock-total" class="w-full p-2.5 border border-[#4D5A6E] rounded-xl bg-[#E8EDF5] font-extrabold text-[#4D5A6E]">
         </div>
       </div>
@@ -879,8 +880,8 @@
 
     let fixedDeposits = [];
     let insurancePolicies = []; 
-    let forexTransactions = []; // 全新：外幣儲蓄與投資明細
-    let forexLatestRates = { 'USD': 31.8, 'JPY': 0.215, 'EUR': 34.5, 'KRW': 0.024, 'CNY': 4.45 }; // 預設參考匯率
+    let forexTransactions = []; 
+    let forexLatestRates = { 'USD': 31.8, 'JPY': 0.215, 'EUR': 34.5, 'KRW': 0.024, 'CNY': 4.45 }; 
 
     let stocksList = [];
     let expandedStockCode = null;
@@ -1029,7 +1030,7 @@
       select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
     }
 
-    /* --- 外幣儲蓄與投資模組（全新增加） --- */
+    /* --- 外幣模組 --- */
     function autoFillForexRate() {
       const curr = document.getElementById('modal-forex-currency').value;
       const rate = forexLatestRates[curr] || 1.0;
@@ -1180,7 +1181,6 @@
       profitEl.innerText = (isProf ? '+' : '') + '$' + totalProfitNTD.toLocaleString();
       profitEl.className = `text-sm font-extrabold ${isProf ? 'text-[#F2E5C9]' : 'text-[#E8C2C3]'}`;
 
-      // 渲染持份清單
       const listContainer = document.getElementById('forex-holdings-list');
       if (holdings.length === 0) {
         listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無外幣儲蓄與持份紀錄。</div>`;
@@ -1204,7 +1204,6 @@
         }).join('');
       }
 
-      // 渲染歷史紀錄
       const userTxs = forexTransactions.filter(f => member === '全部' || f.owner === member);
       const historyContainer = document.getElementById('forex-history-list');
       if (userTxs.length === 0) {
@@ -1225,7 +1224,7 @@
       }
     }
 
-    /* --- 儲蓄險保單 Modal 功能 --- */
+    /* --- 儲蓄險功能 --- */
     function openInsuranceModal() {
       document.getElementById('insurance-modal').classList.remove('hidden');
     }
@@ -1255,7 +1254,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 定存彈出視窗與時間精算 --- */
+    /* --- 定存功能 --- */
     function calcEstInterest() {
       const amt = Number(document.getElementById('modal-dep-amount').value) || 0;
       const rate = Number(document.getElementById('modal-dep-rate').value) || 0;
@@ -1308,7 +1307,7 @@
       renderAssets(currentAssetMember);
     }
 
-    /* --- 股市與交易紀錄編輯修復 --- */
+    /* --- 股市功能 --- */
     function calcStockTotal() {
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = Number(document.getElementById('modal-stock-shares').value) || 0;
@@ -1511,7 +1510,6 @@
       renderStockPage(member);
     }
 
-    // 國泰券商淨額模型計算
     function getMemberStockHoldings(member) {
       const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
       const holdings = {};
@@ -1591,7 +1589,6 @@
       profitEl.innerText = (isPositive ? '+' : '') + '$' + totalProfit.toLocaleString();
       profitEl.className = `text-sm font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
 
-      // 渲染持股卡片
       const listContainer = document.getElementById('stock-detailed-list');
       if (holdings.length === 0) {
         listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無持股紀錄。</div>`;
@@ -1653,7 +1650,6 @@
         }).join('');
       }
 
-      // 現金流歷史
       const cashHistoryContainer = document.getElementById('stock-cash-history-list');
       if (userCashLogs.length === 0) {
         cashHistoryContainer.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無現金異動紀錄。</div>';
@@ -1675,19 +1671,19 @@
       }
     }
 
-    /* --- 資產總表核心邏輯（全新包含外幣資產） --- */
+    /* --- 資產總表核心邏輯 (獨立白色圓餅圖卡片 + 附件二樣式個人總資產看板) --- */
     function renderAssets(member) {
       currentAssetMember = member;
 
-      // 1. 定存總額
+      // 1. 定存
       const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
       const depositTotal = filteredDeposits.reduce((sum, d) => sum + d.amount, 0);
 
-      // 2. 儲蓄險總額
+      // 2. 儲蓄險
       const filteredInsurances = insurancePolicies.filter(i => member === '全部' || i.owner === member);
       const insuranceTotal = filteredInsurances.reduce((sum, i) => sum + i.amount, 0);
 
-      // 3. 外幣資產總額（全新增加）
+      // 3. 外幣
       const forexHoldings = getMemberForexHoldings(member);
       const forexTotalNTD = forexHoldings.reduce((sum, h) => sum + h.currentNTDValue, 0);
 
@@ -1719,7 +1715,7 @@
 
       const stockGrandTotal = stockMarketVal + stockCashVal;
 
-      // 5. 勞退總額
+      // 5. 勞退
       let laborTotal = 0;
       if (member === '全部') {
         const lJR = laborDataByMember['潔柔'] || {};
@@ -1731,53 +1727,86 @@
         laborTotal = (l.empPrincipal||0) + (l.empIncome||0) + (l.selfPrincipal||0) + (l.selfIncome||0);
       }
 
-      // 總資產算式
       const grandTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + laborTotal;
+      const totalVal = Math.max(1, grandTotal);
 
-      // 6. 渲染總資產頂部儀表板
-      const dashCard = document.getElementById('asset-dashboard-card');
-      if (dashCard) {
-        if (member === '全部') {
-          dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3';
-          dashCard.innerHTML = `
-            <div class="flex justify-between items-center border-b border-[#687890] pb-2">
-              <span class="text-xs text-[#C5D0DF] font-bold">【全部成員】家庭總資產合計</span>
-              <span class="text-[10px] bg-[#374252] px-2 py-0.5 rounded font-bold">全方位整合</span>
-            </div>
-            <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]">$${Math.round(grandTotal).toLocaleString()}</div>
-            <p class="text-[11px] text-[#DCE4F0]">整合定存、儲蓄險、外幣資產、股票現值與勞退帳戶。</p>
-          `;
-        } else {
-          dashCard.className = 'bg-[#556357] p-4.5 rounded-2xl text-white shadow-sm space-y-3';
-          
-          const totalVal = Math.max(1, grandTotal);
-          const depPct = ((depositTotal / totalVal) * 100).toFixed(1);
-          const insPct = ((insuranceTotal / totalVal) * 100).toFixed(1);
-          const frxPct = ((forexTotalNTD / totalVal) * 100).toFixed(1);
-          const stkPct = (Math.max(0, stockGrandTotal / totalVal) * 100).toFixed(1);
+      // 各項資產 % 數試算
+      const depPct = ((depositTotal / totalVal) * 100).toFixed(1);
+      const insPct = ((insuranceTotal / totalVal) * 100).toFixed(1);
+      const frxPct = ((forexTotalNTD / totalVal) * 100).toFixed(1);
+      const stkPct = (Math.max(0, stockGrandTotal / totalVal) * 100).toFixed(1);
+      const labPct = ((laborTotal / totalVal) * 100).toFixed(1);
 
-          dashCard.innerHTML = `
-            <div class="flex justify-between items-center border-b border-[#6E7E70] pb-2">
-              <span class="text-xs text-[#D1DDD3] font-bold">【${member}】個人總資產合計</span>
-              <span class="text-[10px] bg-[#3D493F] px-2 py-0.5 rounded font-bold">個人佔比</span>
+      // --- 1. 渲染獨立白色圓餅圖卡片 (位於總資產上方) ---
+      const pieCard = document.getElementById('asset-pie-card');
+      if (pieCard) {
+        pieCard.innerHTML = `
+          <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
+            <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】資產配置佔比 (％)</strong>
+            <span class="text-[10px] text-[#827C78]">資產比例視覺分析</span>
+          </div>
+          <div class="flex items-center gap-4 py-1">
+            <div class="shrink-0 flex items-center justify-center p-1 bg-[#F8F9FA] rounded-2xl border border-[#E2E8F0]">
+              ${renderLargePieSVG(depositTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
             </div>
-            <div class="flex items-center justify-between gap-3 pt-1">
-              <div>
-                <div class="text-2xl font-extrabold text-[#F2E5C9]">$${Math.round(grandTotal).toLocaleString()}</div>
-                <div class="text-[10px] text-[#D1DDD3] mt-1 space-y-0.5">
-                  <div>定存: <strong>${depPct}%</strong> | 儲蓄險: <strong>${insPct}%</strong></div>
-                  <div>外幣: <strong>${frxPct}%</strong> | 股票: <strong>${stkPct}%</strong></div>
-                </div>
+            <div class="flex-1 space-y-1.5 text-xs">
+              <div class="flex justify-between items-center">
+                <span class="flex items-center gap-1.5 font-bold text-[#4D5A6E]">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] inline-block"></span>定存
+                </span>
+                <strong class="text-[#2E2C2B] font-extrabold">${depPct}%</strong>
               </div>
-              <div class="shrink-0 bg-white/10 p-2 rounded-xl backdrop-blur-xs flex items-center justify-center">
-                ${renderMiniPieSVG(depositTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
+              <div class="flex justify-between items-center">
+                <span class="flex items-center gap-1.5 font-bold text-[#78699B]">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#78699B] inline-block"></span>儲蓄險
+                </span>
+                <strong class="text-[#2E2C2B] font-extrabold">${insPct}%</strong>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="flex items-center gap-1.5 font-bold text-[#3B5998]">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#3B5998] inline-block"></span>外幣儲蓄
+                </span>
+                <strong class="text-[#2E2C2B] font-extrabold">${frxPct}%</strong>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="flex items-center gap-1.5 font-bold text-[#C89B9C]">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#C89B9C] inline-block"></span>股票資產
+                </span>
+                <strong class="text-[#2E2C2B] font-extrabold">${stkPct}%</strong>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="flex items-center gap-1.5 font-bold text-[#556357]">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#556357] inline-block"></span>勞退專戶
+                </span>
+                <strong class="text-[#2E2C2B] font-extrabold">${labPct}%</strong>
               </div>
             </div>
-          `;
-        }
+          </div>
+        `;
       }
 
-      // 7. 渲染條列式資產明細
+      // --- 2. 渲染總資產大看板 (完全一致對齊圖片二/附件二樣式) ---
+      const dashCard = document.getElementById('asset-dashboard-card');
+      if (dashCard) {
+        dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3';
+        
+        const cardTitle = member === '全部' ? '【全部成員】家庭總資產合計' : `【${member}】個人總資產合計`;
+        const badgeTitle = member === '全部' ? '全方位整合' : '個人總額';
+        const descText = member === '全部'
+          ? '整合定存、儲蓄險、外幣資產、股票現值與勞退帳戶。'
+          : `整合【${member}】個人名下之定存、儲蓄險、外幣、股票與勞退帳戶。`;
+
+        dashCard.innerHTML = `
+          <div class="flex justify-between items-center border-b border-[#687890] pb-2.5">
+            <span class="text-xs text-[#C5D0DF] font-bold">${cardTitle}</span>
+            <span class="text-[10px] bg-[#374252] px-2.5 py-1 rounded-md font-bold text-[#E8EDF5]">${badgeTitle}</span>
+          </div>
+          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9] py-1">$${Math.round(grandTotal).toLocaleString()}</div>
+          <p class="text-[11px] text-[#DCE4F0]">${descText}</p>
+        `;
+      }
+
+      // 3. 渲染條列式資產明細
       const breakdownList = document.getElementById('asset-breakdown-list');
       if (breakdownList) {
         breakdownList.innerHTML = `
@@ -1823,7 +1852,7 @@
         `;
       }
 
-      // 8. 渲染儲蓄險卡片清單
+      // 4. 渲染儲蓄險卡片清單
       const insContainer = document.getElementById('insurance-deposit-list');
       if (insContainer) {
         insContainer.innerHTML = filteredInsurances.length > 0
@@ -1842,7 +1871,7 @@
           : '<div class="text-[#827C78] text-center py-1">尚無儲蓄保單紀錄</div>';
       }
 
-      // 9. 渲染定存卡片清單
+      // 5. 渲染定存卡片清單
       const depContainer = document.getElementById('fixed-deposit-list');
       if (depContainer) {
         depContainer.innerHTML = filteredDeposits.length > 0
@@ -1861,7 +1890,7 @@
           : '<div class="text-[#827C78] text-center py-1">尚無定存項目</div>';
       }
 
-      // 10. 渲染股票摘要卡片
+      // 6. 渲染股票摘要卡片
       const summaryBox = document.getElementById('asset-stock-summary-box');
       if (summaryBox) {
         summaryBox.innerHTML = `
@@ -1881,10 +1910,12 @@
       renderAnnualCoverage();
     }
 
-    // 輕量微型 SVG 圓餅圖
-    function renderMiniPieSVG(dep, ins, frx, stk, lab) {
+    // 白色卡片使用的高解析放大版 SVG 環狀圓餅圖
+    function renderLargePieSVG(dep, ins, frx, stk, lab) {
       const total = Math.max(0, dep) + Math.max(0, ins) + Math.max(0, frx) + Math.max(0, stk) + Math.max(0, lab);
-      if (total <= 0) return '<svg width="42" height="42" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#DCD6D3" stroke-width="6"/></svg>';
+      if (total <= 0) {
+        return '<svg width="72" height="72" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#E2E8F0" stroke-width="5.5"/></svg>';
+      }
 
       const pDep = (Math.max(0, dep) / total) * 100;
       const pIns = (Math.max(0, ins) / total) * 100;
@@ -1898,16 +1929,16 @@
         const dash = `${pct} ${100 - pct}`;
         const strokeOffset = 100 - offset + 25;
         offset += pct;
-        return `<circle cx="18" cy="18" r="15.9" fill="none" stroke="${color}" stroke-width="6" stroke-dasharray="${dash}" stroke-dashoffset="${strokeOffset}"/>`;
+        return `<circle cx="18" cy="18" r="15.9" fill="none" stroke="${color}" stroke-width="5.5" stroke-dasharray="${dash}" stroke-dashoffset="${strokeOffset}"/>`;
       }
 
       return `
-        <svg width="48" height="48" viewBox="0 0 36 36" class="transform -rotate-90">
-          ${getPath(pDep, '#BAC7DB')}
-          ${getPath(pIns, '#C5BFE0')}
-          ${getPath(pFrx, '#9FB5E0')}
-          ${getPath(pStk, '#E8C2C3')}
-          ${getPath(pLab, '#D1DDD3')}
+        <svg width="76" height="76" viewBox="0 0 36 36" class="transform -rotate-90">
+          ${getPath(pDep, '#4D5A6E')}
+          ${getPath(pIns, '#78699B')}
+          ${getPath(pFrx, '#3B5998')}
+          ${getPath(pStk, '#C89B9C')}
+          ${getPath(pLab, '#556357')}
         </svg>
       `;
     }
