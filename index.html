@@ -1504,18 +1504,28 @@
       renderAccountOptions();
     }
 
-    function renderAccountOptions() {
-      const select = document.getElementById('account_name');
-      let html = customAccounts.filter(a => a.active).map(a => `<option value="${a.name}">${a.name}</option>`).join('');
-      
-      userCards.filter(c => c.active !== false).forEach(c => {
-        html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號 / 到期:${c.expiry||'--'})</option>`;
-      });
+function renderAccountOptions() {
+  const select = document.getElementById('account_name');
+  if (!select) return;
 
-      select.innerHTML = html || `<option value="現金 / 口袋皮夾">現金 / 口袋皮夾</option>`;
-      handleAccountChange();
-    }
+  // 1. 取得自訂管道（排除重複的舊專款名稱）
+  let html = customAccounts
+    .filter(a => a.active && !a.name.includes('專款小錢包'))
+    .map(a => `<option value="${a.name}">${a.name}</option>`)
+    .join('');
 
+  // 2. 固定確保「專款小錢包」選項存在於選單中
+  html += `<option value="連線銀行專款小錢包">連線銀行專款小錢包</option>`;
+  html += `<option value="土地銀行專款小錢包">土地銀行專款小錢包</option>`;
+
+  // 3. 加入信用卡選項
+  userCards.filter(c => c.active !== false).forEach(c => {
+    html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號 / 到期:${c.expiry||'--'})</option>`;
+  });
+
+  select.innerHTML = html;
+  handleAccountChange(); // 觸發檢查是否需要顯示對應的收支袋
+}
     function updateTopHeaderStatus() {
       let latestEntryDate = '尚無紀錄';
       if (allTransactions.length > 0 && allTransactions[0].transaction_date) {
