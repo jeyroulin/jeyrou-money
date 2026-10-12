@@ -204,7 +204,7 @@
       </section>
     </main>
 
-    <!-- 分頁二：現金收支 (大錢包 -> 小錢包 -> 收支袋架構) -->
+    <!-- 分頁二：現金收支 -->
     <main id="tab-2" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
@@ -228,11 +228,11 @@
           </div>
         </div>
 
-        <!-- 小錢包 1：連線銀行現金專款區塊 -->
+        <!-- 連線銀行專款區塊 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
             <div>
-              <strong class="text-[#4D5A6E] text-sm font-bold block">小錢包：連線銀行專款</strong>
+              <strong class="text-[#4D5A6E] text-sm font-bold block">連線銀行專款</strong>
               <span class="text-[10px] text-[#827C78]">LINE Bank 獨立帳戶與收支袋</span>
             </div>
             <strong id="line-bank-total-display" class="text-base font-extrabold text-[#4D5A6E]">$0</strong>
@@ -253,11 +253,11 @@
           </div>
         </div>
 
-        <!-- 小錢包 2：土地銀行現金專款區塊 -->
+        <!-- 土地銀行專款區塊 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
             <div>
-              <strong class="text-[#556357] text-sm font-bold block">小錢包：土地銀行專款</strong>
+              <strong class="text-[#556357] text-sm font-bold block">土地銀行專款</strong>
               <span class="text-[10px] text-[#827C78]">土地銀行獨立帳戶與收支袋</span>
             </div>
             <strong id="land-bank-total-display" class="text-base font-extrabold text-[#556357]">$0</strong>
@@ -1504,28 +1504,26 @@
       renderAccountOptions();
     }
 
-function renderAccountOptions() {
-  const select = document.getElementById('account_name');
-  if (!select) return;
+    function renderAccountOptions() {
+      const select = document.getElementById('account_name');
+      if (!select) return;
 
-  // 1. 取得自訂管道（排除重複的舊專款名稱）
-  let html = customAccounts
-    .filter(a => a.active && !a.name.includes('專款小錢包'))
-    .map(a => `<option value="${a.name}">${a.name}</option>`)
-    .join('');
+      let html = customAccounts
+        .filter(a => a.active && !a.name.includes('專款小錢包'))
+        .map(a => `<option value="${a.name}">${a.name}</option>`)
+        .join('');
 
-  // 2. 固定確保「專款小錢包」選項存在於選單中
-  html += `<option value="連線銀行專款小錢包">連線銀行專款小錢包</option>`;
-  html += `<option value="土地銀行專款小錢包">土地銀行專款小錢包</option>`;
+      html += `<option value="連線銀行專款小錢包">連線銀行專款小錢包</option>`;
+      html += `<option value="土地銀行專款小錢包">土地銀行專款小錢包</option>`;
 
-  // 3. 加入信用卡選項
-  userCards.filter(c => c.active !== false).forEach(c => {
-    html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號 / 到期:${c.expiry||'--'})</option>`;
-  });
+      userCards.filter(c => c.active !== false).forEach(c => {
+        html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號 / 到期:${c.expiry||'--'})</option>`;
+      });
 
-  select.innerHTML = html;
-  handleAccountChange(); // 觸發檢查是否需要顯示對應的收支袋
-}
+      select.innerHTML = html;
+      handleAccountChange();
+    }
+
     function updateTopHeaderStatus() {
       let latestEntryDate = '尚無紀錄';
       if (allTransactions.length > 0 && allTransactions[0].transaction_date) {
