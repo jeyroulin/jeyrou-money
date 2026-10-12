@@ -197,12 +197,12 @@
       </section>
     </main>
 
-    <!-- 分頁二：現金收支 -->
+    <!-- 分頁二：現金收支與專款預算 (連線銀行/土地銀行) -->
     <main id="tab-2" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
           <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與預算專款</h2>
+            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與專款預算</h2>
           </div>
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
@@ -219,15 +219,28 @@
           </div>
         </div>
 
+        <!-- 專款切換分頁 -->
         <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
-          <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">專款預算追蹤</strong>
-          <div class="grid grid-cols-2 gap-2 editable-only">
-            <input type="text" id="budget-item-name" placeholder="專款名稱" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
-            <input type="text" id="budget-item-limit" placeholder="預算金額 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
+          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
+            <strong class="text-[#2E2C2B] text-sm font-bold">銀行現金專款管理</strong>
+            <button onclick="setBankTotalAmount()" class="editable-only text-[11px] bg-[#DDD7D4] px-2 py-1 rounded font-bold text-[#4D5A6E]">設定總額</button>
           </div>
-          <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增專款預算</button>
 
-          <div id="budget-plans-list" class="space-y-3 pt-2">
+          <!-- 切換按鈕 -->
+          <div class="grid grid-cols-2 gap-1 bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
+            <button onclick="switchBankTab('LINE')" id="bank-tab-LINE" class="py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">連線銀行 0</button>
+            <button onclick="switchBankTab('LAND')" id="bank-tab-LAND" class="py-2 rounded-lg text-[#524D4B]">土地銀行 0</button>
+          </div>
+
+          <!-- 新增專款輸入框 -->
+          <div class="grid grid-cols-2 gap-2 editable-only pt-1">
+            <input type="text" id="budget-item-name" placeholder="專款項目 (例: 生活費)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
+            <input type="text" id="budget-item-limit" placeholder="專款金額 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
+          </div>
+          <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增至目前銀行專款</button>
+
+          <!-- 專款列表與金額試算 -->
+          <div id="budget-plans-list" class="space-y-2 pt-2">
             <div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>
           </div>
         </div>
@@ -481,11 +494,9 @@
             </div>
           </div>
 
-          <!-- 連續雙年度進度卡片區 -->
           <div id="annual-coverage-dual-cards" class="space-y-3">
           </div>
 
-          <!-- 新增預備資金按鈕與開銷輸入列 -->
           <div class="space-y-2 pt-2 border-t border-[#DCD6D3]">
             <div class="flex justify-between items-center">
               <span class="font-bold text-[#2E2C2B] text-xs">新增年度開銷明細</span>
@@ -507,7 +518,6 @@
             </div>
           </div>
 
-          <!-- 附件二樣式的乾淨細項清單 (無外框，僅底線) -->
           <div id="annual-items-list" class="space-y-1.5 pt-2 max-h-60 overflow-y-auto border-t border-[#DCD6D3]">
             <div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>
           </div>
@@ -974,6 +984,20 @@
     let currentForexMember = '潔柔';
     let allTransactions = [];
 
+    let activeBankTab = 'LINE';
+
+    // 銀行金額歸零
+    let bankTotals = {
+      'LINE': 0,
+      'LAND': 0
+    };
+
+    // 專款細項全部歸零清空
+    let bankBudgetPlans = {
+      'LINE': [],
+      'LAND': []
+    };
+
     function parseCurrencyNumber(val) {
       if (!val) return 0;
       return Number(String(val).replace(/,/g, '')) || 0;
@@ -1033,7 +1057,6 @@
     let bankList = [...defaultBankList];
     let brokerList = [...defaultBrokerList];
     let userCards = [];
-    let budgetPlans = [];
     let aaListItems = [];
 
     let laborDataByMember = {
@@ -1053,7 +1076,7 @@
     let stocksList = [];
     let expandedStockCode = null;
     let annualExpenses = { "2027": [], "2028": [] };
-    let annualFundList = []; // 預備資金清單 (銀行、活存/定存、到期日、金額)
+    let annualFundList = [];
     let lastExportDate = null;
 
     let calYear = new Date().getFullYear();
@@ -1065,6 +1088,76 @@
       'Content-Type': 'application/json',
       'Prefer': 'return=representation'
     };
+
+    function switchBankTab(bankKey) {
+      activeBankTab = bankKey;
+      document.getElementById('bank-tab-LINE').className = bankKey === 'LINE' ? 'py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs font-bold' : 'py-2 rounded-lg text-[#524D4B] font-bold';
+      document.getElementById('bank-tab-LAND').className = bankKey === 'LAND' ? 'py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs font-bold' : 'py-2 rounded-lg text-[#524D4B] font-bold';
+      renderBudgetPlans();
+    }
+
+    function setBankTotalAmount() {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      const currentVal = bankTotals[activeBankTab] || 0;
+      const bankName = activeBankTab === 'LINE' ? '連線銀行' : '土地銀行';
+      const input = prompt(`請輸入【${bankName}】當前總金額 ($)：`, currentVal);
+      if (input !== null && !isNaN(Number(input))) {
+        bankTotals[activeBankTab] = Number(input);
+        document.getElementById(`bank-tab-${activeBankTab}`).innerText = `${bankName} ${Number(input).toLocaleString()}`;
+        saveAllSettingsLocalAndCloud();
+        renderBudgetPlans();
+      }
+    }
+
+    function addBudgetPlan() {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      const name = document.getElementById('budget-item-name').value.trim();
+      const limit = parseCurrencyNumber(document.getElementById('budget-item-limit').value);
+      if (!name) return alert('請輸入專款項目名稱');
+
+      if (!bankBudgetPlans[activeBankTab]) bankBudgetPlans[activeBankTab] = [];
+      bankBudgetPlans[activeBankTab].push({ name, limit });
+
+      document.getElementById('budget-item-name').value = '';
+      document.getElementById('budget-item-limit').value = '';
+      saveAllSettingsLocalAndCloud();
+      renderBudgetPlans();
+    }
+
+    function renderBudgetPlans() {
+      const container = document.getElementById('budget-plans-list');
+      if (!container) return;
+
+      const plans = bankBudgetPlans[activeBankTab] || [];
+      const totalBankAmt = bankTotals[activeBankTab] || 0;
+      const totalPlanned = plans.reduce((sum, p) => sum + p.limit, 0);
+      const remaining = totalBankAmt - totalPlanned;
+
+      let html = `
+        <div class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1">
+          <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
+            <span>專款規劃小計：$${totalPlanned.toLocaleString()}</span>
+            <span class="${remaining >= 0 ? 'text-[#556357]' : 'text-[#784D4E]'}">${remaining >= 0 ? '未指派餘額' : '超出試算'}：$${Math.abs(remaining).toLocaleString()}</span>
+          </div>
+        </div>
+      `;
+
+      if (plans.length === 0) {
+        html += '<div class="text-center text-[#827C78] py-2">尚無專款項目。</div>';
+      } else {
+        html += plans.map((b, idx) => `
+          <div class="bg-white p-2.5 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
+            <span class="font-bold text-[#2E2C2B]">${b.name}</span>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="font-bold text-[#3D3A39]">$${b.limit.toLocaleString()}</span>
+              <button onclick="bankBudgetPlans['${activeBankTab}'].splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans();" class="editable-only text-[#784D4E] text-xs font-bold">刪除</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      container.innerHTML = html;
+    }
 
     async function fetchGoogleCalendarEvents() {
       if (!GOOGLE_API_KEY || GOOGLE_API_KEY === 'YOUR_GOOGLE_API_KEY') return;
@@ -1181,7 +1274,7 @@
 
       const settingsPayload = {
         customCategories, customAccounts, bankList, brokerList,
-        userCards, budgetPlans, aaListItems, fixedDeposits, insurancePolicies,
+        userCards, bankTotals, bankBudgetPlans, aaListItems, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
         laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
@@ -1251,7 +1344,8 @@
       if (data.bankList && data.bankList.length > 0) bankList = sortByCode(data.bankList);
       if (data.brokerList && data.brokerList.length > 0) brokerList = sortByCode(data.brokerList);
       if (data.userCards) userCards = data.userCards;
-      if (data.budgetPlans) budgetPlans = data.budgetPlans;
+      if (data.bankTotals) bankTotals = data.bankTotals;
+      if (data.bankBudgetPlans) bankBudgetPlans = data.bankBudgetPlans;
       if (data.aaListItems) aaListItems = data.aaListItems;
       if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
       if (data.insurancePolicies) insurancePolicies = data.insurancePolicies;
@@ -1393,7 +1487,6 @@
         if (userCards.length === 0) {
           creditDetailBox.innerText = '尚無信用卡資料。';
         } else {
-          // 依發卡銀行進行歸類整合 (優化後版本)
           const groupedCards = {};
           userCards.forEach(c => {
             if (!groupedCards[c.bank]) {
@@ -2119,7 +2212,6 @@
       const forexHoldings = getMemberForexHoldings(member);
       const forexTotalNTD = forexHoldings.reduce((sum, h) => sum + h.currentNTDValue, 0);
 
-      // 預備資金自動連動並加總至個人的「現金總資產」
       const annualFundTotal = annualFundList.reduce((sum, f) => sum + f.amount, 0);
 
       let stockMarketVal = 0;
@@ -2727,37 +2819,6 @@
       if (select) select.innerHTML = customCategories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
-    function addBudgetPlan() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const name = document.getElementById('budget-item-name').value.trim();
-      const limit = parseCurrencyNumber(document.getElementById('budget-item-limit').value);
-      if (!name || limit <= 0) return alert('請輸入名稱與金額');
-
-      budgetPlans.push({ name, limit });
-      document.getElementById('budget-item-name').value = '';
-      document.getElementById('budget-item-limit').value = '';
-      saveAllSettingsLocalAndCloud();
-      renderBudgetPlans();
-    }
-
-    function renderBudgetPlans() {
-      const container = document.getElementById('budget-plans-list');
-      if (!container) return;
-      if (budgetPlans.length === 0) {
-        container.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>';
-        return;
-      }
-      container.innerHTML = budgetPlans.map((b, idx) => `
-        <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
-          <span class="font-bold text-[#2E2C2B]">${b.name}</span>
-          <div class="flex items-center gap-2 shrink-0">
-            <span class="font-bold text-[#3D3A39]">上限: $${b.limit.toLocaleString()}</span>
-            <button onclick="budgetPlans.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans();" class="editable-only text-[#784D4E] text-xs font-bold">刪除</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
     function addAAItem() {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
       const title = document.getElementById('aa-item-title').value.trim();
@@ -3000,7 +3061,6 @@
           const items = annualExpenses[year] || [];
           const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
 
-          // 資金來源：100% 只採計手動新增填寫的預備資金 (原始自動算金額歸零)
           const userFunds = annualFundList.filter(f => f.year === year);
           const savedAmount = userFunds.reduce((sum, f) => sum + f.amount, 0);
 
@@ -3101,7 +3161,7 @@
         customCategories, customAccounts,
         bankList: sortByCode(bankList),
         brokerList: sortByCode(brokerList),
-        userCards, budgetPlans, fixedDeposits, insurancePolicies,
+        userCards, bankTotals, bankBudgetPlans, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
         laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
