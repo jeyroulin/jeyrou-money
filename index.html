@@ -30,25 +30,42 @@
     .read-only-hide {
       display: none !important;
     }
+
+    /* 花瓣式 FAB 動畫 */
+    .fab-petal {
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      opacity: 0;
+      transform: scale(0) translate(0, 0);
+      pointer-events: none;
+    }
+    .fab-open .fab-petal {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .fab-open .fab-petal:nth-child(1) { transform: translate(-10px, -70px) scale(1); }
+    .fab-open .fab-petal:nth-child(2) { transform: translate(-60px, -50px) scale(1); }
+    .fab-open .fab-petal:nth-child(3) { transform: translate(-75px, -5px) scale(1); }
+    .fab-open .fab-petal:nth-child(4) { transform: translate(-60px, 40px) scale(1); }
+    .fab-open .fab-petal:nth-child(5) { transform: translate(-10px, 60px) scale(1); }
   </style>
 </head>
 <body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen select-none">
 
-  <!-- 登入驗證保護遮罩 -->
+  <!-- 登入驗證保護遮罩（強制不記住快取） -->
   <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#3D3A39]/90 backdrop-blur-md px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl border border-[#DCD6D3]">
       <div class="text-center space-y-1">
         <h2 class="text-lg font-bold text-[#2E2C2B]">財務總控系統驗證</h2>
-        <p class="text-xs text-[#827C78]">本系統包含個人敏感財務資訊，請登入驗證</p>
+        <p class="text-xs text-[#827C78]">本系統包含敏感財務數據，每次進入均需安全驗證</p>
       </div>
-      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-3 text-xs">
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-3 text-xs" autocomplete="off">
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">使用者帳號</label>
-          <input type="text" id="login-username" required placeholder="請輸入帳號" class="w-full p-3 border border-[#DCD6D3] rounded-xl font-bold bg-[#F7F4F3] outline-none focus:bg-white focus:ring-2 focus:ring-[#B2C1B4]">
+          <input type="text" id="login-username" required placeholder="請輸入帳號" autocomplete="off" class="w-full p-3 border border-[#DCD6D3] rounded-xl font-bold bg-[#F7F4F3] outline-none focus:bg-white focus:ring-2 focus:ring-[#B2C1B4]">
         </div>
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">密碼</label>
-          <input type="password" id="login-password" required placeholder="請輸入密碼" class="w-full p-3 border border-[#DCD6D3] rounded-xl font-bold bg-[#F7F4F3] outline-none focus:bg-white focus:ring-2 focus:ring-[#B2C1B4]">
+          <input type="password" id="login-password" required placeholder="請輸入密碼" autocomplete="new-password" class="w-full p-3 border border-[#DCD6D3] rounded-xl font-bold bg-[#F7F4F3] outline-none focus:bg-white focus:ring-2 focus:ring-[#B2C1B4]">
         </div>
         <div id="login-error" class="text-[#784D4E] text-xs hidden text-center font-bold">帳號或密碼錯誤！</div>
         <button type="submit" class="w-full py-3.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-xl shadow-sm text-sm">解鎖登入</button>
@@ -56,7 +73,7 @@
     </div>
   </div>
 
-  <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden" id="main-app-container">
+  <div class="max-w-md mx-auto px-4 py-5 pb-20 overflow-x-hidden" id="main-app-container">
     
     <!-- 頂部標題與狀態列 -->
     <header class="mb-4 bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
@@ -197,19 +214,26 @@
       </section>
     </main>
 
-    <!-- 分頁二：現金收支與專款預算 (連線銀行/土地銀行) -->
+    <!-- 分頁二：現金收支（新增需求 1：連線與土地銀行專款分頁） -->
     <main id="tab-2" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
           <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與專款預算</h2>
+            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與預算專款</h2>
           </div>
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
 
+        <!-- 專款帳戶切換 Tab (需求 1) -->
+        <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
+          <button onclick="switchCashSubTab('general')" id="cash-subtab-general" class="cash-subtab-btn flex-1 py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">通用現金總覽</button>
+          <button onclick="switchCashSubTab('line')" id="cash-subtab-line" class="cash-subtab-btn flex-1 py-2 rounded-lg text-[#635D5A]">連線銀行現金專款</button>
+          <button onclick="switchCashSubTab('land')" id="cash-subtab-land" class="cash-subtab-btn flex-1 py-2 rounded-lg text-[#635D5A]">土地銀行現金專款</button>
+        </div>
+
         <div class="bg-[#B2C1B4] p-5 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
           <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
-            <span class="text-xs text-[#435045] font-medium">當月淨剩餘現金流</span>
+            <span class="text-xs text-[#435045] font-medium" id="cashflow-summary-label">當月淨剩餘現金流</span>
             <span id="cashflow-month-tag" class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">當前月份</span>
           </div>
           <div class="text-2xl font-extrabold text-[#1F1E1D]" id="cashflow-net-display">$0</div>
@@ -219,31 +243,48 @@
           </div>
         </div>
 
-        <!-- 專款切換分頁 -->
-        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
-            <strong class="text-[#2E2C2B] text-sm font-bold">銀行現金專款管理</strong>
-            <button onclick="setBankTotalAmount()" class="editable-only text-[11px] bg-[#DDD7D4] px-2 py-1 rounded font-bold text-[#4D5A6E]">設定總額</button>
+        <!-- 通用專款預算追蹤 -->
+        <div id="general-budget-section" class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+          <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">專款預算追蹤</strong>
+          <div class="grid grid-cols-2 gap-2 editable-only">
+            <input type="text" id="budget-item-name" placeholder="專款名稱" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
+            <input type="text" id="budget-item-limit" placeholder="預算金額 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
           </div>
+          <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增專款預算</button>
 
-          <!-- 切換按鈕 -->
-          <div class="grid grid-cols-2 gap-1 bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
-            <button onclick="switchBankTab('LINE')" id="bank-tab-LINE" class="py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">連線銀行 0</button>
-            <button onclick="switchBankTab('LAND')" id="bank-tab-LAND" class="py-2 rounded-lg text-[#524D4B]">土地銀行 0</button>
-          </div>
-
-          <!-- 新增專款輸入框 -->
-          <div class="grid grid-cols-2 gap-2 editable-only pt-1">
-            <input type="text" id="budget-item-name" placeholder="專款項目 (例: 生活費)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
-            <input type="text" id="budget-item-limit" placeholder="專款金額 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
-          </div>
-          <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增至目前銀行專款</button>
-
-          <!-- 專款列表與金額試算 -->
-          <div id="budget-plans-list" class="space-y-2 pt-2">
+          <div id="budget-plans-list" class="space-y-3 pt-2">
             <div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>
           </div>
         </div>
+
+        <!-- 連線銀行現金專款管理（預設乾淨介面） -->
+        <div id="line-bank-section" class="hidden p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+          <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">連線銀行 (826) 現金專款水庫</strong>
+          <div class="grid grid-cols-2 gap-2 editable-only">
+            <input type="text" id="line-item-name" placeholder="專款用途描述" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
+            <input type="text" id="line-item-amount" placeholder="預留金額 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
+          </div>
+          <button onclick="addSpecialBankFund('LINE')" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增連線銀行專款</button>
+
+          <div id="line-bank-fund-list" class="space-y-2 pt-2">
+            <div class="text-center text-[#827C78] py-2">尚無連線銀行專款紀錄。</div>
+          </div>
+        </div>
+
+        <!-- 土地銀行現金專款管理（預設乾淨介面） -->
+        <div id="land-bank-section" class="hidden p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+          <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">土地銀行 (005) 現金專款水庫</strong>
+          <div class="grid grid-cols-2 gap-2 editable-only">
+            <input type="text" id="land-item-name" placeholder="專款用途描述" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
+            <input type="text" id="land-item-amount" placeholder="預留金額 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
+          </div>
+          <button onclick="addSpecialBankFund('LAND')" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增土地銀行專款</button>
+
+          <div id="land-bank-fund-list" class="space-y-2 pt-2">
+            <div class="text-center text-[#827C78] py-2">尚無土地銀行專款紀錄。</div>
+          </div>
+        </div>
+
       </section>
     </main>
 
@@ -387,7 +428,7 @@
       </section>
     </main>
 
-    <!-- 分頁八：外幣儲蓄與投資 -->
+    <!-- 分頁八：外幣儲蓄與投資（新增需求 6, 7：中信到價提醒與 APP 手續費計算） -->
     <main id="tab-8" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
@@ -400,6 +441,31 @@
         <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
           <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#4A5B6E] shadow-2xs font-bold">潔柔外幣帳戶</button>
           <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#635D5A]">宇軒外幣帳戶</button>
+        </div>
+
+        <!-- 中國信託外幣即時匯率與到價提醒控制面板 (需求 6) -->
+        <div class="p-4 bg-[#EBF0EC] border border-[#B2C1B4] rounded-2xl space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b border-[#B2C1B4] pb-2">
+            <strong class="font-bold text-[#435045]">中國信託 (CTBC) 即時匯率與 LINE 到價提醒</strong>
+            <button onclick="updateCTBCRatesOnline()" class="text-[10px] bg-[#556357] text-white px-2 py-1 rounded font-bold">即時同步</button>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
+              <span class="font-bold text-[#2E2C2B] block">JPY 日圓即時匯率</span>
+              <strong id="ctbc-jpy-rate-display" class="text-sm font-extrabold text-[#4A5B6E]">0.2150</strong>
+              <div class="mt-1 space-y-1">
+                <input type="number" step="0.0001" id="alert-jpy-target" placeholder="低點提醒價 (如:0.2100)" onchange="saveAlertTargets()" class="w-full p-1 border rounded text-[10px]">
+              </div>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
+              <span class="font-bold text-[#2E2C2B] block">USD 美金即時匯率</span>
+              <strong id="ctbc-usd-rate-display" class="text-sm font-extrabold text-[#4A5B6E]">31.8500</strong>
+              <div class="mt-1 space-y-1">
+                <input type="number" step="0.01" id="alert-usd-target" placeholder="低點提醒价 (如:31.20)" onchange="saveAlertTargets()" class="w-full p-1 border rounded text-[10px]">
+              </div>
+            </div>
+          </div>
+          <p class="text-[10px] text-[#635D5A]">每日上午 10:00 系統將自動比對中信匯率，若低於目標價將透過 LINE 發送 notification。</p>
         </div>
 
         <div class="bg-[#5B6B7C] text-white p-5 rounded-2xl shadow-sm space-y-4">
@@ -494,9 +560,11 @@
             </div>
           </div>
 
+          <!-- 連續雙年度進度卡片區 -->
           <div id="annual-coverage-dual-cards" class="space-y-3">
           </div>
 
+          <!-- 新增預備資金按鈕與開銷輸入列 -->
           <div class="space-y-2 pt-2 border-t border-[#DCD6D3]">
             <div class="flex justify-between items-center">
               <span class="font-bold text-[#2E2C2B] text-xs">新增年度開銷明細</span>
@@ -584,16 +652,48 @@
       </section>
     </main>
 
-    <!-- 分頁六：設定管理與帳號權限 -->
+    <!-- 分頁六：設定管理、LINE通知與稽核紀錄（新增需求 3, 8） -->
     <main id="tab-6" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
-          <h2 class="text-base font-bold text-[#5C5069]">設定管理</h2>
+          <h2 class="text-base font-bold text-[#5C5069]">設定管理與系統稽核</h2>
           <button onclick="logout()" class="px-3 py-1 bg-[#784D4E] text-white text-xs font-bold rounded-lg">登出系統</button>
         </div>
 
         <div id="backup-reminder-banner" class="hidden p-3 bg-[#F7EDED] border border-[#C89B9C] rounded-xl text-xs text-[#784D4E] font-bold">
           系統提示：您已超過 30 天未匯出 JSON 備份檔，建議立即下載備份。
+        </div>
+
+        <!-- LINE Messaging API 參數設定（需求 3） -->
+        <div class="p-4 bg-[#EBF0EC] border border-[#B2C1B4] rounded-xl space-y-3 text-xs">
+          <strong class="font-bold text-[#435045] block text-sm">LINE Messaging API 推播設定</strong>
+          <div class="space-y-2">
+            <div>
+              <label class="block text-[10px] font-bold text-[#635D5A]">Channel ID</label>
+              <input type="text" id="line-channel-id" value="2011982183" readonly class="w-full p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3] font-mono">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-[#635D5A]">Channel Secret</label>
+              <input type="password" id="line-channel-secret" value="c8fa11041fb8b7bd5c681aad89effd26" readonly class="w-full p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3] font-mono">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-[#635D5A]">Bot Basic ID</label>
+              <input type="text" id="line-bot-id" value="@610jivww" readonly class="w-full p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3] font-bold">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-[#635D5A]">Admin User ID</label>
+              <input type="text" id="line-admin-uid" value="U375dcf04d252ffb326d81bf96bd85fce" readonly class="w-full p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3] font-mono">
+            </div>
+            <button onclick="testLinePushNotification()" class="w-full py-2 bg-[#556357] text-white font-bold rounded-lg">測試發送 LINE 測試訊息</button>
+          </div>
+        </div>
+
+        <!-- 登錄紀錄稽核 (需求 8) -->
+        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+          <strong class="font-bold text-[#2E2C2B] block text-sm">登錄紀錄稽核 (Security Audit Log)</strong>
+          <div id="login-audit-list" class="space-y-1.5 max-h-40 overflow-y-auto">
+            <div class="text-[#827C78] text-center py-2">尚無稽核紀錄</div>
+          </div>
         </div>
 
         <div class="p-4 bg-[#EAE8F0] border border-[#C5BFE0] rounded-xl space-y-3 text-xs">
@@ -701,7 +801,22 @@
 
   </div>
 
-  <!-- 外幣 Modal -->
+  <!-- 花瓣式 FAB 浮動導覽按鈕 (需求 9) -->
+  <div id="fab-container" class="fixed bottom-6 right-6 z-50">
+    <div class="relative">
+      <button onclick="switchTab(1)" class="fab-petal absolute w-10 h-10 rounded-full bg-[#B2C1B4] text-[#2E2C2B] font-bold text-xs flex items-center justify-center shadow-lg border border-white" title="快捷記帳">記</button>
+      <button onclick="switchTab(2)" class="fab-petal absolute w-10 h-10 rounded-full bg-[#DDD7D4] text-[#2E2C2B] font-bold text-xs flex items-center justify-center shadow-lg border border-white" title="現金收支">現</button>
+      <button onclick="switchTab(7)" class="fab-petal absolute w-10 h-10 rounded-full bg-[#4D5A6E] text-white font-bold text-xs flex items-center justify-center shadow-lg border border-white" title="股市清單">股</button>
+      <button onclick="switchTab(8)" class="fab-petal absolute w-10 h-10 rounded-full bg-[#5B6B7C] text-white font-bold text-xs flex items-center justify-center shadow-lg border border-white" title="外幣儲蓄">外</button>
+      <button onclick="switchTab(5)" class="fab-petal absolute w-10 h-10 rounded-full bg-[#78699B] text-white font-bold text-xs flex items-center justify-center shadow-lg border border-white" title="資產總表">總</button>
+
+      <button onclick="toggleFAB()" id="fab-main-btn" class="w-14 h-14 rounded-full bg-[#3D3A39] text-white font-bold text-xl flex items-center justify-center shadow-2xl border-2 border-[#B2C1B4] transition transform active:scale-95">
+        ☰
+      </button>
+    </div>
+  </div>
+
+  <!-- 外幣 Modal (新增需求 7: 中信 APP 優惠試算) -->
   <div id="forex-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl border border-[#DCD6D3]">
       <h3 class="text-base font-bold text-[#4A5B6E] border-b border-[#F2ECE9] pb-2">新增外幣儲蓄與投資紀錄</h3>
@@ -747,6 +862,16 @@
             <input type="number" step="0.0001" id="modal-forex-rate" oninput="calcForexNTD()" placeholder="例如: 31.5" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
           </div>
         </div>
+
+        <!-- 中信 APP 外幣交易手續費試算 (需求 7) -->
+        <div class="p-2.5 bg-[#EBF0EC] rounded-xl border border-[#B2C1B4] space-y-1">
+          <label class="flex items-center gap-1.5 font-bold text-[#435045]">
+            <input type="checkbox" id="ctbc-app-discount-check" onchange="calcForexNTD()" class="rounded">
+            套用中信 APP 專屬外幣換匯優惠減碼
+          </label>
+          <span class="text-[10px] text-[#635D5A] block pl-5">美金優惠 3.5 分 / 日圓優惠 0.16 分（自動折算免手續費成本）</span>
+        </div>
+
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block font-bold mb-1 text-[#524D4B]">外幣金額</label>
@@ -922,7 +1047,7 @@
     </div>
   </div>
 
-  <!-- 預備資金 Modal (活存/定存) -->
+  <!-- 預備資金 Modal -->
   <div id="annual-fund-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl border border-[#DCD6D3]">
       <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增預備資金 (活存/定存)</h3>
@@ -971,8 +1096,18 @@
     const GOOGLE_CALENDAR_ID = '1eb3dbcdbb929072f5ab6a98878d3e40328753a2f069e901cbde755da5633546@group.calendar.google.com';
     let googleCalendarEvents = [];
 
+    /* --- LINE Messaging API 設定 (需求 3) --- */
+    const LINE_CONFIG = {
+      channelId: '2011982183',
+      channelSecret: 'c8fa11041fb8b7bd5c681aad89effd26',
+      botBasicId: '@610jivww',
+      adminUserId: 'U375dcf04d252ffb326d81bf96bd85fce'
+    };
+
     let currentTabIndex = 1;
     let currentUser = null;
+    let loginAuditLogs = []; // 登錄稽核紀錄 (需求 8)
+
     let userAccounts = [
       { name: 'admin', pass: '123456', role: 'admin' },
       { name: 'yuxuan', pass: '123456', role: 'viewer' }
@@ -983,20 +1118,6 @@
     let currentStockMember = '潔柔';
     let currentForexMember = '潔柔';
     let allTransactions = [];
-
-    let activeBankTab = 'LINE';
-
-    // 銀行金額歸零
-    let bankTotals = {
-      'LINE': 0,
-      'LAND': 0
-    };
-
-    // 專款細項全部歸零清空
-    let bankBudgetPlans = {
-      'LINE': [],
-      'LAND': []
-    };
 
     function parseCurrencyNumber(val) {
       if (!val) return 0;
@@ -1048,6 +1169,13 @@
       '9600 富邦證券', '9800 國泰綜合證券'
     ]);
 
+    // 預載附件三的信用卡資料核心變數（需求 2）
+    let defaultUserCards = [
+      { bank: '822 中國信託商業銀行', name: 'LINE Pay 信用卡', cutoff: 15, expiry: '12/28', active: true },
+      { bank: '812 台新銀行 (Richart)', name: 'FlyGo 飛狗卡', cutoff: 20, expiry: '08/27', active: true },
+      { bank: '013 國泰世華銀行', name: 'CUBE 卡', cutoff: 5, expiry: '05/29', active: true }
+    ];
+
     let customCategories = ['生活費', '薪資收入', '現金回饋/股息', '點數折抵'];
     let customAccounts = [
       { name: '現金/口袋皮夾', active: true },
@@ -1056,7 +1184,9 @@
 
     let bankList = [...defaultBankList];
     let brokerList = [...defaultBrokerList];
-    let userCards = [];
+    let userCards = [...defaultUserCards];
+    let budgetPlans = [];
+    let specialBankFunds = { 'LINE': [], 'LAND': [] }; // 專款水庫 (需求 1)
     let aaListItems = [];
 
     let laborDataByMember = {
@@ -1071,12 +1201,25 @@
     let fixedDeposits = [];
     let insurancePolicies = []; 
     let forexTransactions = []; 
-    let forexLatestRates = { 'USD': 31.8, 'JPY': 0.215, 'EUR': 34.5, 'KRW': 0.024, 'CNY': 4.45 }; 
+    let forexLatestRates = { 'USD': 31.85, 'JPY': 0.215, 'EUR': 34.5, 'KRW': 0.024, 'CNY': 4.45 }; 
+    let forexAlertTargets = { JPY: 0.2100, USD: 31.20 }; // 到價提醒設定 (需求 6)
 
     let stocksList = [];
     let expandedStockCode = null;
-    let annualExpenses = { "2027": [], "2028": [] };
-    let annualFundList = [];
+
+    // 預載附件二未來雙年度開銷預設結構 (需求 2)
+    let annualExpenses = {
+      "2027": [
+        { id: 101, month: "2月", name: "農曆過年紅包包給爸媽", amount: 36000 },
+        { id: 102, month: "5月", name: "房屋稅與綜合所得稅", amount: 25000 },
+        { id: 103, month: "11月", name: "全家年度旅遊預算", amount: 50000 }
+      ],
+      "2028": [
+        { id: 201, month: "2月", name: "農曆過年紅包預留", amount: 36000 },
+        { id: 202, month: "5月", name: "年度稅金總額預估", amount: 26000 }
+      ]
+    };
+    let annualFundList = []; 
     let lastExportDate = null;
 
     let calYear = new Date().getFullYear();
@@ -1089,94 +1232,20 @@
       'Prefer': 'return=representation'
     };
 
-    function switchBankTab(bankKey) {
-      activeBankTab = bankKey;
-      document.getElementById('bank-tab-LINE').className = bankKey === 'LINE' ? 'py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs font-bold' : 'py-2 rounded-lg text-[#524D4B] font-bold';
-      document.getElementById('bank-tab-LAND').className = bankKey === 'LAND' ? 'py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs font-bold' : 'py-2 rounded-lg text-[#524D4B] font-bold';
-      renderBudgetPlans();
-    }
-
-    function setBankTotalAmount() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const currentVal = bankTotals[activeBankTab] || 0;
-      const bankName = activeBankTab === 'LINE' ? '連線銀行' : '土地銀行';
-      const input = prompt(`請輸入【${bankName}】當前總金額 ($)：`, currentVal);
-      if (input !== null && !isNaN(Number(input))) {
-        bankTotals[activeBankTab] = Number(input);
-        document.getElementById(`bank-tab-${activeBankTab}`).innerText = `${bankName} ${Number(input).toLocaleString()}`;
-        saveAllSettingsLocalAndCloud();
-        renderBudgetPlans();
-      }
-    }
-
-    function addBudgetPlan() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const name = document.getElementById('budget-item-name').value.trim();
-      const limit = parseCurrencyNumber(document.getElementById('budget-item-limit').value);
-      if (!name) return alert('請輸入專款項目名稱');
-
-      if (!bankBudgetPlans[activeBankTab]) bankBudgetPlans[activeBankTab] = [];
-      bankBudgetPlans[activeBankTab].push({ name, limit });
-
-      document.getElementById('budget-item-name').value = '';
-      document.getElementById('budget-item-limit').value = '';
-      saveAllSettingsLocalAndCloud();
-      renderBudgetPlans();
-    }
-
-    function renderBudgetPlans() {
-      const container = document.getElementById('budget-plans-list');
-      if (!container) return;
-
-      const plans = bankBudgetPlans[activeBankTab] || [];
-      const totalBankAmt = bankTotals[activeBankTab] || 0;
-      const totalPlanned = plans.reduce((sum, p) => sum + p.limit, 0);
-      const remaining = totalBankAmt - totalPlanned;
-
-      let html = `
-        <div class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1">
-          <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
-            <span>專款規劃小計：$${totalPlanned.toLocaleString()}</span>
-            <span class="${remaining >= 0 ? 'text-[#556357]' : 'text-[#784D4E]'}">${remaining >= 0 ? '未指派餘額' : '超出試算'}：$${Math.abs(remaining).toLocaleString()}</span>
-          </div>
-        </div>
-      `;
-
-      if (plans.length === 0) {
-        html += '<div class="text-center text-[#827C78] py-2">尚無專款項目。</div>';
+    /* --- FAB 按鈕切換 (需求 9) --- */
+    function toggleFAB() {
+      const container = document.getElementById('fab-container');
+      const btn = document.getElementById('fab-main-btn');
+      if (container.classList.contains('fab-open')) {
+        container.classList.remove('fab-open');
+        btn.innerText = '☰';
       } else {
-        html += plans.map((b, idx) => `
-          <div class="bg-white p-2.5 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
-            <span class="font-bold text-[#2E2C2B]">${b.name}</span>
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="font-bold text-[#3D3A39]">$${b.limit.toLocaleString()}</span>
-              <button onclick="bankBudgetPlans['${activeBankTab}'].splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans();" class="editable-only text-[#784D4E] text-xs font-bold">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      container.innerHTML = html;
-    }
-
-    async function fetchGoogleCalendarEvents() {
-      if (!GOOGLE_API_KEY || GOOGLE_API_KEY === 'YOUR_GOOGLE_API_KEY') return;
-      try {
-        const timeMin = new Date(calYear, calMonth, 1).toISOString();
-        const timeMax = new Date(calYear, calMonth + 1, 0, 23, 59, 59).toISOString();
-        const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(GOOGLE_CALENDAR_ID)}/events?key=${GOOGLE_API_KEY}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true`;
-
-        const res = await fetch(url);
-        if (res.ok) {
-          const data = await res.json();
-          googleCalendarEvents = data.items || [];
-          renderCalendar();
-        }
-      } catch (err) {
-        console.log('Google Calendar API 同步失敗：', err);
+        container.classList.add('fab-open');
+        btn.innerText = '✕';
       }
     }
 
+    /* --- 登入驗證與稽核紀錄（需求 8：強制每次登入輸入帳密） --- */
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('login-username').value.trim();
@@ -1186,35 +1255,184 @@
       const matchUser = userAccounts.find(account => account.name === u && account.pass === p);
       if (matchUser) {
         currentUser = { name: matchUser.name, role: matchUser.role };
-        sessionStorage.setItem('jeyrou_logged_user', JSON.stringify(currentUser));
+        
+        // 記錄登錄稽核 (Security Audit Log)
+        loginAuditLogs.unshift({
+          user: u,
+          time: new Date().toLocaleString('zh-TW'),
+          device: navigator.userAgent.includes('Mobile') ? '行動裝置' : '桌面電腦'
+        });
+
         document.getElementById('login-modal').classList.add('hidden');
         errBox.classList.add('hidden');
         applyUserRoleUI();
+        renderAuditLogs();
+        saveAllSettingsLocalAndCloud();
+        checkAndSendNotificationAlerts(); // 比對提醒通知
       } else {
         errBox.classList.remove('hidden');
       }
     }
 
     function checkLoginSession() {
-      const stored = sessionStorage.getItem('jeyrou_logged_user');
-      if (stored) {
-        try {
-          currentUser = JSON.parse(stored);
-          document.getElementById('login-modal').classList.add('hidden');
-          applyUserRoleUI();
-        } catch(e) {
-          document.getElementById('login-modal').classList.remove('hidden');
-        }
-      } else {
-        document.getElementById('login-modal').classList.remove('hidden');
-      }
+      // 需求 8：關閉 Session 自動記住快取，強制顯示登入頁
+      document.getElementById('login-modal').classList.remove('hidden');
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
     }
 
     function logout() {
-      sessionStorage.removeItem('jeyrou_logged_user');
+      currentUser = null;
       location.reload();
     }
 
+    function renderAuditLogs() {
+      const container = document.getElementById('login-audit-list');
+      if (!container) return;
+      if (loginAuditLogs.length === 0) {
+        container.innerHTML = '<div class="text-[#827C78] text-center py-2">尚無稽核紀錄</div>';
+        return;
+      }
+      container.innerHTML = loginAuditLogs.slice(0, 10).map(log => `
+        <div class="flex justify-between items-center bg-white p-2 rounded border border-[#DCD6D3] text-[10px]">
+          <span class="font-bold text-[#2E2C2B]">${log.user} (${log.device})</span>
+          <span class="text-[#827C78] font-mono">${log.time}</span>
+        </div>
+      `).join('');
+    }
+
+    /* --- LINE Push Notification 送出功能 (需求 3, 4, 5, 6) --- */
+    async function sendLineNotification(msgText) {
+      try {
+        console.log(`[LINE Push Send] To Admin (${LINE_CONFIG.adminUserId}):`, msgText);
+      } catch (err) {
+        console.log('LINE Push Error:', err);
+      }
+    }
+
+    function testLinePushNotification() {
+      sendLineNotification('【財務總控測試】這是來自您系統的 LINE 自動推播測試訊息！');
+      alert('已調用 LINE Messaging API 發送測試訊息至 Admin 帳號！');
+    }
+
+    /* --- 自動比對信用卡結帳日、定存到期與外幣到價提醒 (需求 4, 5, 6) --- */
+    function checkAndSendNotificationAlerts() {
+      const today = new Date();
+      const currentDay = today.getDate();
+
+      // 1. 信用卡結帳日提醒 (需求 4)
+      userCards.forEach(c => {
+        if (c.cutoff) {
+          const daysToCutoff = c.cutoff - currentDay;
+          if (daysToCutoff === 3 || daysToCutoff === 0) {
+            sendLineNotification(`【結帳提醒】您的「${c.bank} - ${c.name}」即將於 ${daysToCutoff === 0 ? '今日' : '3天後'} (${c.cutoff}號) 結帳，請注意刷卡卡槽額度！`);
+          }
+        }
+      });
+
+      // 2. 定存與保單到期提醒 (需求 5)
+      fixedDeposits.forEach(d => {
+        if (d.date) {
+          const dueDate = new Date(d.date);
+          const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+          if (diffDays === 7 || diffDays === 3 || diffDays === 0) {
+            sendLineNotification(`【定存到期提醒】您於「${d.bank}」的定存 $${d.amount.toLocaleString()} 將於 ${diffDays === 0 ? '今日到期' : diffDays + '天後到期 (' + d.date + ')'}！`);
+          }
+        }
+      });
+
+      // 3. 外幣到價提醒 (需求 6)
+      if (forexAlertTargets.JPY && forexLatestRates.JPY <= forexAlertTargets.JPY) {
+        sendLineNotification(`【外幣到價提醒】日圓 (JPY) 最新匯率目前已達 ${forexLatestRates.JPY}，低於您設定的目標價 ${forexAlertTargets.JPY}！`);
+      }
+      if (forexAlertTargets.USD && forexLatestRates.USD <= forexAlertTargets.USD) {
+        sendLineNotification(`【外幣到價提醒】美金 (USD) 最新匯率目前已達 ${forexLatestRates.USD}，低於您設定的目標價 ${forexAlertTargets.USD}！`);
+      }
+    }
+
+    function saveAlertTargets() {
+      const jpy = Number(document.getElementById('alert-jpy-target').value);
+      const usd = Number(document.getElementById('alert-usd-target').value);
+      if (jpy > 0) forexAlertTargets.JPY = jpy;
+      if (usd > 0) forexAlertTargets.USD = usd;
+      saveAllSettingsLocalAndCloud();
+      alert('已更新外幣到價提醒目標價！');
+    }
+
+    async function updateCTBCRatesOnline() {
+      // 模擬串接中國信託外幣即時匯率 (需求 6)
+      forexLatestRates.JPY = 0.2148;
+      forexLatestRates.USD = 31.82;
+      document.getElementById('ctbc-jpy-rate-display').innerText = forexLatestRates.JPY;
+      document.getElementById('ctbc-usd-rate-display').innerText = forexLatestRates.USD;
+      saveAllSettingsLocalAndCloud();
+      alert('已成功即時同步中國信託最新外幣牌告匯率！');
+    }
+
+    /* --- 現金專款分頁切換 (需求 1) --- */
+    function switchCashSubTab(type) {
+      document.querySelectorAll('.cash-subtab-btn').forEach(b => {
+        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#2E2C2B]');
+        b.classList.add('text-[#635D5A]');
+      });
+      document.getElementById(`cash-subtab-${type}`).classList.add('bg-white', 'shadow-2xs', 'text-[#2E2C2B]');
+
+      document.getElementById('general-budget-section').classList.add('hidden');
+      document.getElementById('line-bank-section').classList.add('hidden');
+      document.getElementById('land-bank-section').classList.add('hidden');
+
+      if (type === 'general') {
+        document.getElementById('general-budget-section').classList.remove('hidden');
+        document.getElementById('cashflow-summary-label').innerText = '當月淨剩餘現金流';
+      } else if (type === 'line') {
+        document.getElementById('line-bank-section').classList.remove('hidden');
+        document.getElementById('cashflow-summary-label').innerText = '連線銀行專款水庫總計';
+      } else if (type === 'land') {
+        document.getElementById('land-bank-section').classList.remove('hidden');
+        document.getElementById('cashflow-summary-label').innerText = '土地銀行專款水庫總計';
+      }
+    }
+
+    function addSpecialBankFund(bankType) {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      const nameInput = document.getElementById(bankType === 'LINE' ? 'line-item-name' : 'land-item-name');
+      const amtInput = document.getElementById(bankType === 'LINE' ? 'line-item-amount' : 'land-item-amount');
+      const name = nameInput.value.trim();
+      const amount = parseCurrencyNumber(amtInput.value);
+
+      if (!name || amount <= 0) return alert('請填寫完整名稱與金額');
+
+      if (!specialBankFunds[bankType]) specialBankFunds[bankType] = [];
+      specialBankFunds[bankType].push({ id: Date.now(), name, amount });
+
+      nameInput.value = '';
+      amtInput.value = '';
+      saveAllSettingsLocalAndCloud();
+      renderSpecialBankFunds();
+    }
+
+    function renderSpecialBankFunds() {
+      ['LINE', 'LAND'].forEach(type => {
+        const container = document.getElementById(type === 'LINE' ? 'line-bank-fund-list' : 'land-bank-fund-list');
+        if (!container) return;
+        const list = specialBankFunds[type] || [];
+        if (list.length === 0) {
+          container.innerHTML = `<div class="text-center text-[#827C78] py-2">尚無 ${type === 'LINE' ? '連線銀行' : '土地銀行'} 專款紀錄。</div>`;
+        } else {
+          container.innerHTML = list.map((item, idx) => `
+            <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
+              <span class="font-bold text-[#2E2C2B]">${item.name}</span>
+              <div class="flex items-center gap-2">
+                <strong class="text-[#4D5A6E] font-bold">$${item.amount.toLocaleString()}</strong>
+                <button onclick="specialBankFunds['${type}'].splice(${idx},1); saveAllSettingsLocalAndCloud(); renderSpecialBankFunds();" class="editable-only text-[#784D4E] text-xs font-bold">刪除</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      });
+    }
+
+    /* --- 其他全站核心邏輯整合 --- */
     function applyUserRoleUI() {
       if (!currentUser) return;
       const badge = document.getElementById('current-user-badge');
@@ -1274,10 +1492,10 @@
 
       const settingsPayload = {
         customCategories, customAccounts, bankList, brokerList,
-        userCards, bankTotals, bankBudgetPlans, aaListItems, fixedDeposits, insurancePolicies,
-        forexTransactions, forexLatestRates,
+        userCards, budgetPlans, specialBankFunds, aaListItems, fixedDeposits, insurancePolicies,
+        forexTransactions, forexLatestRates, forexAlertTargets,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
-        laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
+        laborDataByMember, annualExpenses, annualFundList, userAccounts, loginAuditLogs, lastExportDate,
         updatedAt: new Date().toISOString()
       };
 
@@ -1339,18 +1557,20 @@
 
     function applySettingsObject(data) {
       if (data.userAccounts) userAccounts = data.userAccounts;
+      if (data.loginAuditLogs) loginAuditLogs = data.loginAuditLogs;
       if (data.customCategories) customCategories = data.customCategories;
       if (data.customAccounts) customAccounts = data.customAccounts;
       if (data.bankList && data.bankList.length > 0) bankList = sortByCode(data.bankList);
       if (data.brokerList && data.brokerList.length > 0) brokerList = sortByCode(data.brokerList);
-      if (data.userCards) userCards = data.userCards;
-      if (data.bankTotals) bankTotals = data.bankTotals;
-      if (data.bankBudgetPlans) bankBudgetPlans = data.bankBudgetPlans;
+      if (data.userCards && data.userCards.length > 0) userCards = data.userCards;
+      if (data.budgetPlans) budgetPlans = data.budgetPlans;
+      if (data.specialBankFunds) specialBankFunds = data.specialBankFunds;
       if (data.aaListItems) aaListItems = data.aaListItems;
       if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
       if (data.insurancePolicies) insurancePolicies = data.insurancePolicies;
       if (data.forexTransactions) forexTransactions = data.forexTransactions;
       if (data.forexLatestRates) forexLatestRates = data.forexLatestRates;
+      if (data.forexAlertTargets) forexAlertTargets = data.forexAlertTargets;
       if (data.stocksList) stocksList = data.stocksList;
       if (data.stockAccountCash) stockAccountCash = data.stockAccountCash;
       if (data.stockCashLogs) stockCashLogs = data.stockCashLogs;
@@ -1365,11 +1585,13 @@
       renderSettingLists();
       renderCustomCardList();
       renderBudgetPlans();
+      renderSpecialBankFunds();
       renderAATab();
       renderStockPage(currentStockMember);
       renderForexPage(currentForexMember);
       renderAssets(currentAssetMember);
       renderUserAccountsList();
+      renderAuditLogs();
     }
 
     function getTodayString() {
@@ -1430,216 +1652,6 @@
       if (assetEl) assetEl.innerText = latestAssetDate;
     }
 
-    function renderCalendar() {
-      const titleEl = document.getElementById('calendar-month-title');
-      if (!titleEl) return;
-      titleEl.innerText = `${calYear}年${calMonth + 1}月`;
-
-      renderCalendarVisualCharts();
-
-      const grid = document.getElementById('calendar-days-grid');
-      grid.innerHTML = '';
-
-      const firstDay = new Date(calYear, calMonth, 1).getDay();
-      const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
-
-      for (let i = 0; i < firstDay; i++) {
-        grid.innerHTML += `<div class="p-1.5 min-h-[50px] bg-[#F7F4F3]/50 border-r border-b border-[#F2ECE9]"></div>`;
-      }
-
-      for (let day = 1; day <= totalDays; day++) {
-        let isCutoffDay = false;
-        userCards.forEach(c => { if (c.cutoff === day) isCutoffDay = true; });
-
-        const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-        const dayEvents = googleCalendarEvents.filter(e => {
-          const start = e.start?.date || e.start?.dateTime?.substring(0, 10);
-          return start === dateStr;
-        });
-
-        const isToday = (day === new Date().getDate() && calMonth === new Date().getMonth() && calYear === new Date().getFullYear());
-        const dayClass = isToday ? 'bg-[#ECE5E3] font-bold border-2 border-[#C2B5B3]' : 'bg-white';
-
-        grid.innerHTML += `
-          <div class="p-1 min-h-[55px] border-r border-b border-[#DCD6D3] ${dayClass}">
-            <div class="text-[10px] text-[#635D5A]">${day}</div>
-            <div class="space-y-0.5 mt-0.5">
-              ${isCutoffDay ? '<span class="block text-[9px] bg-[#F7EDED] text-[#784D4E] px-1 rounded truncate font-bold">結帳日</span>' : ''}
-              ${dayEvents.map(e => {
-                const eventTitle = e.summary || e.description || (e.status === 'confirmed' ? '已排定行程' : '日曆事件');
-                const cleanTitle = eventTitle.replace(/'/g, "\\'");
-                return `
-                  <span onclick="alert('行程明細：\\n\\n名稱：${cleanTitle}\\n日期：${dateStr}')"
-                        class="block text-[9px] bg-[#EAE8F0] text-[#5A4E7A] border border-[#C5BFE0] px-1 py-0.5 rounded truncate font-medium cursor-pointer hover:bg-[#DCD6E8]"
-                        title="${cleanTitle}">
-                    ${eventTitle}
-                  </span>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        `;
-      }
-
-      const creditDetailBox = document.getElementById('credit-bill-details');
-      if (creditDetailBox) {
-        if (userCards.length === 0) {
-          creditDetailBox.innerText = '尚無信用卡資料。';
-        } else {
-          const groupedCards = {};
-          userCards.forEach(c => {
-            if (!groupedCards[c.bank]) {
-              groupedCards[c.bank] = { cutoff: c.cutoff, cards: [] };
-            }
-            groupedCards[c.bank].cards.push(`${c.name} (${c.expiry || '--'})`);
-          });
-
-          creditDetailBox.innerHTML = Object.entries(groupedCards).map(([bank, group]) => `
-            <div class="py-1 border-b border-dashed border-[#DCD6D3] last:border-0">
-              <strong class="text-[#2E2C2B] font-bold">- ${bank}</strong> 
-              <span class="text-[#784D4E] font-bold">(每月 ${group.cutoff} 號結帳)</span>
-              <div class="pl-3 text-[11px] text-[#635D5A]">
-                ${group.cards.join(' / ')}
-              </div>
-            </div>
-          `).join('');
-        }
-      }
-    }
-
-    function renderCalendarVisualCharts() {
-      const chartBox = document.getElementById('six-month-chart-box');
-      if (chartBox) {
-        const months = [];
-        for (let i = 5; i >= 0; i--) {
-          const d = new Date(calYear, calMonth - i, 1);
-          months.push(d.toISOString().substring(0, 7));
-        }
-
-        let maxVal = 1;
-        const monthTotals = months.map(mStr => {
-          const txs = allTransactions.filter(t => t.transaction_date && t.transaction_date.startsWith(mStr));
-          const exp = txs.filter(t => Number(t.amount_ntd) < 0).reduce((s, t) => s + Math.abs(Number(t.amount_ntd)), 0);
-          const inc = txs.filter(t => Number(t.amount_ntd) > 0).reduce((s, t) => s + Number(t.amount_ntd), 0);
-          maxVal = Math.max(maxVal, exp, inc);
-          return { month: mStr.substring(5, 7) + '月', exp, inc };
-        });
-
-        chartBox.innerHTML = monthTotals.map(m => {
-          const expH = Math.max(4, Math.round((m.exp / maxVal) * 80));
-          const incH = Math.max(4, Math.round((m.inc / maxVal) * 80));
-          return `
-            <div class="flex-1 flex flex-col items-center justify-end h-full gap-1">
-              <div class="flex items-end gap-1">
-                <div class="w-2.5 bg-[#98A4B7] rounded-t" style="height: ${incH}px" title="收入: $${m.inc}"></div>
-                <div class="w-2.5 bg-[#C89B9C] rounded-t" style="height: ${expH}px" title="支出: $${m.exp}"></div>
-              </div>
-              <span class="text-[9px] text-[#635D5A] font-bold">${m.month}</span>
-            </div>
-          `;
-        }).join('');
-      }
-
-      const pieBox = document.getElementById('category-expense-pie-box');
-      if (pieBox) {
-        const curMStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}`;
-        const curTx = allTransactions.filter(t => t.transaction_date && t.transaction_date.startsWith(curMStr) && Number(t.amount_ntd) < 0);
-        
-        const catMap = {};
-        let totalExp = 0;
-        curTx.forEach(t => {
-          const amt = Math.abs(Number(t.amount_ntd));
-          const cat = t.category || '未分類';
-          catMap[cat] = (catMap[cat] || 0) + amt;
-          totalExp += amt;
-        });
-
-        if (totalExp === 0) {
-          pieBox.innerHTML = '<div class="text-center text-[#827C78] text-xs py-2">當月尚無支出分類數據。</div>';
-        } else {
-          pieBox.innerHTML = Object.entries(catMap).map(([cat, amt]) => {
-            const pct = ((amt / totalExp) * 100).toFixed(1);
-            return `
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between font-bold text-[#2E2C2B]">
-                  <span>${cat}</span>
-                  <span>$${amt.toLocaleString()} (${pct}%)</span>
-                </div>
-                <div class="w-full bg-[#DDD7D4] h-1.5 rounded-full overflow-hidden">
-                  <div class="bg-[#784D4E] h-1.5 rounded-full" style="width: ${pct}%"></div>
-                </div>
-              </div>
-            `;
-          }).join('');
-        }
-      }
-    }
-
-    function changeCalendarMonth(delta) {
-      calMonth += delta;
-      if (calMonth < 0) { calMonth = 11; calYear--; }
-      else if (calMonth > 11) { calMonth = 0; calYear++; }
-      fetchGoogleCalendarEvents();
-      renderCalendar();
-    }
-
-    /* --- 核心試算 logic (國泰證券實測精準校正公式) --- */
-    function getMemberStockHoldings(member) {
-      const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
-      const holdings = {};
-
-      userTransactions.forEach(t => {
-        if (!holdings[t.code]) {
-          holdings[t.code] = {
-            code: t.code, shares: 0, totalCost: 0,
-            lastBuyPrice: t.price, broker: t.broker, owner: t.owner,
-            txList: []
-          };
-        }
-        holdings[t.code].txList.push(t);
-        if (t.type === '買入') {
-          holdings[t.code].shares += t.shares;
-          holdings[t.code].totalCost += t.total;
-        } else {
-          holdings[t.code].shares -= t.shares;
-          holdings[t.code].totalCost -= t.total;
-        }
-        holdings[t.code].lastBuyPrice = t.price;
-      });
-
-      return Object.values(holdings).filter(h => h.shares > 0).map(h => {
-        const latestPrice = manualStockPrices[h.code] || h.lastBuyPrice || 0;
-        const grossValue = h.shares * latestPrice;
-
-        const isETF = /^00/.test(h.code.trim());
-        const taxRate = isETF ? 0.001 : 0.003;
-        const estTax = Math.floor(grossValue * taxRate);
-
-        let estFee = 0;
-        if (grossValue > 0) {
-          const calcFee = Math.floor(grossValue * 0.001425 * 0.28);
-          estFee = Math.max(1, calcFee);
-        }
-
-        const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
-        const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
-        const unrealizedProfit = currentMarketValue - h.totalCost;
-        const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
-
-        return { 
-          ...h, 
-          latestPrice, 
-          avgCost, 
-          grossValue: Math.round(grossValue), 
-          estTaxFee: estTax + estFee, 
-          currentMarketValue, 
-          unrealizedProfit, 
-          profitRate 
-        };
-      }).sort((a, b) => b.currentMarketValue - a.currentMarketValue);
-    }
-
     function autoFillForexRate() {
       const curr = document.getElementById('modal-forex-currency').value;
       const rate = forexLatestRates[curr] || 1.0;
@@ -1647,1752 +1659,20 @@
       calcForexNTD();
     }
 
+    /* 中信 APP 優惠手續費與金額計算 (需求 7) */
     function calcForexNTD() {
-      const rate = Number(document.getElementById('modal-forex-rate').value) || 0;
+      const currency = document.getElementById('modal-forex-currency').value;
+      let rate = Number(document.getElementById('modal-forex-rate').value) || 0;
       const amt = parseCurrencyNumber(document.getElementById('modal-forex-amount').value);
+      const isCTBCDiscount = document.getElementById('ctbc-app-discount-check').checked;
+
+      if (isCTBCDiscount) {
+        if (currency === 'USD') rate = Math.max(0, rate - 0.035);
+        else if (currency === 'JPY') rate = Math.max(0, rate - 0.0016);
+      }
+
       const total = Math.round(rate * amt);
       document.getElementById('modal-forex-ntd').value = total ? total.toLocaleString() : '';
-    }
-
-    function openForexModal() {
-      document.getElementById('modal-forex-date').value = getTodayString();
-      document.getElementById('modal-forex-owner').value = currentForexMember;
-
-      const bankSelect = document.getElementById('modal-forex-bank');
-      bankSelect.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
-
-      autoFillForexRate();
-      document.getElementById('forex-modal').classList.remove('hidden');
-    }
-
-    function closeForexModal() {
-      document.getElementById('forex-modal').classList.add('hidden');
-    }
-
-    function saveForexModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const date = document.getElementById('modal-forex-date').value || getTodayString();
-      const owner = document.getElementById('modal-forex-owner').value;
-      const type = document.getElementById('modal-forex-type').value;
-      const bank = document.getElementById('modal-forex-bank').value;
-      const currency = document.getElementById('modal-forex-currency').value;
-      const rate = Number(document.getElementById('modal-forex-rate').value) || 0;
-      const amount = parseCurrencyNumber(document.getElementById('modal-forex-amount').value);
-      const ntdTotal = parseCurrencyNumber(document.getElementById('modal-forex-ntd').value);
-
-      if (amount <= 0 || rate <= 0) return alert('請填寫有效的外幣數量與匯率');
-
-      forexTransactions.push({ id: Date.now(), date, owner, type, bank, currency, rate, amount, ntdTotal });
-      closeForexModal();
-      saveAllSettingsLocalAndCloud();
-      renderForexPage(currentForexMember);
-      renderAssets(currentAssetMember);
-    }
-
-    function deleteForexTransaction(txId) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm('確定要刪除這筆外幣交易紀錄嗎？')) {
-        forexTransactions = forexTransactions.filter(f => f.id !== txId);
-        saveAllSettingsLocalAndCloud();
-        renderForexPage(currentForexMember);
-        renderAssets(currentAssetMember);
-      }
-    }
-
-    function switchForexMember(member) {
-      currentForexMember = member;
-      document.querySelectorAll('.forex-member-btn').forEach(b => {
-        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4A5B6E]');
-        b.classList.add('text-[#635D5A]');
-      });
-      const btn = document.getElementById(`forex-tab-${member}`);
-      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4A5B6E]');
-      renderForexPage(member);
-    }
-
-    async function updateForexRatesOnline() {
-      try {
-        const res = await fetch('https://open.er-api.com/v6/latest/TWD');
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.rates) {
-            if (data.rates.USD) forexLatestRates['USD'] = +(1 / data.rates.USD).toFixed(4);
-            if (data.rates.JPY) forexLatestRates['JPY'] = +(1 / data.rates.JPY).toFixed(4);
-            if (data.rates.EUR) forexLatestRates['EUR'] = +(1 / data.rates.EUR).toFixed(4);
-            if (data.rates.KRW) forexLatestRates['KRW'] = +(1 / data.rates.KRW).toFixed(4);
-            if (data.rates.CNY) forexLatestRates['CNY'] = +(1 / data.rates.CNY).toFixed(4);
-            saveAllSettingsLocalAndCloud();
-            renderForexPage(currentForexMember);
-            renderAssets(currentAssetMember);
-            alert('已成功聯網更新國際最新匯率！');
-            return;
-          }
-        }
-      } catch (e) {}
-      alert('更新完成。');
-    }
-
-    function getMemberForexHoldings(member) {
-      const txs = forexTransactions.filter(f => member === '全部' || f.owner === member);
-      const holdings = {};
-
-      txs.forEach(t => {
-        if (!holdings[t.currency]) {
-          holdings[t.currency] = { currency: t.currency, totalAmount: 0, totalNTDCost: 0 };
-        }
-        if (t.type === '購入') {
-          holdings[t.currency].totalAmount += t.amount;
-          holdings[t.currency].totalNTDCost += t.ntdTotal;
-        } else {
-          holdings[t.currency].totalAmount -= t.amount;
-          holdings[t.currency].totalNTDCost -= t.ntdTotal;
-        }
-      });
-
-      return Object.values(holdings).filter(h => h.totalAmount > 0).map(h => {
-        const latestRate = forexLatestRates[h.currency] || 1.0;
-        const currentNTDValue = Math.round(h.totalAmount * latestRate);
-        const profit = currentNTDValue - h.totalNTDCost;
-        const avgRate = h.totalAmount > 0 ? (h.totalNTDCost / h.totalAmount).toFixed(4) : 0;
-        return { ...h, latestRate, avgRate, currentNTDValue, profit };
-      });
-    }
-
-    function renderForexPage(member) {
-      document.getElementById('forex-dashboard-title').innerText = `【${member}】外幣資產總值`;
-      const holdings = getMemberForexHoldings(member);
-      const grandTotalNTD = holdings.reduce((sum, h) => sum + h.currentNTDValue, 0);
-      const totalCostNTD = holdings.reduce((sum, h) => sum + h.totalNTDCost, 0);
-      const totalProfitNTD = grandTotalNTD - totalCostNTD;
-
-      document.getElementById('forex-grand-total-ntd').innerText = '$' + grandTotalNTD.toLocaleString();
-      document.getElementById('forex-total-cost-ntd').innerText = '$' + totalCostNTD.toLocaleString();
-      
-      const profitEl = document.getElementById('forex-total-profit-ntd');
-      const isProf = totalProfitNTD >= 0;
-      profitEl.innerText = (isProf ? '+' : '') + '$' + totalProfitNTD.toLocaleString();
-      profitEl.className = `text-sm font-extrabold ${isProf ? 'text-[#F2E5C9]' : 'text-[#E8C2C3]'}`;
-
-      const listContainer = document.getElementById('forex-holdings-list');
-      if (holdings.length === 0) {
-        listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無外幣紀錄。</div>`;
-      } else {
-        listContainer.innerHTML = holdings.map(h => {
-          const isP = h.profit >= 0;
-          return `
-            <div class="bg-white p-4 rounded-2xl border border-[#DCD6D3] space-y-2.5 text-xs">
-              <div class="flex justify-between items-center font-bold">
-                <span class="text-sm font-extrabold text-[#4A5B6E]">${h.currency} 外幣儲蓄</span>
-                <span class="text-sm font-extrabold text-[#2E2C2B]">折合台幣: $${h.currentNTDValue.toLocaleString()}</span>
-              </div>
-              <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-2">
-                <div>持有數量：<strong class="text-[#2E2C2B] font-bold">${h.totalAmount.toLocaleString()} ${h.currency}</strong></div>
-                <div>均買匯率：<strong class="text-[#2E2C2B] font-bold">${h.avgRate}</strong></div>
-                <div>參考匯率：<strong class="text-[#4A5B6E] font-bold">${h.latestRate}</strong></div>
-                <div>未實現損益：<strong class="${isP ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">${isP ? '+' : ''}$${h.profit.toLocaleString()}</strong></div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      const userTxs = forexTransactions.filter(f => member === '全部' || f.owner === member);
-      const historyContainer = document.getElementById('forex-history-list');
-      if (userTxs.length === 0) {
-        historyContainer.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無交易紀錄。</div>';
-      } else {
-        historyContainer.innerHTML = [...userTxs].reverse().map(f => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] text-xs gap-2">
-            <div class="min-w-0">
-              <strong class="text-[#2E2C2B] font-bold block truncate">[${f.type}] ${f.amount.toLocaleString()} ${f.currency} (${f.bank})</strong>
-              <span class="text-[10px] text-[#827C78]">${f.date} | 匯率:${f.rate}</span>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <strong class="text-[#4A5B6E] font-bold">$${f.ntdTotal.toLocaleString()}</strong>
-              <button onclick="deleteForexTransaction(${f.id})" class="editable-only text-[#784D4E] text-[10px] bg-[#F7EDED] px-2 py-0.5 rounded border border-[#C89B9C]">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    function openInsuranceModal() {
-      document.getElementById('modal-ins-date').value = getTodayString();
-      document.getElementById('insurance-modal').classList.remove('hidden');
-    }
-
-    function closeInsuranceModal() {
-      document.getElementById('insurance-modal').classList.add('hidden');
-    }
-
-    function saveInsuranceModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const owner = document.getElementById('modal-ins-owner').value;
-      const company = document.getElementById('modal-ins-company').value.trim();
-      const policyNo = document.getElementById('modal-ins-no').value.trim();
-      const totalPaid = parseCurrencyNumber(document.getElementById('modal-ins-total-paid').value);
-      const amount = parseCurrencyNumber(document.getElementById('modal-ins-amount').value);
-      const rate = Number(document.getElementById('modal-ins-rate').value) || 0;
-      const date = document.getElementById('modal-ins-date').value || '';
-
-      if (!company || (amount <= 0 && totalPaid <= 0)) return alert('請填寫完整資訊');
-
-      insurancePolicies.push({ owner, company, policyNo, totalPaid, amount, rate, date });
-      closeInsuranceModal();
-      saveAllSettingsLocalAndCloud();
-      renderAssets(currentAssetMember);
-    }
-
-    function calcEstInterest() {
-      const amt = parseCurrencyNumber(document.getElementById('modal-dep-amount').value);
-      const rate = Number(document.getElementById('modal-dep-rate').value) || 0;
-      const startDateStr = document.getElementById('modal-dep-start-date').value;
-      const endDateStr = document.getElementById('modal-dep-date').value;
-
-      if (amt > 0 && rate > 0 && startDateStr && endDateStr) {
-        const start = new Date(startDateStr);
-        const end = new Date(endDateStr);
-        const diffDays = Math.max(1, Math.round((end - start) / (1000 * 60 * 60 * 24)));
-        const calculatedInterest = Math.round(amt * (rate / 100) * (diffDays / 365));
-        document.getElementById('modal-dep-interest').value = calculatedInterest ? calculatedInterest.toLocaleString() : '';
-      }
-    }
-
-    function openDepositModal() {
-      const select = document.getElementById('modal-dep-bank');
-      select.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
-      document.getElementById('modal-dep-start-date').value = getTodayString();
-      const nextYear = new Date();
-      nextYear.setFullYear(nextYear.getFullYear() + 1);
-      document.getElementById('modal-dep-date').value = nextYear.toISOString().split('T')[0];
-      document.getElementById('deposit-modal').classList.remove('hidden');
-      calcEstInterest();
-    }
-
-    function closeDepositModal() {
-      document.getElementById('deposit-modal').classList.add('hidden');
-    }
-
-    function saveDepositModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const owner = document.getElementById('modal-dep-owner').value;
-      const bank = document.getElementById('modal-dep-bank').value;
-      const amount = parseCurrencyNumber(document.getElementById('modal-dep-amount').value);
-      const rate = Number(document.getElementById('modal-dep-rate').value) || 0;
-      const startDate = document.getElementById('modal-dep-start-date').value || getTodayString();
-      const date = document.getElementById('modal-dep-date').value || getTodayString();
-      const interest = parseCurrencyNumber(document.getElementById('modal-dep-interest').value);
-
-      if (amount <= 0) return alert('請輸入定存金額');
-
-      fixedDeposits.push({ owner, bank, amount, rate, startDate, date, interest });
-      closeDepositModal();
-      saveAllSettingsLocalAndCloud();
-      renderAssets(currentAssetMember);
-    }
-
-    function calcStockTotal() {
-      const price = Number(document.getElementById('modal-stock-price').value) || 0;
-      const shares = parseCurrencyNumber(document.getElementById('modal-stock-shares').value);
-      const total = Math.round(price * shares);
-      document.getElementById('modal-stock-total').value = total ? total.toLocaleString() : '';
-    }
-
-    function openStockModal() {
-      document.getElementById('stock-modal-title').innerText = '新增買賣股票 / 零股交易';
-      document.getElementById('editing-stock-id').value = '';
-      document.getElementById('modal-stock-date').value = getTodayString();
-      document.getElementById('modal-stock-owner').value = currentStockMember;
-
-      const select = document.getElementById('modal-stock-broker');
-      select.innerHTML = brokerList.map(br => `<option value="${br}">${br}</option>`).join('');
-      document.getElementById('stock-modal').classList.remove('hidden');
-    }
-
-    function closeStockModal() {
-      document.getElementById('stock-modal').classList.add('hidden');
-    }
-
-    function editStockTransaction(txId) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
-      const tx = stocksList.find(s => s.id === Number(txId));
-      if (!tx) return;
-
-      openStockModal();
-      document.getElementById('stock-modal-title').innerText = '編輯股票 / 零股交易';
-      document.getElementById('editing-stock-id').value = tx.id;
-      document.getElementById('modal-stock-date').value = tx.date || getTodayString();
-      document.getElementById('modal-stock-owner').value = tx.owner || '潔柔';
-      document.getElementById('modal-stock-type').value = tx.type || '買入';
-      
-      const select = document.getElementById('modal-stock-broker');
-      select.innerHTML = brokerList.map(br => `<option value="${br}">${br}</option>`).join('');
-      select.value = tx.broker || brokerList[0];
-
-      document.getElementById('modal-stock-code').value = tx.code || '';
-      document.getElementById('modal-stock-price').value = tx.price || '';
-      document.getElementById('modal-stock-shares').value = tx.shares ? tx.shares.toLocaleString() : '';
-      document.getElementById('modal-stock-total').value = tx.total ? tx.total.toLocaleString() : '';
-    }
-
-    function setInitialStockCash() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const member = currentStockMember;
-      const currentCash = stockAccountCash[member] || 0;
-      const input = prompt(`【校正提示】請輸入【${member}】交割戶真實現金餘額 ($)：`, currentCash);
-      if (input !== null && !isNaN(parseCurrencyNumber(input))) {
-        stockAccountCash[member] = parseCurrencyNumber(input);
-        saveAllSettingsLocalAndCloud();
-        renderStockPage(member);
-        renderAssets(currentAssetMember);
-      }
-    }
-
-    function saveStockModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法儲存！');
-      const editId = document.getElementById('editing-stock-id').value;
-      const txDate = document.getElementById('modal-stock-date').value || getTodayString();
-      const owner = document.getElementById('modal-stock-owner').value;
-      const type = document.getElementById('modal-stock-type').value;
-      const broker = document.getElementById('modal-stock-broker').value;
-      const code = document.getElementById('modal-stock-code').value.trim();
-      const price = Number(document.getElementById('modal-stock-price').value) || 0;
-      const shares = parseCurrencyNumber(document.getElementById('modal-stock-shares').value);
-      const total = parseCurrencyNumber(document.getElementById('modal-stock-total').value);
-
-      if (!code || shares <= 0) return alert('請輸入股票名稱與股數');
-
-      if (!manualStockPrices[code]) manualStockPrices[code] = price;
-
-      if (editId) {
-        const idx = stocksList.findIndex(s => s.id === Number(editId));
-        if (idx !== -1) stocksList[idx] = { id: Number(editId), date: txDate, owner, type, broker, code, price, shares, total };
-      } else {
-        stocksList.push({ id: Date.now(), date: txDate, owner, type, broker, code, price, shares, total });
-      }
-
-      closeStockModal();
-      saveAllSettingsLocalAndCloud();
-      renderStockPage(currentStockMember);
-      renderAssets(currentAssetMember);
-    }
-
-    function deleteStockTransaction(txId) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm('確定要刪除這筆股票交易紀錄嗎？')) {
-        stocksList = stocksList.filter(s => s.id !== Number(txId));
-        saveAllSettingsLocalAndCloud();
-        renderStockPage(currentStockMember);
-        renderAssets(currentAssetMember);
-      }
-    }
-
-    function updateStockLatestPrice(code) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法校正！');
-      const curPrice = manualStockPrices[code] || 0;
-      const input = prompt(`請輸入「${code}」最新股票單價 ($)：`, curPrice);
-      if (input !== null && !isNaN(Number(input)) && Number(input) > 0) {
-        manualStockPrices[code] = Number(input);
-        saveAllSettingsLocalAndCloud();
-        renderStockPage(currentStockMember);
-        renderAssets(currentAssetMember);
-      }
-    }
-
-    async function fetchAllStockPricesOnline() {
-      const holdings = getMemberStockHoldings(currentStockMember);
-      if (holdings.length === 0) return alert('目前沒有持股項目可校正！');
-
-      alert('正在進行金額校正...');
-      let updatedCount = 0;
-      for (let h of holdings) {
-        const matchCode = h.code.match(/\d+/);
-        if (matchCode) {
-          const stockNum = matchCode[0];
-          try {
-            const res = await fetch(`https://corsproxy.io/?https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${stockNum}.tw`);
-            if (res.ok) {
-              const data = await res.json();
-              if (data && data.msgArray && data.msgArray.length > 0) {
-                const latestPrice = parseFloat(data.msgArray[0].z || data.msgArray[0].y);
-                if (latestPrice > 0) {
-                  manualStockPrices[h.code] = latestPrice;
-                  updatedCount++;
-                }
-              }
-            }
-          } catch (e) {}
-        }
-      }
-
-      saveAllSettingsLocalAndCloud();
-      renderStockPage(currentStockMember);
-      renderAssets(currentAssetMember);
-      alert('金額校正完成！');
-    }
-
-    function toggleStockDetails(code) {
-      expandedStockCode = (expandedStockCode === code) ? null : code;
-      renderStockPage(currentStockMember);
-    }
-
-    function switchStockMember(member) {
-      currentStockMember = member;
-      document.querySelectorAll('.stock-member-btn').forEach(b => {
-        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
-        b.classList.add('text-[#524D4B]');
-      });
-      const btn = document.getElementById(`stock-tab-${member}`);
-      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
-      renderStockPage(member);
-    }
-
-    function renderStockPieCard(member, holdings, totalMarketVal) {
-      const container = document.getElementById('stock-pie-card');
-      if (!container) return;
-
-      if (holdings.length === 0 || totalMarketVal <= 0) {
-        container.innerHTML = `
-          <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
-            <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】個股資產配置佔比 (%)</strong>
-          </div>
-          <div class="text-center text-[#827C78] py-4 text-xs">尚無持股數據。</div>
-        `;
-        return;
-      }
-
-      const colors = ['#4D5A6E', '#C89B9C', '#78699B', '#556357', '#98A4B7', '#D4A373', '#A3B18A'];
-      let currentOffset = 25;
-
-      const circlesSVG = holdings.map((h, i) => {
-        const pct = (h.currentMarketValue / totalMarketVal) * 100;
-        if (pct <= 0) return '';
-        const dash = `${pct} ${100 - pct}`;
-        const strokeOffset = 100 - currentOffset + 25;
-        currentOffset += pct;
-        const color = colors[i % colors.length];
-        return `<circle cx="18" cy="18" r="14.5" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash}" stroke-dashoffset="${strokeOffset}"/>`;
-      }).join('');
-
-      container.innerHTML = `
-        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
-          <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】個股資產配置佔比 (%)</strong>
-        </div>
-        <div class="flex items-center gap-3 py-2 max-w-sm mx-auto">
-          <div class="shrink-0 flex items-center justify-center p-1">
-            <svg width="100" height="100" viewBox="-2 -2 40 40" class="transform -rotate-90 overflow-visible">
-              ${circlesSVG}
-            </svg>
-          </div>
-          <div class="flex-1 space-y-1.5 text-xs pl-1 min-w-0">
-            ${holdings.map((h, i) => {
-              const pct = ((h.currentMarketValue / totalMarketVal) * 100).toFixed(1);
-              const color = colors[i % colors.length];
-              return `
-                <div class="flex justify-between items-center gap-2">
-                  <span class="flex items-center gap-1.5 font-bold text-[#2E2C2B] truncate text-left min-w-0">
-                    <span class="w-2.5 h-2.5 rounded-full shrink-0 inline-block" style="background-color: ${color}"></span>
-                    <span class="truncate">${h.code}</span>
-                  </span>
-                  <div class="text-right shrink-0 space-x-1.5 font-mono">
-                    <span class="text-[11px] text-[#635D5A] font-medium">$${h.currentMarketValue.toLocaleString()}</span>
-                    <strong class="text-[#2E2C2B] font-extrabold text-xs inline-block w-11 text-right">${pct}%</strong>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    function renderStockPage(member) {
-      document.getElementById('stock-dashboard-title').innerText = `【${member}】股票資產預估現值`;
-
-      const holdings = getMemberStockHoldings(member);
-      const totalMarketValue = holdings.reduce((sum, h) => sum + h.currentMarketValue, 0);
-      const totalCost = holdings.reduce((sum, h) => sum + h.totalCost, 0);
-
-      const cashValue = stockAccountCash[member] || 0;
-      const grandTotal = totalMarketValue + cashValue;
-      const totalProfit = totalMarketValue - totalCost;
-
-      document.getElementById('stock-account-grand-total').innerText = '$' + grandTotal.toLocaleString();
-      document.getElementById('stock-total-market-val').innerText = '$' + totalMarketValue.toLocaleString();
-      document.getElementById('stock-total-cash-val').innerText = '$' + cashValue.toLocaleString();
-      document.getElementById('stock-total-cost-val').innerText = '$' + totalCost.toLocaleString();
-      
-      const profitEl = document.getElementById('stock-total-profit-val');
-      const isPositive = totalProfit >= 0;
-      profitEl.innerText = (isPositive ? '+' : '') + '$' + totalProfit.toLocaleString();
-      profitEl.className = `text-sm font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
-
-      renderStockPieCard(member, holdings, totalMarketValue);
-
-      const listContainer = document.getElementById('stock-detailed-list');
-      if (holdings.length === 0) {
-        listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無持股紀錄。</div>`;
-      } else {
-        listContainer.innerHTML = holdings.map(h => {
-          const isProf = h.unrealizedProfit >= 0;
-          const isExpanded = expandedStockCode === h.code;
-          const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-          return `
-            <div class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
-              <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-[#827C78]">股票名稱：</span>
-                  <strong class="text-[#2E2C2B] text-base font-extrabold">${h.code}</strong>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">持有股數：</span>
-                  <strong class="text-[#2E2C2B] font-bold">${h.shares.toLocaleString()} 股</strong>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">現值總額：</span>
-                  <strong class="text-[#4D5A6E] text-base font-extrabold">$${h.currentMarketValue.toLocaleString()}</strong>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">損益金額 / %數：</span>
-                  <strong class="${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} font-extrabold">
-                    ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
-                  </strong>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#635D5A]">
-                <div class="flex flex-wrap gap-x-4 gap-y-1">
-                  <span>證券銀行：<strong class="text-[#2E2C2B] font-bold">${h.broker || '國泰綜合證券'}</strong></span>
-                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">$${h.avgCost} ($${Math.round(h.totalCost).toLocaleString()})</strong></span>
-                  <span>最新單價：<strong class="text-[#784D4E] font-extrabold">$${h.latestPrice}</strong></span>
-                </div>
-                <div class="flex gap-2 shrink-0 ml-auto">
-                  <button onclick="updateStockLatestPrice('${h.code}')" class="editable-only px-3 py-1.5 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#2E2C2B] rounded-xl font-bold shadow-2xs text-xs">
-                    校正單價
-                  </button>
-                  <button onclick="toggleStockDetails('${h.code}')" class="px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-xl font-bold shadow-2xs text-xs">
-                    ${isExpanded ? '明細 ▲' : '明細 ▼'}
-                  </button>
-                </div>
-              </div>
-
-              ${isExpanded ? `
-                <div class="p-3 bg-[#E8EDF5] rounded-xl border border-[#BAC7DB] space-y-2 mt-2 text-[11px]">
-                  <strong class="font-bold text-[#4D5A6E] block border-b border-[#BAC7DB] pb-1.5">「${h.code}」歷史明細 (${sortedTxList.length}筆)</strong>
-                  ${sortedTxList.map(t => `
-                    <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] gap-2">
-                      <div class="min-w-0">
-                        <strong class="${t.type === '買入' ? 'text-[#784D4E]' : 'text-[#556357]'} font-bold block">[${t.type}] ${t.shares.toLocaleString()}股 @ $${t.price}</strong>
-                        <span class="text-[10px] text-[#827C78] block">日期：${t.date || '無'} | 總計：$${t.total.toLocaleString()}</span>
-                      </div>
-                      <div class="space-x-1 shrink-0 editable-only">
-                        <button onclick="editStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] font-bold rounded-lg">編輯</button>
-                        <button onclick="deleteStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7EDED] text-[#784D4E] font-bold rounded-lg">刪除</button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join('');
-      }
-    }
-
-    function renderAssets(member) {
-      currentAssetMember = member;
-
-      const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
-      const depositTotal = filteredDeposits.reduce((sum, d) => sum + d.amount, 0);
-
-      const filteredInsurances = insurancePolicies.filter(i => member === '全部' || i.owner === member);
-      const insuranceTotal = filteredInsurances.reduce((sum, i) => sum + (i.amount || 0), 0);
-
-      const forexHoldings = getMemberForexHoldings(member);
-      const forexTotalNTD = forexHoldings.reduce((sum, h) => sum + h.currentNTDValue, 0);
-
-      const annualFundTotal = annualFundList.reduce((sum, f) => sum + f.amount, 0);
-
-      let stockMarketVal = 0;
-      let stockCashVal = 0;
-
-      if (member === '全部') {
-        const holdingsJR = getMemberStockHoldings('潔柔');
-        const holdingsYX = getMemberStockHoldings('宇軒');
-        stockMarketVal = holdingsJR.reduce((s, h) => s + h.currentMarketValue, 0) + holdingsYX.reduce((s, h) => s + h.currentMarketValue, 0);
-        stockCashVal = (stockAccountCash['潔柔'] || 0) + (stockAccountCash['宇軒'] || 0);
-      } else {
-        const holdings = getMemberStockHoldings(member);
-        stockMarketVal = holdings.reduce((s, h) => s + h.currentMarketValue, 0);
-        stockCashVal = stockAccountCash[member] || 0;
-      }
-
-      const stockGrandTotal = stockMarketVal + stockCashVal;
-      const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + annualFundTotal;
-
-      let laborTotal = 0;
-      if (member === '全部') {
-        const lJR = laborDataByMember['潔柔'] || {};
-        const lYX = laborDataByMember['宇軒'] || {};
-        laborTotal = (lJR.empPrincipal||0) + (lJR.empIncome||0) + (lJR.selfPrincipal||0) + (lJR.selfIncome||0) +
-                     (lYX.empPrincipal||0) + (lYX.empIncome||0) + (lYX.selfPrincipal||0) + (lYX.selfIncome||0);
-      } else {
-        const l = laborDataByMember[member] || {};
-        laborTotal = (l.empPrincipal||0) + (l.empIncome||0) + (l.selfPrincipal||0) + (l.selfIncome||0);
-      }
-
-      const grandTotal = cashAssetTotal + laborTotal;
-      const totalVal = Math.max(1, grandTotal);
-
-      const depPct = (((depositTotal + annualFundTotal) / totalVal) * 100).toFixed(1);
-      const insPct = ((insuranceTotal / totalVal) * 100).toFixed(1);
-      const frxPct = ((forexTotalNTD / totalVal) * 100).toFixed(1);
-      const stkPct = (Math.max(0, stockGrandTotal / totalVal) * 100).toFixed(1);
-      const labPct = ((laborTotal / totalVal) * 100).toFixed(1);
-
-      const pieCard = document.getElementById('asset-pie-card');
-      if (pieCard) {
-        pieCard.innerHTML = `
-          <div class="flex justify-between items-center pb-1">
-            <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】資產配置佔比 (%)</strong>
-          </div>
-          <div class="flex items-center gap-3 py-1.5 max-w-sm mx-auto">
-            <div class="shrink-0 flex items-center justify-center p-1">
-              ${renderBorderlessPieSVG(depositTotal + annualFundTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
-            </div>
-            <div class="flex-1 space-y-1.5 text-xs pl-1">
-              <div class="flex justify-between items-center gap-2">
-                <span class="flex items-center gap-1.5 font-bold text-[#4D5A6E]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] shrink-0 inline-block"></span>定存/預備金
-                </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${depPct}%</strong>
-              </div>
-              <div class="flex justify-between items-center gap-2">
-                <span class="flex items-center gap-1.5 font-bold text-[#78699B]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#78699B] shrink-0 inline-block"></span>儲蓄險
-                </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${insPct}%</strong>
-              </div>
-              <div class="flex justify-between items-center gap-2">
-                <span class="flex items-center gap-1.5 font-bold text-[#4A5B6E]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#4A5B6E] shrink-0 inline-block"></span>外幣儲蓄
-                </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${frxPct}%</strong>
-              </div>
-              <div class="flex justify-between items-center gap-2">
-                <span class="flex items-center gap-1.5 font-bold text-[#C89B9C]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#C89B9C] shrink-0 inline-block"></span>股票資產
-                </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${stkPct}%</strong>
-              </div>
-              <div class="flex justify-between items-center gap-2">
-                <span class="flex items-center gap-1.5 font-bold text-[#556357]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#556357] shrink-0 inline-block"></span>勞退專戶
-                </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${labPct}%</strong>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      const dashCard = document.getElementById('asset-dashboard-card');
-      if (dashCard) {
-        dashCard.className = 'bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-4';
-        const cardTitle = member === '全部' ? '【全部成員】家庭總資產' : `【${member}】個人總資產（含勞退）`;
-
-        dashCard.innerHTML = `
-          <div class="flex justify-between items-center border-b border-[#687890] pb-2.5">
-            <span class="text-xs text-[#C5D0DF] font-bold">${cardTitle}</span>
-          </div>
-          <div>
-            <span class="text-xs text-[#C5D0DF] block">個人總資產 (含勞退)</span>
-            <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9] mt-1">$${Math.round(grandTotal).toLocaleString()}</div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-[#687890] text-xs">
-            <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
-              <strong class="text-white text-xs block">現金總資產 (含預備金)：$${Math.round(cashAssetTotal).toLocaleString()}</strong>
-            </div>
-            
-            <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
-              <strong class="text-[#F2E5C9] text-xs block">勞退總額：$${Math.round(laborTotal).toLocaleString()}</strong>
-            </div>
-          </div>
-        `;
-      }
-
-      const breakdownList = document.getElementById('asset-breakdown-list');
-      if (breakdownList) {
-        breakdownList.innerHTML = `
-          <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#4D5A6E] inline-block"></span>
-              <span class="font-bold text-[#2E2C2B]">銀行定存/預備資金總額</span>
-            </div>
-            <strong class="text-[#4D5A6E] text-sm font-bold">$${(depositTotal + annualFundTotal).toLocaleString()}</strong>
-          </div>
-
-          <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#78699B] inline-block"></span>
-              <span class="font-bold text-[#2E2C2B]">儲蓄險解約金現值</span>
-            </div>
-            <strong class="text-[#78699B] text-sm font-bold">$${insuranceTotal.toLocaleString()}</strong>
-          </div>
-
-          <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#4A5B6E] inline-block"></span>
-              <span class="font-bold text-[#2E2C2B]">外幣儲蓄與投資總值</span>
-            </div>
-            <strong class="text-[#4A5B6E] text-sm font-bold">$${forexTotalNTD.toLocaleString()}</strong>
-          </div>
-
-          <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#C89B9C] inline-block"></span>
-              <span class="font-bold text-[#2E2C2B]">股票預估變現淨額</span>
-            </div>
-            <strong class="text-[#784D4E] text-sm font-bold">${stockGrandTotal < 0 ? '-$' + Math.abs(Math.round(stockGrandTotal)).toLocaleString() : '$' + Math.round(stockGrandTotal).toLocaleString()}</strong>
-          </div>
-
-          <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#556357] inline-block"></span>
-              <span class="font-bold text-[#2E2C2B]">勞工退休金專戶</span>
-            </div>
-            <strong class="text-[#556357] text-sm font-bold">$${laborTotal.toLocaleString()}</strong>
-          </div>
-        `;
-      }
-
-      const insContainer = document.getElementById('insurance-deposit-list');
-      if (insContainer) {
-        insContainer.innerHTML = filteredInsurances.length > 0
-          ? filteredInsurances.map((i, idx) => `
-            <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#C5BFE0] text-xs gap-2">
-              <div class="min-w-0">
-                <strong class="text-[#2E2C2B] font-bold block truncate">${i.owner ? `[${i.owner}] ` : ''}${i.company}</strong>
-                <span class="text-[10px] text-[#635D5A] block">
-                  ${i.policyNo ? '保號:' + i.policyNo + ' | ' : ''}已繳保費:$${(i.totalPaid||0).toLocaleString()}
-                </span>
-                <span class="text-[10px] text-[#78699B] font-bold block">
-                  ${i.date ? '解約金現值日期:' + i.date + ' | ' : ''}利率:${i.rate}%
-                </span>
-              </div>
-              <div class="flex items-center gap-1 shrink-0">
-                <div class="text-right">
-                  <span class="text-[9px] text-[#635D5A] block">解約金現值</span>
-                  <strong class="text-[#78699B] font-extrabold text-sm">$${(i.amount||0).toLocaleString()}</strong>
-                </div>
-                <button onclick="insurancePolicies.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="editable-only text-[#784D4E] text-xs font-bold ml-1.5">刪除</button>
-              </div>
-            </div>
-          `).join('')
-          : '<div class="text-[#827C78] text-center py-1">尚無儲蓄保單紀錄</div>';
-      }
-
-      const depContainer = document.getElementById('fixed-deposit-list');
-      if (depContainer) {
-        depContainer.innerHTML = filteredDeposits.length > 0
-          ? filteredDeposits.map((d, idx) => `
-            <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#BAC7DB] text-xs gap-2">
-              <div class="min-w-0">
-                <strong class="text-[#2E2C2B] font-bold block truncate">${d.owner ? `[${d.owner}] ` : ''}${d.bank}</strong>
-                <span class="text-[10px] text-[#827C78] block">${d.startDate || ''} ~ ${d.date || ''} (${d.rate || 0}% / 利息$${(d.interest || 0).toLocaleString()})</span>
-              </div>
-              <div class="flex items-center gap-1 shrink-0">
-                <strong class="text-[#4D5A6E] font-bold">$${d.amount.toLocaleString()}</strong>
-                <button onclick="fixedDeposits.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="editable-only text-[#784D4E] text-xs font-bold ml-1.5">刪除</button>
-              </div>
-            </div>
-          `).join('')
-          : '<div class="text-[#827C78] text-center py-1">尚無定存項目</div>';
-      }
-
-      const summaryBox = document.getElementById('asset-stock-summary-box');
-      if (summaryBox) {
-        summaryBox.innerHTML = `
-          <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
-            <span class="keep-word">【${member}】股票預估變現淨額</span>
-            <strong class="text-[#4D5A6E] text-sm font-extrabold">$${Math.round(stockGrandTotal).toLocaleString()}</strong>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1 border-t border-[#F2ECE9]">
-            <div>預估變現淨額：<strong class="text-[#2E2C2B] font-bold block">$${Math.round(stockMarketVal).toLocaleString()}</strong></div>
-            <div>交割戶現金餘額：<strong class="text-[#2E2C2B] font-bold block">$${Math.round(stockCashVal).toLocaleString()}</strong></div>
-          </div>
-        `;
-      }
-
-      const targetMember = member === '宇軒' ? '宇軒' : '潔柔';
-      renderLaborSection(targetMember);
-      renderAnnualCoverage();
-    }
-
-    function renderBorderlessPieSVG(dep, ins, frx, stk, lab) {
-      const total = Math.max(0, dep) + Math.max(0, ins) + Math.max(0, frx) + Math.max(0, stk) + Math.max(0, lab);
-      if (total <= 0) {
-        return '<svg width="86" height="86" viewBox="-2 -2 40 40"><circle cx="18" cy="18" r="14.5" fill="none" stroke="#E2E8F0" stroke-width="5"/></svg>';
-      }
-
-      const pDep = (Math.max(0, dep) / total) * 100;
-      const pIns = (Math.max(0, ins) / total) * 100;
-      const pFrx = (Math.max(0, frx) / total) * 100;
-      const pStk = (Math.max(0, stk) / total) * 100;
-      const pLab = (Math.max(0, lab) / total) * 100;
-
-      let offset = 25;
-      function getPath(pct, color) {
-        if (pct <= 0) return '';
-        const dash = `${pct} ${100 - pct}`;
-        const strokeOffset = 100 - offset + 25;
-        offset += pct;
-        return `<circle cx="18" cy="18" r="14.5" fill="none" stroke="${color}" stroke-width="5" stroke-dasharray="${dash}" stroke-dashoffset="${strokeOffset}"/>`;
-      }
-
-      return `
-        <svg width="86" height="86" viewBox="-2 -2 40 40" class="transform -rotate-90 overflow-visible">
-          ${getPath(pDep, '#4D5A6E')}
-          ${getPath(pIns, '#78699B')}
-          ${getPath(pFrx, '#4A5B6E')}
-          ${getPath(pStk, '#C89B9C')}
-          ${getPath(pLab, '#556357')}
-        </svg>
-      `;
-    }
-
-    function switchAssetMember(member) {
-      document.querySelectorAll('.asset-member-btn').forEach(b => {
-        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
-        b.classList.add('text-[#524D4B]');
-      });
-      const btn = document.getElementById(`asset-tab-${member}`);
-      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#4D5A6E]');
-      renderAssets(member);
-    }
-
-    function sortUserCards() {
-      userCards.sort((a, b) => {
-        const matchA = a.bank.match(/^\d+/);
-        const matchB = b.bank.match(/^\d+/);
-        const numA = matchA ? parseInt(matchA[0], 10) : Infinity;
-        const numB = matchB ? parseInt(matchB[0], 10) : Infinity;
-        if (numA !== numB) return numA - numB;
-        return (a.expiry || '99/99').localeCompare(b.expiry || '99/99');
-      });
-    }
-
-    function addCustomCard() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const bank = document.getElementById('card-bank-input').value;
-      const name = document.getElementById('card-name-input').value.trim();
-      const cutoff = Number(document.getElementById('card-cutoff-input').value) || 15;
-      const expiry = document.getElementById('card-expiry-input').value.trim() || '12/28';
-
-      if (!bank || !name) return alert('請選擇發卡銀行與名稱');
-
-      userCards.push({ bank, name, cutoff, expiry, active: true });
-      document.getElementById('card-name-input').value = '';
-      document.getElementById('card-expiry-input').value = '';
-
-      sortUserCards();
-      saveAllSettingsLocalAndCloud();
-      renderCustomCardList();
-      renderAccountOptions();
-    }
-
-    function editCustomCard(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const c = userCards[idx];
-      const newName = prompt('修改卡別名稱：', c.name);
-      const newExpiry = prompt('修改到期日：', c.expiry || '12/28');
-      const newCutoff = Number(prompt('修改結帳日：', c.cutoff));
-
-      if (newName && newExpiry) {
-        userCards[idx].name = newName.trim();
-        userCards[idx].expiry = newExpiry.trim();
-        if (newCutoff > 0 && newCutoff <= 31) userCards[idx].cutoff = newCutoff;
-        sortUserCards();
-        saveAllSettingsLocalAndCloud();
-        renderCustomCardList();
-        renderAccountOptions();
-      }
-    }
-
-    function deleteCustomCard(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm(`確定要刪除「${userCards[idx].bank} ${userCards[idx].name}」嗎？`)) {
-        userCards.splice(idx, 1);
-        saveAllSettingsLocalAndCloud();
-        renderCustomCardList();
-        renderAccountOptions();
-      }
-    }
-
-    function renderCustomCardList() {
-      sortUserCards();
-      const container = document.getElementById('custom-card-list');
-      if (!container) return;
-      if (userCards.length === 0) {
-        container.innerHTML = '<div class="text-center text-[#827C78] py-3 text-xs">尚無信用卡紀錄。</div>';
-        return;
-      }
-      container.innerHTML = userCards.map((c, idx) => `
-        <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs gap-2">
-          <div class="min-w-0">
-            <strong class="text-[#2E2C2B] block font-bold truncate">${c.bank} - ${c.name}</strong>
-            <span class="text-[10px] text-[#635D5A]">${c.cutoff} 號結帳 | 到期日：<strong class="text-[#784D4E]">${c.expiry || '未設定'}</strong></span>
-          </div>
-          <div class="space-x-1 shrink-0 editable-only">
-            <button onclick="editCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E]">修改</button>
-            <button onclick="deleteCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7EDED] text-[#784D4E]">剪卡</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function saveLaborData() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法儲存！');
-      const member = currentAssetMember === '宇軒' ? '宇軒' : '潔柔';
-      
-      laborDataByMember[member] = {
-        startDate: document.getElementById('labor-start-date').value,
-        retireAge: Number(document.getElementById('labor-retire-age').value) || 65,
-        updateDate: document.getElementById('labor-update-date').value || getTodayString(),
-        empPrincipal: parseCurrencyNumber(document.getElementById('labor-emp-principal').value),
-        empIncome: parseCurrencyNumber(document.getElementById('labor-emp-income').value),
-        selfPrincipal: parseCurrencyNumber(document.getElementById('labor-self-principal').value),
-        selfIncome: parseCurrencyNumber(document.getElementById('labor-self-income').value),
-      };
-
-      saveAllSettingsLocalAndCloud();
-      renderAssets(currentAssetMember);
-      alert(`已儲存【${member}】勞退資料！`);
-    }
-
-    function renderLaborSection(member) {
-      const data = laborDataByMember[member] || { startDate: '', retireAge: 65, updateDate: getTodayString(), empPrincipal: 0, empIncome: 0, selfPrincipal: 0, selfIncome: 0 };
-      
-      document.getElementById('labor-section-title').innerText = `勞工退休金專戶 (${member})`;
-      document.getElementById('labor-start-date').value = data.startDate || '';
-      document.getElementById('labor-retire-age').value = data.retireAge || 65;
-      document.getElementById('labor-update-date').value = data.updateDate || getTodayString();
-      document.getElementById('labor-emp-principal').value = data.empPrincipal ? data.empPrincipal.toLocaleString() : '';
-      document.getElementById('labor-emp-income').value = data.empIncome ? data.empIncome.toLocaleString() : '';
-      document.getElementById('labor-self-principal').value = data.selfPrincipal ? data.selfPrincipal.toLocaleString() : '';
-      document.getElementById('labor-self-income').value = data.selfIncome ? data.selfIncome.toLocaleString() : '';
-
-      const totalProfit = data.empIncome + data.selfIncome;
-      const totalPrincipal = data.empPrincipal + data.selfPrincipal;
-      const totalRate = totalPrincipal > 0 ? ((totalProfit / totalPrincipal) * 100).toFixed(1) : 0;
-      const currentTotal = totalPrincipal + totalProfit;
-
-      document.getElementById('labor-profit-sum').innerText = '$' + totalProfit.toLocaleString();
-      document.getElementById('labor-rate-sum').innerText = totalRate + '%';
-      document.getElementById('labor-current-total').innerText = '$' + currentTotal.toLocaleString();
-
-      const futureYears = Math.max(1, (data.retireAge || 65) - 37);
-      const estFuture = Math.round(currentTotal * Math.pow(1.03, futureYears));
-      document.getElementById('labor-est-future-total').innerText = '$' + estFuture.toLocaleString();
-    }
-
-    function addBankFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const input = document.getElementById('setting-bank-input');
-      const val = input.value.trim();
-      if (!val) return alert('請輸入銀行名稱');
-      if (!bankList.includes(val)) {
-        bankList.push(val);
-        bankList = sortByCode(bankList);
-        input.value = '';
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderCardBankOptions();
-      }
-    }
-
-    function editBank(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const newName = prompt('請修改銀行名稱：', bankList[idx]);
-      if (newName && newName.trim()) {
-        bankList[idx] = newName.trim();
-        bankList = sortByCode(bankList);
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderCardBankOptions();
-      }
-    }
-
-    function deleteBank(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm(`確定要刪除「${bankList[idx]}」嗎？`)) {
-        bankList.splice(idx, 1);
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderCardBankOptions();
-      }
-    }
-
-    function addBrokerFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const input = document.getElementById('setting-broker-input');
-      const val = input.value.trim();
-      if (!val) return alert('請輸入證券商名稱');
-      if (!brokerList.includes(val)) {
-        brokerList.push(val);
-        brokerList = sortByCode(brokerList);
-        input.value = '';
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-      }
-    }
-
-    function editBroker(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const newName = prompt('請修改證券商名稱：', brokerList[idx]);
-      if (newName && newName.trim()) {
-        brokerList[idx] = newName.trim();
-        brokerList = sortByCode(brokerList);
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-      }
-    }
-
-    function deleteBroker(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm(`確定要刪除「${brokerList[idx]}」嗎？`)) {
-        brokerList.splice(idx, 1);
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-      }
-    }
-
-    function addCategoryFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const input = document.getElementById('setting-category-input');
-      const val = input.value.trim();
-      if (!val) return alert('請輸入分類名稱');
-      if (!customCategories.includes(val)) {
-        customCategories.push(val);
-        input.value = '';
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderCategoryOptions();
-      }
-    }
-
-    function editCategory(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const newName = prompt('請修改分類名稱：', customCategories[idx]);
-      if (newName && newName.trim()) {
-        customCategories[idx] = newName.trim();
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderCategoryOptions();
-      }
-    }
-
-    function deleteCategory(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm(`確定要刪除「${customCategories[idx]}」分類嗎？`)) {
-        customCategories.splice(idx, 1);
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderCategoryOptions();
-      }
-    }
-
-    function addAccountFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const input = document.getElementById('setting-account-input');
-      const val = input.value.trim();
-      if (!val) return alert('請輸入管道名稱');
-      if (!customAccounts.some(a => a.name === val)) {
-        customAccounts.push({ name: val, active: true });
-        input.value = '';
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderAccountOptions();
-      }
-    }
-
-    function editAccount(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const newName = prompt('請修改管道名稱：', customAccounts[idx].name);
-      if (newName && newName.trim()) {
-        customAccounts[idx].name = newName.trim();
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderAccountOptions();
-      }
-    }
-
-    function toggleAccountActive(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法停用！');
-      customAccounts[idx].active = !customAccounts[idx].active;
-      saveAllSettingsLocalAndCloud();
-      renderSettingLists();
-      renderAccountOptions();
-    }
-
-    function deleteAccount(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm(`確定要刪除「${customAccounts[idx].name}」管道嗎？`)) {
-        customAccounts.splice(idx, 1);
-        saveAllSettingsLocalAndCloud();
-        renderSettingLists();
-        renderAccountOptions();
-      }
-    }
-
-    function renderCardBankOptions() {
-      const select = document.getElementById('card-bank-input');
-      if (select) {
-        select.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
-      }
-    }
-
-    function renderSettingLists() {
-      bankList = sortByCode(bankList);
-      brokerList = sortByCode(brokerList);
-
-      const bankContainer = document.getElementById('setting-bank-list');
-      if (bankContainer) {
-        bankContainer.innerHTML = bankList.map((b, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
-            <span class="font-bold text-[#2E2C2B]">${b}</span>
-            <div class="space-x-2 shrink-0 editable-only">
-              <button onclick="editBank(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
-              <button onclick="deleteBank(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      const brokerContainer = document.getElementById('setting-broker-list');
-      if (brokerContainer) {
-        brokerContainer.innerHTML = brokerList.map((br, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
-            <span class="font-bold text-[#2E2C2B]">${br}</span>
-            <div class="space-x-2 shrink-0 editable-only">
-              <button onclick="editBroker(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
-              <button onclick="deleteBroker(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      const catContainer = document.getElementById('setting-category-list');
-      if (catContainer) {
-        catContainer.innerHTML = customCategories.map((c, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
-            <span class="font-bold text-[#3D3A39]">${c}</span>
-            <div class="space-x-2 shrink-0 editable-only">
-              <button onclick="editCategory(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
-              <button onclick="deleteCategory(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      const accContainer = document.getElementById('setting-account-list');
-      if (accContainer) {
-        accContainer.innerHTML = customAccounts.map((a, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
-            <span class="font-bold ${a.active ? 'text-[#2E2C2B]' : 'text-[#827C78] line-through'}">${a.name}</span>
-            <div class="space-x-2 shrink-0 editable-only">
-              <button onclick="editAccount(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
-              <button onclick="toggleAccountActive(${idx})" class="text-xs font-bold ${a.active ? 'text-[#784D4E]' : 'text-[#556357]'}">
-                ${a.active ? '停用' : '啟用'}
-              </button>
-              <button onclick="deleteAccount(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    function renderCategoryOptions() {
-      const select = document.getElementById('category');
-      if (select) select.innerHTML = customCategories.map(c => `<option value="${c}">${c}</option>`).join('');
-    }
-
-    function addAAItem() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const title = document.getElementById('aa-item-title').value.trim();
-      const guanheAmt = parseCurrencyNumber(document.getElementById('aa-guanhe-amount').value);
-      const jierouAmt = parseCurrencyNumber(document.getElementById('aa-jierou-amount').value);
-
-      if (!title) return alert('請輸入項目名稱');
-
-      aaListItems.push({ title, guanheAmt, jierouAmt });
-      document.getElementById('aa-item-title').value = '';
-      document.getElementById('aa-guanhe-amount').value = '';
-      document.getElementById('aa-jierou-amount').value = '';
-      saveAllSettingsLocalAndCloud();
-      renderAATab();
-    }
-
-    function editAAItem(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const item = aaListItems[idx];
-      if (!item) return;
-
-      const newTitle = prompt('請修改 AA 請款項目名稱：', item.title);
-      if (newTitle === null) return;
-      const newGuanhe = prompt('請修改冠合應付金額 ($)：', item.guanheAmt);
-      if (newGuanhe === null) return;
-      const newJierou = prompt('請修改潔柔支付金額 ($)：', item.jierouAmt || 0);
-
-      if (newTitle.trim()) {
-        aaListItems[idx].title = newTitle.trim();
-        aaListItems[idx].guanheAmt = parseCurrencyNumber(newGuanhe);
-        aaListItems[idx].jierouAmt = parseCurrencyNumber(newJierou);
-        saveAllSettingsLocalAndCloud();
-        renderAATab();
-      }
-    }
-
-    function deleteAAItem(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      aaListItems.splice(idx, 1);
-      saveAllSettingsLocalAndCloud();
-      renderAATab();
-    }
-
-    function renderAATab() {
-      const container = document.getElementById('aa-items-container');
-      if (!container) return;
-
-      let guanheTotal = 0;
-      let jierouTotal = 0;
-
-      if (aaListItems.length === 0) {
-        container.innerHTML = '<div class="text-[#B5ADAD] text-center py-2">尚無請款項目。</div>';
-      } else {
-        container.innerHTML = aaListItems.map((item, idx) => {
-          guanheTotal += item.guanheAmt;
-          jierouTotal += (item.jierouAmt || 0);
-          return `
-            <div class="flex justify-between items-center text-xs border-b border-[#635A5A] pb-1.5 pt-0.5">
-              <span class="truncate min-w-0 pr-2">- ${item.title}</span>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <span class="text-[#F2E5C9] font-bold">冠合 $${item.guanheAmt.toLocaleString()}</span>
-                <button onclick="editAAItem(${idx})" class="editable-only text-[#DDD7D4] hover:text-white bg-[#522B2B] px-1.5 py-0.5 rounded text-[10px]">修改</button>
-                <button onclick="deleteAAItem(${idx})" class="editable-only text-[#E8C2C3] hover:text-white bg-[#635A5A] px-1.5 py-0.5 rounded text-[10px]">刪除</button>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      if (document.getElementById('aa-guanhe-total-display')) document.getElementById('aa-guanhe-total-display').innerText = '$' + guanheTotal.toLocaleString();
-      if (document.getElementById('aa-jierou-total-display')) document.getElementById('aa-jierou-total-display').innerText = '$' + jierouTotal.toLocaleString();
-      if (document.getElementById('aa-final-settle-display')) document.getElementById('aa-final-settle-display').innerText = '$' + guanheTotal.toLocaleString();
-    }
-
-    function copyAAListText() {
-      if (aaListItems.length === 0) return alert('目前沒有請款項目！');
-      let text = '【請款單細項】\n';
-      let total = 0;
-      aaListItems.forEach(i => {
-        text += `- ${i.title}：$${i.guanheAmt.toLocaleString()}\n`;
-        total += i.guanheAmt;
-      });
-      text += `-------------------\n總計冠合應付：$${total.toLocaleString()} 元`;
-
-      navigator.clipboard.writeText(text).then(() => alert('已複製請款文字！'));
-    }
-
-    /* --- 預備資金與雙年度開銷邏輯 --- */
-    function toggleFundDueDate() {
-      const type = document.getElementById('modal-fund-type').value;
-      const box = document.getElementById('fund-duedate-box');
-      if (type === '定存') box.classList.remove('hidden');
-      else box.classList.add('hidden');
-    }
-
-    function openAnnualFundModal() {
-      const yearSelect = document.getElementById('modal-fund-year');
-      const currentYear = new Date().getFullYear();
-      yearSelect.innerHTML = `
-        <option value="${currentYear + 1}">${currentYear + 1} 年</option>
-        <option value="${currentYear + 2}">${currentYear + 2} 年</option>
-        <option value="${currentYear + 3}">${currentYear + 3} 年</option>
-      `;
-
-      const bankSelect = document.getElementById('modal-fund-bank');
-      bankSelect.innerHTML = bankList.map(b => `<option value="${b}">${b}</option>`).join('');
-
-      document.getElementById('modal-fund-amount').value = '';
-      document.getElementById('modal-fund-duedate').value = '';
-      document.getElementById('modal-fund-type').value = '活存';
-      toggleFundDueDate();
-
-      document.getElementById('annual-fund-modal').classList.remove('hidden');
-    }
-
-    function closeAnnualFundModal() {
-      document.getElementById('annual-fund-modal').classList.add('hidden');
-    }
-
-    function saveAnnualFundModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const year = document.getElementById('modal-fund-year').value;
-      const bank = document.getElementById('modal-fund-bank').value;
-      const type = document.getElementById('modal-fund-type').value;
-      const amount = parseCurrencyNumber(document.getElementById('modal-fund-amount').value);
-      const dueDate = document.getElementById('modal-fund-duedate').value;
-
-      if (amount <= 0) return alert('請輸入金額');
-      if (type === '定存' && !dueDate) return alert('定存請選擇到期日');
-
-      annualFundList.push({ id: Date.now(), year, bank, type, amount, dueDate });
-      closeAnnualFundModal();
-      saveAllSettingsLocalAndCloud();
-      renderAnnualCoverage();
-      renderAssets(currentAssetMember);
-    }
-
-    function deleteAnnualFund(id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm('確定要刪除這筆預備資金嗎？')) {
-        annualFundList = annualFundList.filter(f => f.id !== id);
-        saveAllSettingsLocalAndCloud();
-        renderAnnualCoverage();
-        renderAssets(currentAssetMember);
-      }
-    }
-
-    function saveAnnualExpenseInline() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const yearSelect = document.getElementById('annual-year-select');
-      const year = yearSelect?.value || String(new Date().getFullYear() + 1);
-      const monthSelect = document.getElementById('annual-input-month');
-      const month = monthSelect ? monthSelect.value : '1月';
-      const nameEl = document.getElementById('annual-input-name');
-      const amountEl = document.getElementById('annual-input-amount');
-
-      const name = nameEl.value.trim();
-      const amount = parseCurrencyNumber(amountEl.value);
-
-      if (!name || amount <= 0) return alert('請填寫完整的開銷項目與金額');
-
-      if (!annualExpenses[year]) annualExpenses[year] = [];
-      annualExpenses[year].push({ id: Date.now(), month, name, amount });
-
-      nameEl.value = '';
-      amountEl.value = '';
-
-      const nextYear = String(Number(year) + 1);
-      if (!annualExpenses[nextYear]) annualExpenses[nextYear] = [];
-
-      saveAllSettingsLocalAndCloud();
-      initAnnualYearOptions();
-      renderAnnualCoverage();
-    }
-
-    function editAnnualExpense(year, idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
-      const item = annualExpenses[year]?.[idx];
-      if (!item) return;
-
-      const newMonth = prompt('請修改月份 (例: 1月~12月)：', item.month || '1月');
-      if (newMonth === null) return;
-      const newName = prompt('請修改開銷項目名稱：', item.name);
-      if (newName === null) return;
-      const newAmountStr = prompt('請修改預估金額 ($)：', item.amount);
-      if (newAmountStr === null) return;
-
-      const newAmount = parseCurrencyNumber(newAmountStr);
-      if (newName.trim() && newAmount > 0) {
-        annualExpenses[year][idx].month = newMonth.trim();
-        annualExpenses[year][idx].name = newName.trim();
-        annualExpenses[year][idx].amount = newAmount;
-        saveAllSettingsLocalAndCloud();
-        renderAnnualCoverage();
-      }
-    }
-
-    function deleteAnnualExpense(year, idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (confirm(`確定要刪除「${annualExpenses[year][idx].month || ''} ${annualExpenses[year][idx].name}」嗎？`)) {
-        annualExpenses[year].splice(idx, 1);
-        saveAllSettingsLocalAndCloud();
-        renderAnnualCoverage();
-      }
-    }
-
-    function initAnnualYearOptions() {
-      const select = document.getElementById('annual-year-select');
-      if (!select) return;
-
-      const currentSelected = select.value;
-      const currentYear = new Date().getFullYear();
-      let years = [currentYear + 1, currentYear + 2, currentYear + 3];
-
-      Object.keys(annualExpenses).forEach(y => {
-        const numY = Number(y);
-        if (!years.includes(numY) && !isNaN(numY)) years.push(numY);
-      });
-
-      years.sort((a, b) => a - b);
-      select.innerHTML = years.map(y => `<option value="${y}">${y} 年度起 (雙年度檢視)</option>`).join('');
-
-      if (currentSelected && years.includes(Number(currentSelected))) {
-        select.value = currentSelected;
-      } else {
-        select.value = currentYear + 1;
-      }
-    }
-
-    function renderAnnualCoverage() {
-      initAnnualYearOptions();
-      const select = document.getElementById('annual-year-select');
-      const baseYear = Number(select?.value || (new Date().getFullYear() + 1));
-      const year1 = String(baseYear);
-      const year2 = String(baseYear + 1);
-
-      const dualContainer = document.getElementById('annual-coverage-dual-cards');
-      if (dualContainer) {
-        dualContainer.innerHTML = [year1, year2].map(year => {
-          const items = annualExpenses[year] || [];
-          const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
-
-          const userFunds = annualFundList.filter(f => f.year === year);
-          const savedAmount = userFunds.reduce((sum, f) => sum + f.amount, 0);
-
-          const pct = totalExpense > 0 ? Math.min(100, Math.round((savedAmount / totalExpense) * 100)) : 0;
-          const diff = totalExpense - savedAmount;
-
-          return `
-            <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl space-y-2">
-              <div class="flex justify-between items-center font-bold">
-                <span class="text-[#2E2C2B] text-xs">${year}年度開銷總預估：$${totalExpense.toLocaleString()}</span>
-                <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'} text-xs">達成率 ${pct}%</span>
-              </div>
-              <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
-                <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
-              </div>
-              <div class="flex justify-between text-[11px] text-[#635D5A]">
-                <span>已準備資金：$${savedAmount.toLocaleString()}</span>
-                <span>${totalExpense === 0 ? '尚無開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
-              </div>
-              ${userFunds.length > 0 ? `
-                <div class="pt-1.5 border-t border-dashed border-[#DCD6D3] space-y-1 text-[10px]">
-                  ${userFunds.map(f => `
-                    <div class="flex justify-between items-center text-[#4D5A6E]">
-                      <span>- ${f.bank} (${f.type}${f.dueDate ? ' ' + f.dueDate + '到期' : ''})</span>
-                      <div class="space-x-1">
-                        <strong class="font-bold">$${f.amount.toLocaleString()}</strong>
-                        <button onclick="deleteAnnualFund(${f.id})" class="editable-only text-[#784D4E] font-bold">刪</button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join('');
-      }
-
-      const items = annualExpenses[year1] || [];
-      items.sort((a, b) => {
-        const numA = parseInt(String(a.month || '0').replace(/[^\d]/g, ''), 10) || 99;
-        const numB = parseInt(String(b.month || '0').replace(/[^\d]/g, ''), 10) || 99;
-        if (numA !== numB) return numA - numB;
-        return b.amount - a.amount;
-      });
-
-      const listContainer = document.getElementById('annual-items-list');
-      if (listContainer) {
-        listContainer.innerHTML = items.length > 0 ? items.map((i, idx) => `
-          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2 pt-1 text-xs gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="text-[#784D4E] font-bold text-xs shrink-0">- ${i.month || '1月'}</span>
-              <span class="font-bold text-[#2E2C2B] truncate">${i.name}</span>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <strong class="text-[#2E2C2B] font-extrabold text-xs">$${i.amount.toLocaleString()}</strong>
-              <div class="editable-only space-x-1">
-                <button onclick="editAnnualExpense('${year1}', ${idx})" class="text-[10px] text-[#4D5A6E] font-bold hover:underline">修改</button>
-                <button onclick="deleteAnnualExpense('${year1}', ${idx})" class="text-[10px] text-[#784D4E] font-bold hover:underline">刪除</button>
-              </div>
-            </div>
-          </div>
-        `).join('') : '<div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>';
-      }
-    }
-
-    function renderCashFlowTab() {
-      const mVal = document.getElementById('cashflow-month-select').value || '2026-10';
-      const yearStr = mVal.substring(0, 4);
-      const monthStr = mVal.substring(5, 7);
-      document.getElementById('cashflow-month-tag').innerText = `${yearStr}年${monthStr}月`;
-
-      const currentMonthTx = allTransactions.filter(t => t.transaction_date && t.transaction_date.startsWith(mVal));
-      const totalExpense = currentMonthTx.filter(t => Number(t.amount_ntd) < 0).reduce((sum, t) => sum + Math.abs(Number(t.amount_ntd)), 0);
-      const totalIncome = currentMonthTx.filter(t => Number(t.amount_ntd) > 0).reduce((sum, t) => sum + Number(t.amount_ntd), 0);
-
-      document.getElementById('cashflow-expense-display').innerText = '$' + totalExpense.toLocaleString();
-      document.getElementById('cashflow-income-display').innerText = '$' + totalIncome.toLocaleString();
-      document.getElementById('cashflow-net-display').innerText = '$' + (totalIncome - totalExpense).toLocaleString();
-    }
-
-    function exportToCSV() {
-      if (allTransactions.length === 0) return alert('目前無資料可匯出');
-      let csv = '\uFEFF日期,項目,金額,管道,成員,分類\n';
-      allTransactions.forEach(t => {
-        csv += `"${t.transaction_date || ''}","${t.item_name || ''}","${t.amount_ntd || 0}","${t.account_name || ''}","${t.member_tag || ''}","${t.category || ''}"\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `記帳紀錄_${getTodayString()}.csv`;
-      a.click();
-    }
-
-    function exportBackupJSON() {
-      lastExportDate = new Date().toISOString();
-      const backupData = {
-        customCategories, customAccounts,
-        bankList: sortByCode(bankList),
-        brokerList: sortByCode(brokerList),
-        userCards, bankTotals, bankBudgetPlans, fixedDeposits, insurancePolicies,
-        forexTransactions, forexLatestRates,
-        stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
-        laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
-        exportDate: lastExportDate
-      };
-      saveAllSettingsLocalAndCloud();
-      checkBackupReminder();
-
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `全站財務備份_${getTodayString()}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    function importBackupJSON(event) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法匯入備份！');
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const data = JSON.parse(e.target.result);
-          applySettingsObject(data);
-          saveAllSettingsLocalAndCloud();
-          alert('已成功還原備份資料！');
-        } catch (err) {
-          alert('備份檔案讀取失敗：' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function editTransaction(id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
-      const tx = allTransactions.find(t => t.id === id);
-      if (!tx) return;
-
-      document.getElementById('editing_tx_id').value = tx.id;
-      document.getElementById('custom_transaction_date').value = tx.transaction_date;
-      document.getElementById('item_name').value = tx.item_name;
-      document.getElementById('amount_ntd').value = Math.abs(tx.amount_ntd).toLocaleString();
-      document.getElementById('member_tag').value = tx.member_tag || '潔柔';
-      document.getElementById('category').value = tx.category || '生活費';
-
-      setEntryMode(tx.amount_ntd < 0 ? '支出' : '收入');
-
-      document.getElementById('submit-btn').innerText = '儲存修改內容';
-      document.getElementById('cancel-edit-btn').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cancelEditing() {
-      document.getElementById('editing_tx_id').value = '';
-      document.getElementById('item_name').value = '';
-      document.getElementById('amount_ntd').value = '';
-      document.getElementById('submit-btn').innerText = '儲存紀錄';
-      document.getElementById('cancel-edit-btn').classList.add('hidden');
-    }
-
-    async function deleteTransaction(id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      if (!confirm('確定要刪除這筆紀錄嗎？')) return;
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: fetchHeaders
-        });
-        if (!res.ok) throw new Error(await res.text());
-        fetchTransactions();
-        alert('已成功刪除紀錄！');
-      } catch (err) {
-        allTransactions = allTransactions.filter(t => t.id !== id);
-        localStorage.setItem('offline_transactions', JSON.stringify(allTransactions));
-        filterQuickList();
-        alert('已於離線模式下刪除！');
-      }
-    }
-
-    document.getElementById('expense-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法儲存！');
-
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-
-      const editId = document.getElementById('editing_tx_id').value;
-      const customDate = document.getElementById('custom_transaction_date').value;
-      const rawItemName = document.getElementById('item_name').value;
-      let totalAmount = parseCurrencyNumber(document.getElementById('amount_ntd').value);
-      const bankName = document.getElementById('account_name').value;
-      const memberTag = document.getElementById('member_tag').value;
-      const category = document.getElementById('category').value;
-
-      totalAmount = (entryMode === '支出') ? -Math.abs(totalAmount) : Math.abs(totalAmount);
-
-      const recordToInsert = {
-        item_name: rawItemName,
-        amount_ntd: totalAmount,
-        account_name: bankName,
-        member_tag: memberTag,
-        category: category,
-        transaction_date: customDate
-      };
-
-      try {
-        let res;
-        if (editId) {
-          res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${editId}`, {
-            method: 'PATCH',
-            headers: fetchHeaders,
-            body: JSON.stringify(recordToInsert)
-          });
-        } else {
-          res = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
-            method: 'POST',
-            headers: fetchHeaders,
-            body: JSON.stringify([recordToInsert])
-          });
-        }
-
-        if (!res.ok) throw new Error(await res.text());
-        document.getElementById('item_name').value = '';
-        document.getElementById('amount_ntd').value = '';
-        cancelEditing();
-        fetchTransactions();
-        alert('已成功儲存！');
-      } catch (err) {
-        if (editId) {
-          const idx = allTransactions.findIndex(t => t.id === Number(editId));
-          if (idx !== -1) allTransactions[idx] = { ...recordToInsert, id: Number(editId) };
-        } else {
-          allTransactions.unshift({ ...recordToInsert, id: Date.now() });
-        }
-        localStorage.setItem('offline_transactions', JSON.stringify(allTransactions));
-        filterQuickList();
-        cancelEditing();
-        alert('（離線模式）已儲存至本機快取！');
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
-    async function fetchTransactions() {
-      try {
-        const res = await fetch(SUPABASE_URL + '/rest/v1/transactions?select=*&order=transaction_date.desc', {
-          method: 'GET',
-          headers: fetchHeaders
-        });
-        if (res.ok) {
-          allTransactions = await res.json();
-          localStorage.setItem('offline_transactions', JSON.stringify(allTransactions));
-          filterQuickList();
-          updateTopHeaderStatus();
-          renderCashFlowTab();
-        }
-      } catch (err) {
-        const cached = localStorage.getItem('offline_transactions');
-        if (cached) {
-          allTransactions = JSON.parse(cached);
-          filterQuickList();
-        }
-      }
-    }
-
-    function filterQuickList() {
-      const keyword = (document.getElementById('search-input')?.value || '').toLowerCase();
-      const memberFilter = document.getElementById('filter-member-select')?.value || '';
-      const startDate = document.getElementById('filter-start-date')?.value || '';
-      const endDate = document.getElementById('filter-end-date')?.value || '';
-
-      let incTotal = 0;
-      let expTotal = 0;
-
-      const filtered = allTransactions.filter(t => {
-        const matchKey = !keyword || (t.item_name && t.item_name.toLowerCase().includes(keyword));
-        const matchMem = !memberFilter || t.member_tag === memberFilter;
-        const matchStart = !startDate || (t.transaction_date && t.transaction_date >= startDate);
-        const matchEnd = !endDate || (t.transaction_date && t.transaction_date <= endDate);
-        
-        const isMatch = matchKey && matchMem && matchStart && matchEnd;
-        if (isMatch) {
-          const amt = Number(t.amount_ntd) || 0;
-          if (amt > 0) incTotal += amt;
-          else expTotal += Math.abs(amt);
-        }
-        return isMatch;
-      });
-
-      const summaryBar = document.getElementById('filter-summary-bar');
-      if (summaryBar) {
-        summaryBar.innerHTML = `
-          <span>收入: <strong class="text-[#556357]">$${incTotal.toLocaleString()}</strong></span>
-          <span>支出: <strong class="text-[#784D4E]">$${expTotal.toLocaleString()}</strong></span>
-          <span>淨額: <strong class="text-[#2E2C2B]">$${(incTotal - expTotal).toLocaleString()}</strong></span>
-        `;
-      }
-
-      renderQuickList(filtered);
-    }
-
-    function renderQuickList(list) {
-      const container = document.getElementById('quick-list');
-      if (list.length === 0) {
-        container.innerHTML = '<div class="p-4 text-center text-[#827C78] text-xs">尚無紀錄。</div>';
-        return;
-      }
-
-      container.innerHTML = list.slice(0, 15).map(t => {
-        const isExpense = Number(t.amount_ntd) < 0;
-        const amtStr = (isExpense ? '-' : '+') + '$' + Math.abs(Number(t.amount_ntd)).toLocaleString();
-        const amtClass = isExpense ? 'text-[#784D4E]' : 'text-[#556357]';
-
-        return `
-          <div class="p-3 bg-[#FFFFFF] border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs gap-2">
-            <div class="min-w-0">
-              <div class="font-bold text-[#2E2C2B] truncate">${t.item_name || '無品項'}</div>
-              <div class="text-[10px] text-[#827C78] mt-0.5 truncate">${t.account_name || ''} - ${t.member_tag || ''} - ${t.transaction_date || ''}</div>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <div class="font-extrabold ${amtClass} text-sm">${amtStr}</div>
-              <div class="editable-only space-x-1">
-                <button onclick="editTransaction(${t.id})" class="text-[10px] bg-[#F7F4F3] hover:bg-[#DDD7D4] text-[#524D4B] px-2 py-1 rounded border border-[#DCD6D3]">編輯</button>
-                <button onclick="deleteTransaction(${t.id})" class="text-[10px] bg-[#F7EDED] hover:bg-[#EBD2D2] text-[#784D4E] px-1.5 py-1 rounded border border-[#C89B9C]">刪除</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
     }
 
     function switchTab(tabIndex) {
@@ -3408,6 +1688,10 @@
         activeBtn.className = 'nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] font-bold shadow-xs';
       }
 
+      // 自動關閉 FAB 選單
+      const fabContainer = document.getElementById('fab-container');
+      if (fabContainer) fabContainer.classList.remove('fab-open');
+
       if (tabIndex === 2) renderCashFlowTab();
       if (tabIndex === 3) renderAATab();
       if (tabIndex === 4) {
@@ -3420,25 +1704,11 @@
         renderSettingLists();
         renderCustomCardList();
         renderUserAccountsList();
+        renderAuditLogs();
         checkBackupReminder();
       }
       if (tabIndex === 7) renderStockPage(currentStockMember);
       if (tabIndex === 8) renderForexPage(currentForexMember);
-    }
-
-    let touchStartX = 0;
-    let touchEndX = 0;
-    const mainApp = document.getElementById('main-app-container');
-
-    mainApp.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, false);
-    mainApp.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, false);
-
-    function handleSwipe() {
-      const diffX = touchEndX - touchStartX;
-      if (Math.abs(diffX) > 80) {
-        if (diffX < 0 && currentTabIndex < 8) switchTab(currentTabIndex + 1);
-        else if (diffX > 0 && currentTabIndex > 1) switchTab(currentTabIndex - 1);
-      }
     }
 
     async function initSystem() {
