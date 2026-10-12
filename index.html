@@ -74,13 +74,13 @@
     </div>
   </div>
 
-  <div class="max-w-md mx-auto px-4 py-5 pb-12" id="main-app-container">
+  <div class="max-w-md mx-auto px-4 py-5 pb-20" id="main-app-container">
     
     <!-- 頂部標題與狀態列 -->
     <header class="mb-4 bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0 flex items-center gap-2">
-          <h1 class="text-base font-bold text-[#2E2C2B] truncate">財務總控與資產管理</h1>
+          <h1 class="text-base font-bold text-[#2E2C2B] truncate" id="current-page-title">快捷記帳 (1/8)</h1>
           <span id="current-user-badge" class="px-2 py-0.5 text-[10px] rounded-md font-bold bg-[#EAE8F0] text-[#5A4E7A]">--</span>
         </div>
         <div id="status-badge" class="shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF0EC] text-[#556357] border border-[#B2C1B4]">
@@ -92,20 +92,6 @@
         <div>資產更新：<strong id="header-asset-update-display" class="text-[#4D5A6E] font-bold">尚無紀錄</strong></div>
       </div>
     </header>
-
-    <!-- 頂部橫向滑動導覽列 -->
-    <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5">
-      <div id="nav-scroll-container" class="flex overflow-x-auto no-scrollbar gap-2 text-center text-[12px] font-bold scroll-smooth">
-        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs whitespace-nowrap">快捷記帳</button>
-        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">現金收支</button>
-        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">AA請款</button>
-        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">財務月曆</button>
-        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">股市清單</button>
-        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">外幣儲蓄</button>
-        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">資產總表</button>
-        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">設定管理</button>
-      </div>
-    </nav>
 
     <!-- 左右順暢滑動主視窗容器 -->
     <div class="overflow-hidden">
@@ -234,17 +220,15 @@
           </section>
         </main>
 
-        <!-- 分頁六：外幣儲蓄（包含中國信託即時匯率與到價設定） -->
+        <!-- 分頁六：外幣儲蓄（中信即時匯率） -->
         <main id="tab-6" class="swipe-page">
           <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
             <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
-              <div class="min-w-0">
-                <h2 class="text-base font-bold text-[#4A5B6E] keep-word">中國信託外幣即時匯率與儲蓄</h2>
-              </div>
-              <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
+              <h2 class="text-base font-bold text-[#4A5B6E] keep-word">中國信託外幣即時匯率與儲蓄</h2>
+              <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0">+ 交易外幣</button>
             </div>
 
-            <!-- 新增：中國信託即時匯率與到價提醒設定卡片 -->
+            <!-- 中國信託即時匯率卡片 -->
             <div class="p-4 bg-[#F0F4F8] border border-[#B0C4DE] rounded-2xl space-y-3 text-xs">
               <div class="flex justify-between items-center border-b border-[#B0C4DE] pb-2">
                 <span class="font-extrabold text-[#2C4A6F] flex items-center gap-1">
@@ -254,7 +238,6 @@
               </div>
 
               <div class="grid grid-cols-2 gap-3">
-                <!-- 美金 CTBC -->
                 <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] space-y-1.5">
                   <div class="flex justify-between items-center font-bold text-[#2E2C2B]">
                     <span>🇺🇸 美金 (USD)</span>
@@ -272,7 +255,6 @@
                   </div>
                 </div>
 
-                <!-- 日圓 CTBC -->
                 <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] space-y-1.5">
                   <div class="flex justify-between items-center font-bold text-[#2E2C2B]">
                     <span>🇯🇵 日圓 (JPY)</span>
@@ -332,7 +314,32 @@
 
   </div>
 
-  <!-- 外幣 Modal (內建中信 APP 買外幣與手續費計算) -->
+  <!-- 新增：右下角 ☰ 浮動功能按鈕 (FAB) -->
+  <button onclick="toggleFabMenu()" class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#556357] hover:bg-[#435045] active:scale-95 text-white text-2xl font-bold rounded-full shadow-2xl border-2 border-white flex items-center justify-center transition-all">
+    ☰
+  </button>
+
+  <!-- 浮動選單彈窗 -->
+  <div id="fab-menu-modal" class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs hidden px-4 pb-24" onclick="closeFabMenu(event)">
+    <div class="bg-white w-full max-w-xs rounded-2xl p-4 shadow-2xl border border-[#DCD6D3] space-y-2" onclick="event.stopPropagation()">
+      <div class="text-xs font-bold text-[#827C78] border-b border-[#F2ECE9] pb-2 flex justify-between items-center">
+        <span>切換財務系統分頁</span>
+        <button onclick="toggleFabMenu()" class="text-[#784D4E] text-base font-bold">✕</button>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-xs font-bold pt-1">
+        <button onclick="switchTab(1); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">1. 快捷記帳</button>
+        <button onclick="switchTab(2); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">2. 現金收支</button>
+        <button onclick="switchTab(3); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">3. AA請款</button>
+        <button onclick="switchTab(4); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">4. 財務月曆</button>
+        <button onclick="switchTab(5); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">5. 股市清單</button>
+        <button onclick="switchTab(6); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">6. 外幣儲蓄</button>
+        <button onclick="switchTab(7); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">7. 資產總表</button>
+        <button onclick="switchTab(8); toggleFabMenu();" class="p-3 rounded-xl bg-[#F7F4F3] hover:bg-[#B2C1B4] text-[#2E2C2B] text-left">8. 設定管理</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 外幣 Modal -->
   <div id="forex-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl border border-[#DCD6D3]">
       <h3 class="text-base font-bold text-[#4A5B6E] border-b border-[#F2ECE9] pb-2">新增外幣交易 (中信 APP 優惠計算)</h3>
@@ -393,203 +400,23 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
-
-    let lineChannelAccessToken = localStorage.getItem('line_access_token') || '';
-    let lineTargetUserId = 'U375dcf04d252ffb326d81bf96bd85fce';
+    const tabTitles = [
+      "快捷記帳 (1/8)", "現金收支 (2/8)", "AA請款 (3/8)", "財務月曆 (4/8)",
+      "股市清單 (5/8)", "外幣儲蓄 (6/8)", "資產總表 (7/8)", "設定管理 (8/8)"
+    ];
 
     let currentTabIndex = 1;
-    let currentUser = null;
-    let allTransactions = [];
-    let userCards = [];
-    let fixedDeposits = [];
-    let insurancePolicies = [];
-    let forexTransactions = [];
 
-    // 中信匯率與到價設定
-    let ctbcRates = { 'USD': 31.85, 'JPY': 0.215 };
-    let forexAlerts = { usdLow: '', usdHigh: '', jpyLow: '', jpyHigh: '' };
-
-    function getTodayString() {
-      return new Date().toISOString().split('T')[0];
+    function toggleFabMenu() {
+      const modal = document.getElementById('fab-menu-modal');
+      modal.classList.toggle('hidden');
     }
 
-    /* --- LINE 自動推播邏輯 (含精準時間點比對) --- */
-    async function sendLineBotNotification(messageText) {
-      if (!lineChannelAccessToken) return false;
-      try {
-        const res = await fetch('https://api.line.me/v2/bot/message/push', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + lineChannelAccessToken
-          },
-          body: JSON.stringify({
-            to: lineTargetUserId,
-            messages: [{ type: 'text', text: messageText }]
-          })
-        });
-        return res.ok;
-      } catch (e) {
-        return false;
-      }
+    function closeFabMenu(e) {
+      document.getElementById('fab-menu-modal').classList.add('hidden');
     }
 
-    function checkScheduledNotifications() {
-      const now = new Date();
-      const currentHour = now.getHours();
-      const todayDay = now.getDate();
-      const todayStr = getTodayString();
-
-      // 1. 上午 7:00 信用卡與保單到期提醒
-      if (currentHour >= 7) {
-        // 信用卡：結帳日前 3 天、當天
-        userCards.forEach(c => {
-          if (c.cutoff) {
-            const diff = c.cutoff - todayDay;
-            if (diff === 3 || diff === 0) {
-              const alertKey = `alert_card_${c.bank}_${c.name}_${todayStr}_${diff}`;
-              if (!localStorage.getItem(alertKey)) {
-                sendLineBotNotification(`💳【信用卡結帳提醒】\n${c.bank} - ${c.name} ${diff === 0 ? '今天為結帳日！' : '將於 3 天後結帳 (' + c.cutoff + '號)！'}`);
-                localStorage.setItem(alertKey, 'true');
-              }
-            }
-          }
-        });
-
-        // 定存 / 儲蓄險：到期日前 7 天、前 3 天、當天
-        const itemsToCheck = [
-          ...fixedDeposits.map(d => ({ type: '定存', name: d.bank, date: d.date, amt: d.amount })),
-          ...insurancePolicies.map(i => ({ type: '儲蓄險保單', name: i.company, date: i.date, amt: i.amount }))
-        ];
-
-        itemsToCheck.forEach(item => {
-          if (item.date) {
-            const itemDate = new Date(item.date);
-            const diffDays = Math.round((itemDate - now) / (1000 * 60 * 60 * 24));
-            if (diffDays === 7 || diffDays === 3 || diffDays === 0) {
-              const alertKey = `alert_expiry_${item.name}_${item.date}_${diffDays}`;
-              if (!localStorage.getItem(alertKey)) {
-                const dayText = diffDays === 0 ? '今天到期！' : `將於 ${diffDays} 天後到期 (${item.date})！`;
-                sendLineBotNotification(`🏦【${item.type}到期提醒】\n您於 ${item.name} 的${item.type} $${(item.amt||0).toLocaleString()} ${dayText}`);
-                localStorage.setItem(alertKey, 'true');
-              }
-            }
-          }
-        });
-      }
-
-      // 2. 上午 10:00 中信外幣到價提醒
-      if (currentHour >= 10) {
-        const alertKeyUSD = `alert_forex_usd_${todayStr}`;
-        if (!localStorage.getItem(alertKeyUSD)) {
-          if (forexAlerts.usdLow && ctbcRates.USD <= Number(forexAlerts.usdLow)) {
-            sendLineBotNotification(`💵【中國信託美金到價提醒】\n目前中信美金匯率為 ${ctbcRates.USD}，已低於您的買入目標價 ${forexAlerts.usdLow}！`);
-            localStorage.setItem(alertKeyUSD, 'true');
-          } else if (forexAlerts.usdHigh && ctbcRates.USD >= Number(forexAlerts.usdHigh)) {
-            sendLineBotNotification(`💵【中國信託美金高點提醒】\n目前中信美金匯率為 ${ctbcRates.USD}，已達到您的賣出高點價 ${forexAlerts.usdHigh}！`);
-            localStorage.setItem(alertKeyUSD, 'true');
-          }
-        }
-
-        const alertKeyJPY = `alert_forex_jpy_${todayStr}`;
-        if (!localStorage.getItem(alertKeyJPY)) {
-          if (forexAlerts.jpyLow && ctbcRates.JPY <= Number(forexAlerts.jpyLow)) {
-            sendLineBotNotification(`💴【中國信託日圓到價提醒】\n目前中信日圓匯率為 ${ctbcRates.JPY}，已低於您的買入目標價 ${forexAlerts.jpyLow}！`);
-            localStorage.setItem(alertKeyJPY, 'true');
-          } else if (forexAlerts.jpyHigh && ctbcRates.JPY >= Number(forexAlerts.jpyHigh)) {
-            sendLineBotNotification(`💴【中國信託日圓高點提醒】\n目前中信日圓匯率為 ${ctbcRates.JPY}，已達到您的賣出高點價 ${forexAlerts.jpyHigh}！`);
-            localStorage.setItem(alertKeyJPY, 'true');
-          }
-        }
-      }
-    }
-
-    /* --- 中信即時匯率串接 --- */
-    async function fetchCTBCRealtimeRates() {
-      try {
-        const res = await fetch('https://open.er-api.com/v6/latest/TWD');
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.rates) {
-            if (data.rates.USD) ctbcRates.USD = +(1 / data.rates.USD).toFixed(3);
-            if (data.rates.JPY) ctbcRates.JPY = +(1 / data.rates.JPY).toFixed(4);
-            document.getElementById('ctbc-usd-rate').innerText = ctbcRates.USD;
-            document.getElementById('ctbc-jpy-rate').innerText = ctbcRates.JPY;
-          }
-        }
-      } catch (e) {}
-    }
-
-    function saveForexAlertSettings() {
-      forexAlerts.usdLow = document.getElementById('alert-usd-low').value;
-      forexAlerts.usdHigh = document.getElementById('alert-usd-high').value;
-      forexAlerts.jpyLow = document.getElementById('alert-jpy-low').value;
-      forexAlerts.jpyHigh = document.getElementById('alert-jpy-high').value;
-      localStorage.setItem('ctbc_forex_alerts', JSON.stringify(forexAlerts));
-    }
-
-    function loadForexAlertSettings() {
-      const saved = localStorage.getItem('ctbc_forex_alerts');
-      if (saved) {
-        forexAlerts = JSON.parse(saved);
-        if (document.getElementById('alert-usd-low')) document.getElementById('alert-usd-low').value = forexAlerts.usdLow || '';
-        if (document.getElementById('alert-usd-high')) document.getElementById('alert-usd-high').value = forexAlerts.usdHigh || '';
-        if (document.getElementById('alert-jpy-low')) document.getElementById('alert-jpy-low').value = forexAlerts.jpyLow || '';
-        if (document.getElementById('alert-jpy-high')) document.getElementById('alert-jpy-high').value = forexAlerts.jpyHigh || '';
-      }
-    }
-
-    /* --- 中信 APP 買外幣與手續費算式 --- */
-    function autoFillForexRate() {
-      const curr = document.getElementById('modal-forex-currency').value;
-      document.getElementById('modal-forex-rate').value = ctbcRates[curr] || 31.8;
-      calcForexNTD();
-    }
-
-    function calcForexNTD() {
-      const rate = Number(document.getElementById('modal-forex-rate').value) || 0;
-      const amt = Number(document.getElementById('modal-forex-amount').value.replace(/,/g, '')) || 0;
-      const fee = Number(document.getElementById('modal-forex-fee').value) || 0;
-      const total = Math.round(rate * amt) + fee;
-      document.getElementById('modal-forex-ntd').value = total ? total.toLocaleString() : '';
-    }
-
-    function openForexModal() {
-      document.getElementById('modal-forex-date').value = getTodayString();
-      autoFillForexRate();
-      document.getElementById('forex-modal').classList.remove('hidden');
-    }
-
-    function closeForexModal() {
-      document.getElementById('forex-modal').classList.add('hidden');
-    }
-
-    function saveForexModal() {
-      const date = document.getElementById('modal-forex-date').value || getTodayString();
-      const owner = document.getElementById('modal-forex-owner').value;
-      const type = document.getElementById('modal-forex-type').value;
-      const currency = document.getElementById('modal-forex-currency').value;
-      const rate = Number(document.getElementById('modal-forex-rate').value) || 0;
-      const amount = Number(document.getElementById('modal-forex-amount').value.replace(/,/g, '')) || 0;
-      const fee = Number(document.getElementById('modal-forex-fee').value) || 0;
-      const ntdTotal = Number(document.getElementById('modal-forex-ntd').value.replace(/,/g, '')) || 0;
-
-      if (amount <= 0) return alert('請填寫金額');
-      forexTransactions.push({ id: Date.now(), date, owner, type, currency, rate, amount, fee, ntdTotal });
-      closeForexModal();
-    }
-
-    function saveLineSettings() {
-      const tokenInput = document.getElementById('line-access-token').value.trim();
-      if (tokenInput) {
-        lineChannelAccessToken = tokenInput;
-        localStorage.setItem('line_access_token', tokenInput);
-        alert('已成功儲存 LINE Channel Access Token！');
-      }
-    }
-
+    /* --- 滑動切換與跨平台手勢/滑鼠支援 --- */
     function switchTab(tabIndex) {
       currentTabIndex = tabIndex;
       const swipeWrapper = document.getElementById('swipe-wrapper');
@@ -597,15 +424,54 @@
         const offsetPct = -(tabIndex - 1) * (100 / 8);
         swipeWrapper.style.transform = `translateX(${offsetPct}%)`;
       }
-      document.querySelectorAll('.nav-btn').forEach(el => {
-        el.className = 'nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap';
-      });
-      const activeBtn = document.getElementById(`nav-btn-${tabIndex}`);
-      if (activeBtn) {
-        activeBtn.className = 'nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] font-bold shadow-xs whitespace-nowrap';
-        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      }
+
+      const titleEl = document.getElementById('current-page-title');
+      if (titleEl) titleEl.innerText = tabTitles[tabIndex - 1];
     }
+
+    // 支援手機觸控 + 電腦滑鼠拖曳切換
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+    const mainApp = document.getElementById('main-app-container');
+
+    // 手機觸控
+    mainApp.addEventListener('touchstart', e => {
+      startX = e.changedTouches[0].screenX;
+      startY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    mainApp.addEventListener('touchend', e => {
+      const diffX = e.changedTouches[0].screenX - startX;
+      const diffY = e.changedTouches[0].screenY - startY;
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 60) {
+        if (diffX < 0 && currentTabIndex < 8) switchTab(currentTabIndex + 1);
+        else if (diffX > 0 && currentTabIndex > 1) switchTab(currentTabIndex - 1);
+      }
+    }, { passive: true });
+
+    // 電腦滑鼠拖曳
+    mainApp.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.clientX;
+    });
+
+    mainApp.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diffX = e.clientX - startX;
+      if (Math.abs(diffX) > 80) {
+        if (diffX < 0 && currentTabIndex < 8) switchTab(currentTabIndex + 1);
+        else if (diffX > 0 && currentTabIndex > 1) switchTab(currentTabIndex - 1);
+      }
+    });
+
+    // 支援電腦鍵盤左右方向鍵切換
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' && currentTabIndex < 8) switchTab(currentTabIndex + 1);
+      else if (e.key === 'ArrowLeft' && currentTabIndex > 1) switchTab(currentTabIndex - 1);
+    });
 
     function formatInputCurrency(inputEl) {
       let rawVal = inputEl.value.replace(/[^\d.-]/g, '');
@@ -634,13 +500,7 @@
       document.getElementById('login-modal').classList.add('hidden');
     }
 
-    async function initSystem() {
-      fetchCTBCRealtimeRates();
-      loadForexAlertSettings();
-      checkScheduledNotifications();
-    }
-
-    initSystem();
+    switchTab(1);
   </script>
 </body>
 </html>
