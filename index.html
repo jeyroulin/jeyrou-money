@@ -30,6 +30,14 @@
     .read-only-hide {
       display: none !important;
     }
+    /* 隱藏滾動條但保持可滑動功能 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
 <body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen select-none">
@@ -56,7 +64,7 @@
     </div>
   </div>
 
-  <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden" id="main-app-container">
+  <div class="max-w-xl mx-auto px-4 py-5 pb-12 overflow-x-hidden" id="main-app-container">
     
     <!-- 頂部標題與狀態列 -->
     <header class="mb-4 bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
@@ -75,20 +83,18 @@
       </div>
     </header>
 
-    <!-- 分頁導覽列 (共 9 個分頁) -->
-    <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
-      <div class="grid grid-cols-4 gap-1 text-center text-[10px] font-bold">
-        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
-        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">現金收支</button>
-        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">AA請款</button>
-        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">財務月曆</button>
-      </div>
-      <div class="grid grid-cols-5 gap-1 text-center text-[10px] font-bold">
-        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
-        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
-        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
-        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
-        <button onclick="switchTab(9)" id="nav-btn-9" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">登錄紀錄</button>
+    <!-- 優化後的響應式分頁導覽列 (支援跨裝置自適應流動 / 手機橫向滾動) -->
+    <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5">
+      <div class="flex overflow-x-auto no-scrollbar sm:grid sm:grid-cols-5 md:grid-cols-9 gap-1.5 text-center text-[11px] font-bold">
+        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
+        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">現金收支</button>
+        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">AA請款</button>
+        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">財務月曆</button>
+        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
+        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
+        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
+        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
+        <button onclick="switchTab(9)" id="nav-btn-9" class="nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">登錄紀錄</button>
       </div>
     </nav>
 
@@ -204,35 +210,41 @@
       </section>
     </main>
 
-    <!-- 分頁二：現金收支 -->
+    <!-- 分頁二：現金收支 (已完成圖一與圖二優化) -->
     <main id="tab-2" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
-        <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
+        <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-3">
           <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支總額 (大錢包)</h2>
-            <p class="text-[11px] text-[#827C78]">包含月度現金流與連線/土銀專款管理</p>
+            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支總額</h2>
           </div>
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
 
-        <div class="bg-[#B2C1B4] p-5 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
-          <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
-            <span class="text-xs text-[#435045] font-medium">當月淨剩餘現金流</span>
-            <span id="cashflow-month-tag" class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">當前月份</span>
+        <!-- 潔柔與宇軒拆分顯示卡片 -->
+        <div class="space-y-3">
+          <!-- 成員切換籤 -->
+          <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
+            <button onclick="switchCashflowMember('潔柔')" id="cashflow-tab-潔柔" class="cashflow-member-btn flex-1 py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">潔柔 現金流</button>
+            <button onclick="switchCashflowMember('宇軒')" id="cashflow-tab-宇軒" class="cashflow-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 現金流</button>
           </div>
-          <div class="text-2xl font-extrabold text-[#1F1E1D]" id="cashflow-net-display">$0</div>
-          <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#9EB0A1] text-[#435045]">
-            <div>當月總收入：<strong id="cashflow-income-display" class="text-[#1F1E1D]">$0</strong></div>
-            <div>當月總支出：<strong id="cashflow-expense-display" class="text-[#784D4E]">$0</strong></div>
+
+          <div class="bg-[#B2C1B4] p-5 rounded-2xl text-[#2E2C2B] shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
+              <span id="cashflow-user-title" class="text-xs text-[#435045] font-bold">【潔柔】當月淨剩餘現金流</span>
+              <span id="cashflow-month-tag" class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">當前月份</span>
+            </div>
+            <div class="text-3xl font-extrabold tracking-tight text-[#1F1E1D]" id="cashflow-net-display">$0</div>
+            <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#9EB0A1] text-[#435045]">
+              <div>當月總收入：<strong id="cashflow-income-display" class="text-[#1F1E1D]">$0</strong></div>
+              <div>當月總支出：<strong id="cashflow-expense-display" class="text-[#784D4E]">$0</strong></div>
+            </div>
           </div>
         </div>
 
+        <!-- 連線銀行專款 (已刪除副標說明) -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
-            <div>
-              <strong class="text-[#4D5A6E] text-sm font-bold block">連線銀行專款</strong>
-              <span class="text-[10px] text-[#827C78]">LINE Bank 獨立帳戶與收支袋</span>
-            </div>
+            <strong class="text-[#4D5A6E] text-sm font-bold block">連線銀行專款</strong>
             <strong id="line-bank-total-display" class="text-base font-extrabold text-[#4D5A6E]">$0</strong>
           </div>
 
@@ -251,12 +263,10 @@
           </div>
         </div>
 
+        <!-- 土地銀行專款 (已刪除副標說明) -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
-            <div>
-              <strong class="text-[#556357] text-sm font-bold block">土地銀行專款</strong>
-              <span class="text-[10px] text-[#827C78]">土地銀行獨立帳戶與收支袋</span>
-            </div>
+            <strong class="text-[#556357] text-sm font-bold block">土地銀行專款</strong>
             <strong id="land-bank-total-display" class="text-base font-extrabold text-[#556357]">$0</strong>
           </div>
 
@@ -729,7 +739,7 @@
       </section>
     </main>
 
-    <!-- 分頁九：登錄紀錄 (NEW) -->
+    <!-- 分頁九：登錄紀錄 -->
     <main id="tab-9" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
@@ -1039,12 +1049,13 @@
       { name: 'yuxuan', pass: '123456', role: 'viewer' }
     ];
 
-    let userLoginLogs = []; // 歷史登錄紀錄數據
+    let userLoginLogs = []; 
 
     let entryMode = '支出';
     let currentAssetMember = '全部';
     let currentStockMember = '潔柔';
     let currentForexMember = '潔柔';
+    let currentCashflowMember = '潔柔'; // 現金收支成員切換
     let allTransactions = [];
 
     function parseCurrencyNumber(val) {
@@ -1159,7 +1170,6 @@
       }
     }
 
-    /* --- 登入驗證與歷史紀錄邏輯 --- */
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('login-username').value.trim();
@@ -1170,10 +1180,8 @@
       if (matchUser) {
         currentUser = { name: matchUser.name, role: matchUser.role };
         
-        // 使用 localStorage 實現免重複登入
         localStorage.setItem('jeyrou_logged_user', JSON.stringify(currentUser));
         
-        // 紀錄登入時間與使用者
         const nowStr = new Date().toLocaleString('zh-TW', { hour12: false });
         userLoginLogs.unshift({
           id: Date.now(),
@@ -1195,7 +1203,6 @@
     }
 
     function checkLoginSession() {
-      // 改為使用 localStorage 以保持持久登入狀態
       const stored = localStorage.getItem('jeyrou_logged_user');
       if (stored) {
         try {
@@ -1425,7 +1432,6 @@
       renderLoginLogs();
     }
 
-    /* --- 小錢包與收支袋管理邏輯 --- */
     function addDedicatedFund(bankType) {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
       const nameEl = document.getElementById(`${bankType}-fund-name`);
@@ -3348,13 +3354,36 @@
       }
     }
 
+    function switchCashflowMember(member) {
+      currentCashflowMember = member;
+      document.querySelectorAll('.cashflow-member-btn').forEach(b => {
+        b.classList.remove('bg-white', 'shadow-2xs', 'text-[#2E2C2B]');
+        b.classList.add('text-[#524D4B]');
+      });
+      const btn = document.getElementById(`cashflow-tab-${member}`);
+      if (btn) btn.classList.add('bg-white', 'shadow-2xs', 'text-[#2E2C2B]');
+      renderCashFlowTab();
+    }
+
     function renderCashFlowTab() {
       const mVal = document.getElementById('cashflow-month-select').value || '2026-10';
       const yearStr = mVal.substring(0, 4);
       const monthStr = mVal.substring(5, 7);
-      document.getElementById('cashflow-month-tag').innerText = `${yearStr}年${monthStr}月`;
+      
+      if (document.getElementById('cashflow-month-tag')) {
+        document.getElementById('cashflow-month-tag').innerText = `${yearStr}年${monthStr}月`;
+      }
+      if (document.getElementById('cashflow-user-title')) {
+        document.getElementById('cashflow-user-title').innerText = `【${currentCashflowMember}】當月淨剩餘現金流`;
+      }
 
-      const currentMonthTx = allTransactions.filter(t => t.transaction_date && t.transaction_date.startsWith(mVal));
+      // 按成員進行過濾
+      const currentMonthTx = allTransactions.filter(t => {
+        const matchMonth = t.transaction_date && t.transaction_date.startsWith(mVal);
+        const matchMember = (t.member_tag || '潔柔') === currentCashflowMember;
+        return matchMonth && matchMember;
+      });
+
       const totalExpense = currentMonthTx.filter(t => Number(t.amount_ntd) < 0).reduce((sum, t) => sum + Math.abs(Number(t.amount_ntd)), 0);
       const totalIncome = currentMonthTx.filter(t => Number(t.amount_ntd) > 0).reduce((sum, t) => sum + Number(t.amount_ntd), 0);
 
@@ -3639,13 +3668,13 @@
       currentTabIndex = tabIndex;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.nav-btn').forEach(el => {
-        el.className = 'nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]';
+        el.className = 'nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]';
       });
 
       document.getElementById(`tab-${tabIndex}`)?.classList.remove('hidden');
       const activeBtn = document.getElementById(`nav-btn-${tabIndex}`);
       if (activeBtn) {
-        activeBtn.className = 'nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] font-bold shadow-xs';
+        activeBtn.className = 'nav-btn shrink-0 sm:shrink px-3.5 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] font-bold shadow-xs';
       }
 
       if (tabIndex === 2) renderCashFlowTab();
