@@ -30,9 +30,29 @@
     .read-only-hide {
       display: none !important;
     }
+    /* 隱藏原生滑動條，提升手機體驗 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* 平滑滑動容器 */
+    .swipe-container {
+      display: flex;
+      width: 800%;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      touch-action: pan-y;
+    }
+    .swipe-page {
+      width: 12.5%;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
   </style>
 </head>
-<body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen select-none">
+<body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen select-none overflow-x-hidden">
 
   <!-- 登入驗證保護遮罩 -->
   <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#3D3A39]/90 backdrop-blur-md px-4">
@@ -56,7 +76,7 @@
     </div>
   </div>
 
-  <div class="max-w-md mx-auto px-4 py-5 pb-12 overflow-x-hidden" id="main-app-container">
+  <div class="max-w-md mx-auto px-4 py-5 pb-12" id="main-app-container">
     
     <!-- 頂部標題與狀態列 -->
     <header class="mb-4 bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-2">
@@ -75,19 +95,17 @@
       </div>
     </header>
 
-    <!-- 分頁導覽列 -->
-    <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
-      <div class="grid grid-cols-4 gap-1 text-center text-[11px] font-bold">
-        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
-        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">現金收支</button>
-        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">AA請款</button>
-        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">財務月曆</button>
-      </div>
-      <div class="grid grid-cols-4 gap-1 text-center text-[11px] font-bold">
-        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
-        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
-        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
-        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
+    <!-- 升級：頂部單排橫向可滑動導覽列 -->
+    <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5">
+      <div id="nav-scroll-container" class="flex overflow-x-auto no-scrollbar gap-2 text-center text-[12px] font-bold scroll-smooth">
+        <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs whitespace-nowrap">快捷記帳</button>
+        <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">現金收支</button>
+        <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">AA請款</button>
+        <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">財務月曆</button>
+        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">股市清單</button>
+        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">外幣儲蓄</button>
+        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">資產總表</button>
+        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap">設定管理</button>
       </div>
     </nav>
 
@@ -96,627 +114,643 @@
       <span id="error-msg" class="font-mono"></span>
     </div>
 
-    <!-- 分頁一：快捷記帳 -->
-    <main id="tab-1" class="tab-content">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] mb-6 space-y-4">
-        <div class="border-b border-[#F2ECE9] pb-3 flex justify-between items-center">
-          <div>
-            <h2 class="text-base font-bold text-[#784D4E]" id="form-mode-title">快捷記帳 (支出)</h2>
-          </div>
-          <div class="flex bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
-            <button type="button" onclick="setEntryMode('支出')" id="mode-btn-expense" class="px-3 py-1.5 rounded-lg bg-[#C89B9C] text-[#2E2C2B] shadow-2xs">支出</button>
-            <button type="button" onclick="setEntryMode('收入')" id="mode-btn-income" class="px-3 py-1.5 rounded-lg text-[#524D4B]">收入</button>
-          </div>
-        </div>
-
-        <form id="expense-form" class="space-y-4">
-          <input type="hidden" id="editing_tx_id" value="">
-
-          <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">實際發生日期</label>
-            <input type="date" id="custom_transaction_date" required class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">項目名稱</label>
-            <input type="text" id="item_name" required placeholder="請輸入品項或來源" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm focus:ring-2 focus:ring-[#B2C1B4] outline-none bg-[#F7F4F3] focus:bg-white">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道 (刷卡/現金工具)</label>
-            <select id="account_name" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
-            </select>
-          </div>
-
-          <!-- 雙層連動：專款預算扣抵選單 -->
-          <div id="budget-deduction-container">
-            <label class="block text-xs font-bold text-[#4D5A6E] mb-1">專款預算扣抵 (選填 - 自動扣減現金專款)</label>
-            <select id="budget_deduction_item" class="w-full box-border p-3 border border-[#BAC7DB] rounded-xl text-sm font-bold text-[#4D5A6E] bg-[#E8EDF5] outline-none">
-              <option value="">-- 不使用專款扣抵 --</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">金額 ($ / 點)</label>
-            <input type="text" id="amount_ntd" required placeholder="0" oninput="formatInputCurrency(this)" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-lg font-extrabold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
-          </div>
-
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <label class="block text-xs font-bold text-[#524D4B] mb-1">歸屬成員</label>
-              <select id="member_tag" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white outline-none">
-                <option value="潔柔">潔柔</option>
-                <option value="宇軒">宇軒</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#524D4B] mb-1">分類</label>
-              <select id="category" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-medium bg-white outline-none">
-              </select>
-            </div>
-          </div>
-
-          <div class="flex gap-2">
-            <button type="submit" id="submit-btn" class="editable-only flex-1 py-4 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-xl shadow-xs transition text-sm">
-              儲存紀錄
-            </button>
-            <button type="button" id="cancel-edit-btn" onclick="cancelEditing()" class="hidden px-4 py-4 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#3D3A39] font-bold rounded-xl text-sm">
-              取消編輯
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-3">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-bold text-[#2E2C2B]">對帳與校正歷史</h2>
-          <button onclick="exportToCSV()" class="text-xs bg-[#F7F4F3] text-[#524D4B] px-3 py-1.5 rounded-lg font-bold border border-[#DCD6D3]">匯出 CSV</button>
-        </div>
-
-        <div class="space-y-2 p-3 bg-[#F7F4F3] rounded-xl border border-[#DCD6D3] text-xs">
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block">起始日期</label>
-              <input type="date" id="filter-start-date" onchange="filterQuickList()" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
-            </div>
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block">結束日期</label>
-              <input type="date" id="filter-end-date" onchange="filterQuickList()" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="search-input" oninput="filterQuickList()" placeholder="搜尋關鍵字..." class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
-            <select id="filter-member-select" onchange="filterQuickList()" class="p-2 border border-[#DCD6D3] rounded-lg font-bold bg-white">
-              <option value="">全部成員</option>
-              <option value="潔柔">潔柔</option>
-              <option value="宇軒">宇軒</option>
-            </select>
-          </div>
-          <div id="filter-summary-bar" class="p-2 bg-[#E8EDF5] rounded-lg border border-[#BAC7DB] flex justify-between items-center font-bold text-[11px] text-[#4D5A6E]">
-            <span>收入: $0</span>
-            <span>支出: $0</span>
-            <span>淨額: $0</span>
-          </div>
-        </div>
-
-        <div id="quick-list" class="space-y-2 pt-1">
-          <div class="p-4 text-center text-[#827C78] text-xs">尚無紀錄。</div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁二：現金收支與專款預算 (連線銀行/土地銀行) -->
-    <main id="tab-2" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
-        <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
-          <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與專款預算</h2>
-          </div>
-          <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
-        </div>
-
-        <div class="bg-[#B2C1B4] p-5 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
-          <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
-            <span class="text-xs text-[#435045] font-medium">當月淨剩餘現金流</span>
-            <span id="cashflow-month-tag" class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">當前月份</span>
-          </div>
-          <div class="text-2xl font-extrabold text-[#1F1E1D]" id="cashflow-net-display">$0</div>
-          <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#9EB0A1] text-[#435045]">
-            <div>當月總收入：<strong id="cashflow-income-display" class="text-[#1F1E1D]">$0</strong></div>
-            <div>當月總支出：<strong id="cashflow-expense-display" class="text-[#784D4E]">$0</strong></div>
-          </div>
-        </div>
-
-        <!-- 專款切換分頁 -->
-        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
-            <strong class="text-[#2E2C2B] text-sm font-bold">銀行現金專款管理</strong>
-            <button onclick="setBankTotalAmount()" class="editable-only text-[11px] bg-[#DDD7D4] px-2 py-1 rounded font-bold text-[#4D5A6E]">設定總額</button>
-          </div>
-
-          <!-- 切換按鈕 -->
-          <div class="grid grid-cols-2 gap-1 bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
-            <button onclick="switchBankTab('LINE')" id="bank-tab-LINE" class="py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">連線銀行 0</button>
-            <button onclick="switchBankTab('LAND')" id="bank-tab-LAND" class="py-2 rounded-lg text-[#524D4B]">土地銀行 0</button>
-          </div>
-
-          <!-- 新增專款輸入框 -->
-          <div class="grid grid-cols-2 gap-2 editable-only pt-1">
-            <input type="text" id="budget-item-name" placeholder="專款項目 (例: 生活費)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
-            <input type="text" id="budget-item-limit" placeholder="專款額度 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
-          </div>
-          <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增至目前銀行專款</button>
-
-          <!-- 專款列表與金額試算 -->
-          <div id="budget-plans-list" class="space-y-2 pt-2">
-            <div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁三：AA 請款專區 -->
-    <main id="tab-3" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-bold text-[#784D4E]">AA制請款與代墊計算</h2>
-          <input type="month" id="aa-month-select" onchange="renderAATab()" class="p-2 border border-[#C89B9C] rounded-xl text-xs font-bold text-[#784D4E] bg-[#F7EDED] outline-none">
-        </div>
-
-        <div class="editable-only bg-[#F7EDED]/80 p-5 rounded-xl border border-[#C89B9C] space-y-3 text-xs">
-          <strong class="font-bold text-[#784D4E] block text-sm">新增請款與代墊明細</strong>
-          <input type="text" id="aa-item-title" placeholder="項目名稱" class="w-full box-border p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
-          <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="aa-guanhe-amount" placeholder="冠合應付 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-[#2E2C2B] text-xs">
-            <input type="text" id="aa-jierou-amount" placeholder="潔柔支付 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-[#784D4E] text-xs">
-          </div>
-          <button onclick="addAAItem()" class="w-full py-2.5 bg-[#C89B9C] hover:bg-[#B58788] text-[#2E2C2B] font-bold rounded-lg shadow-xs text-xs">新增請款項目</button>
-        </div>
-
-        <div class="bg-[#4D4545] text-[#F7F4F3] p-5 rounded-xl space-y-2 text-xs shadow-inner">
-          <div class="flex justify-between items-center text-[#E8C2C3] font-bold border-b border-[#635A5A] pb-2">
-            <span id="aa-title-display">請款單明細</span>
-            <button onclick="copyAAListText()" class="text-[11px] bg-[#3B3434] text-[#DDD7D4] px-2.5 py-1 rounded hover:bg-[#2B2525] border border-[#635A5A]">複製請款文字</button>
-          </div>
-          
-          <div id="aa-items-container" class="space-y-2 py-2">
-            <div class="text-[#B5ADAD] text-center py-2">尚無請款項目。</div>
-          </div>
-
-          <div class="border-t border-dashed border-[#635A5A] pt-2 flex justify-between items-center text-xs font-bold">
-            <span>小計 (冠合應付)：<strong id="aa-guanhe-total-display" class="text-[#F2E5C9] font-bold">$0</strong></span>
-            <span>(潔柔負擔：<strong id="aa-jierou-total-display" class="text-[#E8C2C3] font-bold">$0</strong>)</span>
-          </div>
-        </div>
-
-        <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs flex justify-between items-center">
-          <span class="text-[#524D4B] font-medium">本月冠合應付潔柔：</span>
-          <strong id="aa-final-settle-display" class="text-[#556357] text-base font-extrabold">$0</strong>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁四：財務月曆 -->
-    <main id="tab-4" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
-        
-        <div class="space-y-3">
-          <div class="flex justify-between items-center">
-            <h2 class="text-base font-bold text-[#2E2C2B]">財務月曆與 Google 行程</h2>
-            <button onclick="fetchGoogleCalendarEvents()" class="px-3 py-1.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg text-xs shadow-2xs">同步 Google 日曆</button>
-          </div>
-
-          <div class="flex items-center justify-between bg-[#F7F4F3] p-2.5 rounded-xl border border-[#DCD6D3]">
-            <button onclick="changeCalendarMonth(-1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">上個月</button>
-            <strong id="calendar-month-title" class="text-sm font-extrabold text-[#2E2C2B]">2026年10月</strong>
-            <button onclick="changeCalendarMonth(1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">下個月</button>
-          </div>
-
-          <div class="bg-white border border-[#DCD6D3] rounded-xl overflow-hidden">
-            <div class="grid grid-cols-7 bg-[#DDD7D4] text-center text-[11px] font-bold py-1.5 text-[#524D4B] border-b border-[#DCD6D3]">
-              <div class="text-[#784D4E]">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-[#556357]">六</div>
-            </div>
-            <div id="calendar-days-grid" class="grid grid-cols-7 text-xs border-collapse"></div>
-          </div>
-        </div>
-
-        <div class="bg-[#F7F4F3] p-4 rounded-xl border border-[#DCD6D3] space-y-4 pt-4 border-t border-[#DCD6D3]">
-          <strong class="text-xs font-bold text-[#2E2C2B] block border-b border-[#DCD6D3] pb-2">近六個月收支趨勢圖</strong>
-          <div id="six-month-chart-box" class="h-32 flex items-end justify-between gap-1 pt-4 px-1">
-          </div>
-
-          <strong class="text-xs font-bold text-[#2E2C2B] block border-b border-[#DCD6D3] pb-2 pt-2">當月支出分類佔比</strong>
-          <div id="category-expense-pie-box" class="space-y-2">
-          </div>
-        </div>
-
-        <div id="credit-bill-summary" class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
-          <strong class="font-bold text-[#524D4B] block">信用卡應繳與結帳提醒：</strong>
-          <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
-        </div>
-
-      </section>
-    </main>
-
-    <!-- 分頁七：股市清單 -->
-    <main id="tab-7" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
-        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
-          <div class="min-w-0">
-            <h2 class="text-base font-bold text-[#2E2C2B] keep-word">股票資產分析與預估現值</h2>
-          </div>
-          <div class="flex gap-1 shrink-0">
-            <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">金額校正</button>
-            <button onclick="openStockModal()" class="editable-only px-3 py-2 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
-          </div>
-        </div>
-
-        <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
-          <button onclick="switchStockMember('潔柔')" id="stock-tab-潔柔" class="stock-member-btn flex-1 py-2 rounded-lg bg-white text-[#4D5A6E] shadow-2xs">潔柔股票帳戶</button>
-          <button onclick="switchStockMember('宇軒')" id="stock-tab-宇軒" class="stock-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒股票帳戶</button>
-        </div>
-
-        <div class="bg-[#4D5A6E] text-white p-5 rounded-2xl shadow-sm space-y-4">
-          <div class="flex justify-between items-center border-b border-[#687890] pb-3 gap-2">
-            <span class="text-xs text-[#C5D0DF] font-bold keep-word" id="stock-dashboard-title">【潔柔】股票資產預估現值</span>
-            <button onclick="setInitialStockCash()" class="editable-only text-[10px] bg-[#374252] hover:bg-[#2A3340] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#687890]">校正現金餘額</button>
-          </div>
-          
-          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="stock-account-grand-total">$0</div>
-
-          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#687890] leading-relaxed">
-            <div>
-              <span class="text-[#C5D0DF] block text-[11px] mb-0.5">預估變現淨額：</span>
-              <strong id="stock-total-market-val" class="text-white text-sm font-bold">$0</strong>
-            </div>
-            <div>
-              <span class="text-[#C5D0DF] block text-[11px] mb-0.5">交割戶現金餘額：</span>
-              <strong id="stock-total-cash-val" class="text-[#B2C1B4] text-sm font-bold block">$0</strong>
-            </div>
-          </div>
-
-          <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-2 border-t border-[#5F6F87]">
-            <span>投入總成本：<strong id="stock-total-cost-val" class="font-bold">$0</strong></span>
-            <span>淨損益：<strong id="stock-total-profit-val" class="text-sm font-extrabold">$0</strong></span>
-          </div>
-        </div>
-
-        <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs">
-        </div>
-
-        <div class="space-y-3 pt-2">
-          <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
-            <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單 (現值高至低排序)</h3>
-          </div>
-          <div id="stock-detailed-list" class="space-y-3">
-            <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁八：外幣儲蓄與投資 -->
-    <main id="tab-8" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
-        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
-          <div class="min-w-0">
-            <h2 class="text-base font-bold text-[#4A5B6E] keep-word">外幣儲蓄與投資</h2>
-          </div>
-          <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
-        </div>
-
-        <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
-          <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#4A5B6E] shadow-2xs font-bold">潔柔外幣帳戶</button>
-          <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#635D5A]">宇軒外幣帳戶</button>
-        </div>
-
-        <div class="bg-[#5B6B7C] text-white p-5 rounded-2xl shadow-sm space-y-4">
-          <div class="flex justify-between items-center border-b border-[#708092] pb-3">
-            <span class="text-xs text-[#DCE3EC] font-bold" id="forex-dashboard-title">【潔柔】外幣資產總值</span>
-            <button onclick="updateForexRatesOnline()" class="text-[10px] bg-[#4A5B6E] hover:bg-[#3B4A5B] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#708092]">更新即時匯率</button>
-          </div>
-          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="forex-grand-total-ntd">$0</div>
-          
-          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#708092] leading-relaxed">
-            <div>
-              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">購入外幣總成本：</span>
-              <strong id="forex-total-cost-ntd" class="text-white text-sm font-bold">$0</strong>
-            </div>
-            <div>
-              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">外幣投資損益：</span>
-              <strong id="forex-total-profit-ntd" class="text-sm font-extrabold block">$0</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <strong class="font-bold text-[#2E2C2B] block text-xs border-b border-[#F2ECE9] pb-2">外幣持份與損益明細</strong>
-          <div id="forex-holdings-list" class="space-y-2.5">
-            <div class="text-center text-[#827C78] py-4 text-xs">尚無外幣紀錄。</div>
-          </div>
-        </div>
-
-        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
-          <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">外幣買賣歷程</strong>
-          <div id="forex-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
-            <div class="text-center text-[#827C78] py-2">尚無交易紀錄。</div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁五：資產總表 -->
-    <main id="tab-5" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
-        <div>
-          <h2 class="text-base font-bold text-[#4D5A6E] keep-word">資產總表</h2>
-        </div>
-
-        <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
-          <button onclick="switchAssetMember('全部')" id="asset-tab-全部" class="asset-member-btn flex-1 py-2 rounded-lg bg-white shadow-2xs text-[#4D5A6E]">全部</button>
-          <button onclick="switchAssetMember('潔柔')" id="asset-tab-潔柔" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">潔柔</button>
-          <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
-        </div>
-
-        <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3">
-        </div>
-
-        <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3">
-        </div>
-
-        <div class="bg-[#F8F9FA] p-5 border border-[#E2E8F0] rounded-2xl space-y-3">
-          <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-2">
-            <strong class="font-bold text-[#2E2C2B] text-xs keep-word">資產結構明細</strong>
-          </div>
-          <div id="asset-breakdown-list" class="space-y-2 text-xs">
-          </div>
-        </div>
-
-        <div class="p-5 bg-[#EAE8F0] border border-[#C5BFE0] rounded-2xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#C5BFE0] pb-2.5">
-            <strong class="font-bold text-[#5A4E7A] text-sm keep-word">儲蓄險管理庫</strong>
-            <button onclick="openInsuranceModal()" class="editable-only px-2.5 py-1.5 bg-[#78699B] hover:bg-[#625384] text-white rounded-lg font-bold text-[11px] shadow-2xs">+ 新增儲蓄險</button>
-          </div>
-          <div id="insurance-deposit-list" class="space-y-2 pt-1">
-            <div class="text-[#827C78] text-center py-1">尚無儲蓄保單紀錄</div>
-          </div>
-        </div>
-
-        <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
-            <strong class="font-bold text-[#4D5A6E] text-sm keep-word">定存管理庫</strong>
-            <button onclick="openDepositModal()" class="editable-only px-2.5 py-1.5 bg-[#98A4B7] hover:bg-[#8391A6] text-white rounded-lg font-bold text-[11px] shadow-2xs">+ 新增定存</button>
-          </div>
-          <div id="fixed-deposit-list" class="space-y-2 pt-1">
-            <div class="text-[#827C78] text-center py-1">尚無定存項目</div>
-          </div>
-        </div>
-
-        <!-- 連續雙年度開銷與資金覆蓋率 -->
-        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-4 text-xs">
-          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
-            <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來開銷與資金覆蓋率</strong>
-            <div class="flex gap-1.5 items-center shrink-0">
-              <select id="annual-year-select" onchange="renderAnnualCoverage()" class="p-1.5 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B] outline-none text-xs">
-              </select>
-            </div>
-          </div>
-
-          <div id="annual-coverage-dual-cards" class="space-y-3">
-          </div>
-
-          <div class="space-y-2 pt-2 border-t border-[#DCD6D3]">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-[#2E2C2B] text-xs">新增年度開銷明細</span>
-              <button onclick="openAnnualFundModal()" class="editable-only px-2.5 py-1 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded-lg text-[10px] shadow-2xs">
-                + 新增預備資金(活存/定存)
-              </button>
-            </div>
-
-            <div class="editable-only grid grid-cols-12 gap-1.5">
-              <select id="annual-input-month" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold outline-none text-xs">
-                <option value="1月">1 月</option><option value="2月">2 月</option><option value="3月">3 月</option>
-                <option value="4月">4 月</option><option value="5月">5 月</option><option value="6月">6 月</option>
-                <option value="7月">7 月</option><option value="8月">8 月</option><option value="9月">9 月</option>
-                <option value="10月">10月</option><option value="11月">11月</option><option value="12月">12月</option>
-              </select>
-              <input type="text" id="annual-input-name" placeholder="項目 (例: 爸生日)" class="col-span-4 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
-              <input type="text" id="annual-input-amount" placeholder="金額 ($)" oninput="formatInputCurrency(this)" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-xs">
-              <button onclick="saveAnnualExpenseInline()" class="col-span-2 py-2 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg shadow-2xs text-xs">新增</button>
-            </div>
-          </div>
-
-          <div id="annual-items-list" class="space-y-1.5 pt-2 max-h-60 overflow-y-auto border-t border-[#DCD6D3]">
-            <div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>
-          </div>
-        </div>
-
-        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
-            <strong class="font-bold text-[#2E2C2B] text-sm keep-word">股票預估變現淨額摘要</strong>
-            <button onclick="switchTab(7)" class="px-2.5 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold text-[11px] shrink-0 shadow-2xs">前往股市清單</button>
-          </div>
-          <div id="asset-stock-summary-box" class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1.5">
-          </div>
-        </div>
-
-        <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
-            <strong class="font-bold text-[#4D5A6E] text-sm keep-word" id="labor-section-title">勞工退休金專戶 (潔柔)</strong>
-            <button onclick="saveLaborData()" class="editable-only px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded-lg text-[11px] shadow-2xs">儲存勞退資料</button>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">提撥起始日</label>
-              <input type="date" id="labor-start-date" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
-            </div>
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">預估退休年齡</label>
-              <input type="number" id="labor-retire-age" placeholder="65" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
-            </div>
-            <div class="col-span-2">
-              <label class="text-[10px] text-[#4D5A6E] font-extrabold block mb-0.5">資料更新日期</label>
-              <input type="date" id="labor-update-date" class="w-full p-2 border border-[#BAC7DB] rounded-lg bg-white font-bold text-[#4D5A6E]">
-            </div>
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥本金 ($)</label>
-              <input type="text" id="labor-emp-principal" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
-            </div>
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥收益 ($)</label>
-              <input type="text" id="labor-emp-income" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#556357]">
-            </div>
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提本金 ($)</label>
-              <input type="text" id="labor-self-principal" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
-            </div>
-            <div>
-              <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提收益 ($)</label>
-              <input type="text" id="labor-self-income" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#556357]">
-            </div>
-          </div>
-
-          <div class="p-2.5 bg-white border border-[#BAC7DB] rounded-xl flex justify-between items-center font-bold">
-            <span>勞退總獲利：<strong id="labor-profit-sum" class="text-[#556357]">$0</strong></span>
-            <span>累積收益率：<strong id="labor-rate-sum" class="text-[#4D5A6E]">0%</strong></span>
-          </div>
-
-          <div class="p-3 bg-[#DCE4F0] border border-[#A2B4CE] rounded-xl space-y-1 font-bold text-[#2E2C2B]">
-            <div class="flex justify-between items-center">
-              <span>現有專戶總額：<strong id="labor-current-total">$0</strong></span>
-              <span>預估退休總額：<strong id="labor-est-future-total" class="text-[#4D5A6E]">$0</strong></span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁六：設定管理與帳號權限 -->
-    <main id="tab-6" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
-        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
-          <h2 class="text-base font-bold text-[#5C5069]">設定管理</h2>
-          <button onclick="logout()" class="px-3 py-1 bg-[#784D4E] text-white text-xs font-bold rounded-lg">登出系統</button>
-        </div>
-
-        <div id="backup-reminder-banner" class="hidden p-3 bg-[#F7EDED] border border-[#C89B9C] rounded-xl text-xs text-[#784D4E] font-bold">
-          系統提示：您已超過 30 天未匯出 JSON 備份檔，建議立即下載備份。
-        </div>
-
-        <div class="p-4 bg-[#EAE8F0] border border-[#C5BFE0] rounded-xl space-y-3 text-xs">
-          <strong class="font-bold text-[#5A4E7A] block text-sm">使用者帳號與權限設定</strong>
-          
-          <div class="editable-only p-3 bg-white rounded-lg border border-[#C5BFE0] space-y-2">
-            <strong class="font-bold text-[#2E2C2B] block">新增 / 修改家人帳號</strong>
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="user-input-name" placeholder="使用者帳號 (例: yuxuan)" class="p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3]">
-              <input type="password" id="user-input-pass" placeholder="密碼" class="p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3]">
-            </div>
-            <div class="flex gap-2 items-center">
-              <select id="user-input-role" class="flex-1 p-2 border border-[#DCD6D3] rounded bg-white font-bold">
-                <option value="admin">最高管理者 (可編輯刪除)</option>
-                <option value="viewer">家人成員 (僅供檢視)</option>
-              </select>
-              <button onclick="saveUserAccount()" class="px-3 py-2 bg-[#78699B] text-white font-bold rounded">新增/更新</button>
-            </div>
-          </div>
-
-          <div id="user-accounts-list" class="space-y-1.5 pt-1">
-          </div>
-        </div>
-
-        <div class="p-4 bg-[#CEC7DB] border border-[#BBB3CB] rounded-xl space-y-2 text-xs text-[#2E2C2B]">
-          <strong class="font-bold text-[#453A52] block text-sm">全站備份與還原</strong>
-          <div class="flex gap-2 pt-1">
-            <button onclick="exportBackupJSON()" class="flex-1 py-2 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-lg">匯出 JSON 備份檔</button>
-            <label class="editable-only flex-1 py-2 bg-[#3D3A39] text-white font-bold rounded-lg text-center cursor-pointer">
-              匯入 JSON 備份
-              <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
-            </label>
-          </div>
-        </div>
-
-        <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#2E2C2B]">銀行資訊管理</h3>
-          <div class="flex gap-2 editable-only">
-            <input type="text" id="setting-bank-input" placeholder="輸入銀行 (例: 812 台新銀行)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addBankFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增銀行</button>
-          </div>
-          <div id="setting-bank-list" class="space-y-1.5 text-xs"></div>
-        </div>
-
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#2E2C2B]">證券商管理</h3>
-          <div class="flex gap-2 editable-only">
-            <input type="text" id="setting-broker-input" placeholder="輸入證券商 (例: 9800 國泰綜合證券)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addBrokerFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增證券商</button>
-          </div>
-          <div id="setting-broker-list" class="space-y-1.5 text-xs"></div>
-        </div>
-
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#4D5A6E]">信用卡管理</h3>
-
-          <div class="editable-only p-3.5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-2.5 text-xs">
-            <strong class="font-bold text-[#4D5A6E] block">新增信用卡</strong>
-            <div class="grid grid-cols-2 gap-2">
+    <!-- 升級：左右順暢滑動主視窗容器 -->
+    <div class="overflow-hidden">
+      <div id="swipe-wrapper" class="swipe-container">
+
+        <!-- 分頁一：快捷記帳 -->
+        <main id="tab-1" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] mb-6 space-y-4">
+            <div class="border-b border-[#F2ECE9] pb-3 flex justify-between items-center">
               <div>
-                <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">發卡銀行</label>
-                <select id="card-bank-input" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
+                <h2 class="text-base font-bold text-[#784D4E]" id="form-mode-title">快捷記帳 (支出)</h2>
+              </div>
+              <div class="flex bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
+                <button type="button" onclick="setEntryMode('支出')" id="mode-btn-expense" class="px-3 py-1.5 rounded-lg bg-[#C89B9C] text-[#2E2C2B] shadow-2xs">支出</button>
+                <button type="button" onclick="setEntryMode('收入')" id="mode-btn-income" class="px-3 py-1.5 rounded-lg text-[#524D4B]">收入</button>
+              </div>
+            </div>
+
+            <form id="expense-form" class="space-y-4">
+              <input type="hidden" id="editing_tx_id" value="">
+
+              <div>
+                <label class="block text-xs font-bold text-[#524D4B] mb-1">實際發生日期</label>
+                <input type="date" id="custom_transaction_date" required class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#524D4B] mb-1">項目名稱</label>
+                <input type="text" id="item_name" required placeholder="請輸入品項或來源" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm focus:ring-2 focus:ring-[#B2C1B4] outline-none bg-[#F7F4F3] focus:bg-white">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道 (刷卡/現金工具)</label>
+                <select id="account_name" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
                 </select>
               </div>
+
+              <!-- 雙層連動：專款預算扣抵選單 -->
+              <div id="budget-deduction-container">
+                <label class="block text-xs font-bold text-[#4D5A6E] mb-1">專款預算扣抵 (選填 - 自動扣減現金專款)</label>
+                <select id="budget_deduction_item" class="w-full box-border p-3 border border-[#BAC7DB] rounded-xl text-sm font-bold text-[#4D5A6E] bg-[#E8EDF5] outline-none">
+                  <option value="">-- 不使用專款扣抵 --</option>
+                </select>
+              </div>
+
               <div>
-                <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">卡別名稱</label>
-                <input type="text" id="card-name-input" placeholder="例: FlyGo 飛狗卡" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white">
+                <label class="block text-xs font-bold text-[#524D4B] mb-1">金額 ($ / 點)</label>
+                <input type="text" id="amount_ntd" required placeholder="0" oninput="formatInputCurrency(this)" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-lg font-extrabold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+              </div>
+
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-bold text-[#524D4B] mb-1">歸屬成員</label>
+                  <select id="member_tag" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white outline-none">
+                    <option value="潔柔">潔柔</option>
+                    <option value="宇軒">宇軒</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-[#524D4B] mb-1">分類</label>
+                  <select id="category" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-medium bg-white outline-none">
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex gap-2">
+                <button type="submit" id="submit-btn" class="editable-only flex-1 py-4 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-xl shadow-xs transition text-sm">
+                  儲存紀錄
+                </button>
+                <button type="button" id="cancel-edit-btn" onclick="cancelEditing()" class="hidden px-4 py-4 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#3D3A39] font-bold rounded-xl text-sm">
+                  取消編輯
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-3">
+            <div class="flex items-center justify-between">
+              <h2 class="text-base font-bold text-[#2E2C2B]">對帳與校正歷史</h2>
+              <button onclick="exportToCSV()" class="text-xs bg-[#F7F4F3] text-[#524D4B] px-3 py-1.5 rounded-lg font-bold border border-[#DCD6D3]">匯出 CSV</button>
+            </div>
+
+            <div class="space-y-2 p-3 bg-[#F7F4F3] rounded-xl border border-[#DCD6D3] text-xs">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block">起始日期</label>
+                  <input type="date" id="filter-start-date" onchange="filterQuickList()" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block">結束日期</label>
+                  <input type="date" id="filter-end-date" onchange="filterQuickList()" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="search-input" oninput="filterQuickList()" placeholder="搜尋關鍵字..." class="p-2 border border-[#DCD6D3] rounded-lg bg-white">
+                <select id="filter-member-select" onchange="filterQuickList()" class="p-2 border border-[#DCD6D3] rounded-lg font-bold bg-white">
+                  <option value="">全部成員</option>
+                  <option value="潔柔">潔柔</option>
+                  <option value="宇軒">宇軒</option>
+                </select>
+              </div>
+              <div id="filter-summary-bar" class="p-2 bg-[#E8EDF5] rounded-lg border border-[#BAC7DB] flex justify-between items-center font-bold text-[11px] text-[#4D5A6E]">
+                <span>收入: $0</span>
+                <span>支出: $0</span>
+                <span>淨額: $0</span>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-2">
+
+            <div id="quick-list" class="space-y-2 pt-1">
+              <div class="p-4 text-center text-[#827C78] text-xs">尚無紀錄。</div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 分頁二：現金收支 -->
+        <main id="tab-2" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
+            <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
               <div>
-                <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">結帳日</label>
-                <input type="number" id="card-cutoff-input" placeholder="1~31 (例: 15)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+                <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與專款預算</h2>
               </div>
-              <div>
-                <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">到期日 (MM/YY)</label>
-                <input type="text" id="card-expiry-input" placeholder="例: 12/28" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+              <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
+            </div>
+
+            <div class="bg-[#B2C1B4] p-5 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
+              <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
+                <span class="text-xs text-[#435045] font-medium">當月淨剩餘現金流</span>
+                <span id="cashflow-month-tag" class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">當前月份</span>
+              </div>
+              <div class="text-2xl font-extrabold text-[#1F1E1D]" id="cashflow-net-display">$0</div>
+              <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#9EB0A1] text-[#435045]">
+                <div>當月總收入：<strong id="cashflow-income-display" class="text-[#1F1E1D]">$0</strong></div>
+                <div>當月總支出：<strong id="cashflow-expense-display" class="text-[#784D4E]">$0</strong></div>
               </div>
             </div>
-            <button onclick="addCustomCard()" class="w-full py-2.5 bg-[#98A4B7] hover:bg-[#8391A6] text-white font-bold rounded-lg text-xs">新增信用卡</button>
-          </div>
 
-          <div id="custom-card-list" class="space-y-2"></div>
-        </div>
+            <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
+              <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
+                <strong class="text-[#2E2C2B] text-sm font-bold">銀行現金專款管理</strong>
+                <button onclick="setBankTotalAmount()" class="editable-only text-[11px] bg-[#DDD7D4] px-2 py-1 rounded font-bold text-[#4D5A6E]">設定總額</button>
+              </div>
 
-        <!-- 獨立拆分：支出分類管理 -->
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#784D4E]">支出分類管理</h3>
-          <div class="flex gap-2 editable-only">
-            <input type="text" id="setting-expense-category-input" placeholder="輸入支出分類名稱 (例: 餐飲)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addCategoryFromSetting('支出')" class="px-3 py-2 bg-[#C89B9C] text-[#2E2C2B] rounded-lg text-xs font-bold">新增支出分類</button>
-          </div>
-          <div id="setting-expense-category-list" class="space-y-1.5 text-xs"></div>
-        </div>
+              <div class="grid grid-cols-2 gap-1 bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
+                <button onclick="switchBankTab('LINE')" id="bank-tab-LINE" class="py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">連線銀行 0</button>
+                <button onclick="switchBankTab('LAND')" id="bank-tab-LAND" class="py-2 rounded-lg text-[#524D4B]">土地銀行 0</button>
+              </div>
 
-        <!-- 獨立拆分：收入分類管理 -->
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#4D5A6E]">收入分類管理</h3>
-          <div class="flex gap-2 editable-only">
-            <input type="text" id="setting-income-category-input" placeholder="輸入收入分類名稱 (例: 薪資收入)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addCategoryFromSetting('收入')" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增收入分類</button>
-          </div>
-          <div id="setting-income-category-list" class="space-y-1.5 text-xs"></div>
-        </div>
+              <div class="grid grid-cols-2 gap-2 editable-only pt-1">
+                <input type="text" id="budget-item-name" placeholder="專款項目 (例: 生活費)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
+                <input type="text" id="budget-item-limit" placeholder="專款額度 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
+              </div>
+              <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增至目前銀行專款</button>
 
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#2E2C2B]">支付與收入管道</h3>
-          <div class="flex gap-2 editable-only">
-            <input type="text" id="setting-account-input" placeholder="輸入管道名稱" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addAccountFromSetting()" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增管道</button>
-          </div>
-          <div id="setting-account-list" class="space-y-1.5 text-xs"></div>
-        </div>
-      </section>
-    </main>
+              <div id="budget-plans-list" class="space-y-2 pt-2">
+                <div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 分頁三：AA請款 -->
+        <main id="tab-3" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-base font-bold text-[#784D4E]">AA制請款與代墊計算</h2>
+              <input type="month" id="aa-month-select" onchange="renderAATab()" class="p-2 border border-[#C89B9C] rounded-xl text-xs font-bold text-[#784D4E] bg-[#F7EDED] outline-none">
+            </div>
+
+            <div class="editable-only bg-[#F7EDED]/80 p-5 rounded-xl border border-[#C89B9C] space-y-3 text-xs">
+              <strong class="font-bold text-[#784D4E] block text-sm">新增請款與代墊明細</strong>
+              <input type="text" id="aa-item-title" placeholder="項目名稱" class="w-full box-border p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="aa-guanhe-amount" placeholder="冠合應付 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-[#2E2C2B] text-xs">
+                <input type="text" id="aa-jierou-amount" placeholder="潔柔支付 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-[#784D4E] text-xs">
+              </div>
+              <button onclick="addAAItem()" class="w-full py-2.5 bg-[#C89B9C] hover:bg-[#B58788] text-[#2E2C2B] font-bold rounded-lg shadow-xs text-xs">新增請款項目</button>
+            </div>
+
+            <div class="bg-[#4D4545] text-[#F7F4F3] p-5 rounded-xl space-y-2 text-xs shadow-inner">
+              <div class="flex justify-between items-center text-[#E8C2C3] font-bold border-b border-[#635A5A] pb-2">
+                <span id="aa-title-display">請款單明細</span>
+                <button onclick="copyAAListText()" class="text-[11px] bg-[#3B3434] text-[#DDD7D4] px-2.5 py-1 rounded hover:bg-[#2B2525] border border-[#635A5A]">複製請款文字</button>
+              </div>
+              
+              <div id="aa-items-container" class="space-y-2 py-2">
+                <div class="text-[#B5ADAD] text-center py-2">尚無請款項目。</div>
+              </div>
+
+              <div class="border-t border-dashed border-[#635A5A] pt-2 flex justify-between items-center text-xs font-bold">
+                <span>小計 (冠合應付)：<strong id="aa-guanhe-total-display" class="text-[#F2E5C9] font-bold">$0</strong></span>
+                <span>(潔柔負擔：<strong id="aa-jierou-total-display" class="text-[#E8C2C3] font-bold">$0</strong>)</span>
+              </div>
+            </div>
+
+            <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs flex justify-between items-center">
+              <span class="text-[#524D4B] font-medium">本月冠合應付潔柔：</span>
+              <strong id="aa-final-settle-display" class="text-[#556357] text-base font-extrabold">$0</strong>
+            </div>
+          </section>
+        </main>
+
+        <!-- 分頁四：財務月曆 -->
+        <main id="tab-4" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <h2 class="text-base font-bold text-[#2E2C2B]">財務月曆與 Google 行程</h2>
+                <button onclick="fetchGoogleCalendarEvents()" class="px-3 py-1.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg text-xs shadow-2xs">同步 Google 日曆</button>
+              </div>
+
+              <div class="flex items-center justify-between bg-[#F7F4F3] p-2.5 rounded-xl border border-[#DCD6D3]">
+                <button onclick="changeCalendarMonth(-1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">上個月</button>
+                <strong id="calendar-month-title" class="text-sm font-extrabold text-[#2E2C2B]">2026年10月</strong>
+                <button onclick="changeCalendarMonth(1)" class="px-3 py-1 bg-white border border-[#DCD6D3] rounded-lg text-xs font-bold text-[#524D4B]">下個月</button>
+              </div>
+
+              <div class="bg-white border border-[#DCD6D3] rounded-xl overflow-hidden">
+                <div class="grid grid-cols-7 bg-[#DDD7D4] text-center text-[11px] font-bold py-1.5 text-[#524D4B] border-b border-[#DCD6D3]">
+                  <div class="text-[#784D4E]">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-[#556357]">六</div>
+                </div>
+                <div id="calendar-days-grid" class="grid grid-cols-7 text-xs border-collapse"></div>
+              </div>
+            </div>
+
+            <div class="bg-[#F7F4F3] p-4 rounded-xl border border-[#DCD6D3] space-y-4 pt-4 border-t border-[#DCD6D3]">
+              <strong class="text-xs font-bold text-[#2E2C2B] block border-b border-[#DCD6D3] pb-2">近六個月收支趨勢圖</strong>
+              <div id="six-month-chart-box" class="h-32 flex items-end justify-between gap-1 pt-4 px-1"></div>
+
+              <strong class="text-xs font-bold text-[#2E2C2B] block border-b border-[#DCD6D3] pb-2 pt-2">當月支出分類佔比</strong>
+              <div id="category-expense-pie-box" class="space-y-2"></div>
+            </div>
+
+            <div id="credit-bill-summary" class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
+              <strong class="font-bold text-[#524D4B] block">信用卡應繳與結帳提醒：</strong>
+              <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 分頁五：股市清單 -->
+        <main id="tab-5" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+            <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
+              <div class="min-w-0">
+                <h2 class="text-base font-bold text-[#2E2C2B] keep-word">股票資產分析與預估現值</h2>
+              </div>
+              <div class="flex gap-1 shrink-0">
+                <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">金額校正</button>
+                <button onclick="openStockModal()" class="editable-only px-3 py-2 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
+              </div>
+            </div>
+
+            <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
+              <button onclick="switchStockMember('潔柔')" id="stock-tab-潔柔" class="stock-member-btn flex-1 py-2 rounded-lg bg-white text-[#4D5A6E] shadow-2xs">潔柔股票帳戶</button>
+              <button onclick="switchStockMember('宇軒')" id="stock-tab-宇軒" class="stock-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒股票帳戶</button>
+            </div>
+
+            <div class="bg-[#4D5A6E] text-white p-5 rounded-2xl shadow-sm space-y-4">
+              <div class="flex justify-between items-center border-b border-[#687890] pb-3 gap-2">
+                <span class="text-xs text-[#C5D0DF] font-bold keep-word" id="stock-dashboard-title">【潔柔】股票資產預估現值</span>
+                <button onclick="setInitialStockCash()" class="editable-only text-[10px] bg-[#374252] hover:bg-[#2A3340] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#687890]">校正現金餘額</button>
+              </div>
+              
+              <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="stock-account-grand-total">$0</div>
+
+              <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#687890] leading-relaxed">
+                <div>
+                  <span class="text-[#C5D0DF] block text-[11px] mb-0.5">預估變現淨額：</span>
+                  <strong id="stock-total-market-val" class="text-white text-sm font-bold">$0</strong>
+                </div>
+                <div>
+                  <span class="text-[#C5D0DF] block text-[11px] mb-0.5">交割戶現金餘額：</span>
+                  <strong id="stock-total-cash-val" class="text-[#B2C1B4] text-sm font-bold block">$0</strong>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-2 border-t border-[#5F6F87]">
+                <span>投入總成本：<strong id="stock-total-cost-val" class="font-bold">$0</strong></span>
+                <span>淨損益：<strong id="stock-total-profit-val" class="text-sm font-extrabold">$0</strong></span>
+              </div>
+            </div>
+
+            <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs"></div>
+
+            <div class="space-y-3 pt-2">
+              <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
+                <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單 (現值高至低排序)</h3>
+              </div>
+              <div id="stock-detailed-list" class="space-y-3">
+                <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 分頁六：外幣儲蓄 -->
+        <main id="tab-6" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
+            <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
+              <div class="min-w-0">
+                <h2 class="text-base font-bold text-[#4A5B6E] keep-word">外幣儲蓄與投資</h2>
+              </div>
+              <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
+            </div>
+
+            <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
+              <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#4A5B6E] shadow-2xs font-bold">潔柔外幣帳戶</button>
+              <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#635D5A]">宇軒外幣帳戶</button>
+            </div>
+
+            <div class="bg-[#5B6B7C] text-white p-5 rounded-2xl shadow-sm space-y-4">
+              <div class="flex justify-between items-center border-b border-[#708092] pb-3">
+                <span class="text-xs text-[#DCE3EC] font-bold" id="forex-dashboard-title">【潔柔】外幣資產總值</span>
+                <button onclick="updateForexRatesOnline()" class="text-[10px] bg-[#4A5B6E] hover:bg-[#3B4A5B] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#708092]">更新即時匯率</button>
+              </div>
+              <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="forex-grand-total-ntd">$0</div>
+              
+              <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#708092] leading-relaxed">
+                <div>
+                  <span class="text-[#DCE3EC] block text-[11px] mb-0.5">購入外幣總成本：</span>
+                  <strong id="forex-total-cost-ntd" class="text-white text-sm font-bold">$0</strong>
+                </div>
+                <div>
+                  <span class="text-[#DCE3EC] block text-[11px] mb-0.5">外幣投資損益：</span>
+                  <strong id="forex-total-profit-ntd" class="text-sm font-extrabold block">$0</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <strong class="font-bold text-[#2E2C2B] block text-xs border-b border-[#F2ECE9] pb-2">外幣持份與損益明細</strong>
+              <div id="forex-holdings-list" class="space-y-2.5">
+                <div class="text-center text-[#827C78] py-4 text-xs">尚無外幣紀錄。</div>
+              </div>
+            </div>
+
+            <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
+              <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">外幣買賣歷程</strong>
+              <div id="forex-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
+                <div class="text-center text-[#827C78] py-2">尚無交易紀錄。</div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 分頁七：資產總表 -->
+        <main id="tab-7" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+            <div>
+              <h2 class="text-base font-bold text-[#4D5A6E] keep-word">資產總表</h2>
+            </div>
+
+            <div class="flex gap-2 p-1 bg-[#DDD7D4] rounded-xl text-xs font-semibold">
+              <button onclick="switchAssetMember('全部')" id="asset-tab-全部" class="asset-member-btn flex-1 py-2 rounded-lg bg-white shadow-2xs text-[#4D5A6E]">全部</button>
+              <button onclick="switchAssetMember('潔柔')" id="asset-tab-潔柔" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">潔柔</button>
+              <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
+            </div>
+
+            <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3"></div>
+
+            <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3"></div>
+
+            <div class="bg-[#F8F9FA] p-5 border border-[#E2E8F0] rounded-2xl space-y-3">
+              <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-2">
+                <strong class="font-bold text-[#2E2C2B] text-xs keep-word">資產結構明細</strong>
+              </div>
+              <div id="asset-breakdown-list" class="space-y-2 text-xs"></div>
+            </div>
+
+            <div class="p-5 bg-[#EAE8F0] border border-[#C5BFE0] rounded-2xl space-y-3 text-xs">
+              <div class="flex justify-between items-center border-b border-[#C5BFE0] pb-2.5">
+                <strong class="font-bold text-[#5A4E7A] text-sm keep-word">儲蓄險管理庫</strong>
+                <button onclick="openInsuranceModal()" class="editable-only px-2.5 py-1.5 bg-[#78699B] hover:bg-[#625384] text-white rounded-lg font-bold text-[11px] shadow-2xs">+ 新增儲蓄險</button>
+              </div>
+              <div id="insurance-deposit-list" class="space-y-2 pt-1">
+                <div class="text-[#827C78] text-center py-1">尚無儲蓄保單紀錄</div>
+              </div>
+            </div>
+
+            <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
+              <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
+                <strong class="font-bold text-[#4D5A6E] text-sm keep-word">定存管理庫</strong>
+                <button onclick="openDepositModal()" class="editable-only px-2.5 py-1.5 bg-[#98A4B7] hover:bg-[#8391A6] text-white rounded-lg font-bold text-[11px] shadow-2xs">+ 新增定存</button>
+              </div>
+              <div id="fixed-deposit-list" class="space-y-2 pt-1">
+                <div class="text-[#827C78] text-center py-1">尚無定存項目</div>
+              </div>
+            </div>
+
+            <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-4 text-xs">
+              <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
+                <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來開銷與資金覆蓋率</strong>
+                <div class="flex gap-1.5 items-center shrink-0">
+                  <select id="annual-year-select" onchange="renderAnnualCoverage()" class="p-1.5 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B] outline-none text-xs">
+                  </select>
+                </div>
+              </div>
+
+              <div id="annual-coverage-dual-cards" class="space-y-3"></div>
+
+              <div class="space-y-2 pt-2 border-t border-[#DCD6D3]">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-[#2E2C2B] text-xs">新增年度開銷明細</span>
+                  <button onclick="openAnnualFundModal()" class="editable-only px-2.5 py-1 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded-lg text-[10px] shadow-2xs">
+                    + 新增預備資金(活存/定存)
+                  </button>
+                </div>
+
+                <div class="editable-only grid grid-cols-12 gap-1.5">
+                  <select id="annual-input-month" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold outline-none text-xs">
+                    <option value="1月">1 月</option><option value="2月">2 月</option><option value="3月">3 月</option>
+                    <option value="4月">4 月</option><option value="5月">5 月</option><option value="6月">6 月</option>
+                    <option value="7月">7 月</option><option value="8月">8 月</option><option value="9月">9 月</option>
+                    <option value="10月">10月</option><option value="11月">11月</option><option value="12月">12月</option>
+                  </select>
+                  <input type="text" id="annual-input-name" placeholder="項目 (例: 爸生日)" class="col-span-4 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none text-xs">
+                  <input type="text" id="annual-input-amount" placeholder="金額 ($)" oninput="formatInputCurrency(this)" class="col-span-3 p-2 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold text-xs">
+                  <button onclick="saveAnnualExpenseInline()" class="col-span-2 py-2 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg shadow-2xs text-xs">新增</button>
+                </div>
+              </div>
+
+              <div id="annual-items-list" class="space-y-1.5 pt-2 max-h-60 overflow-y-auto border-t border-[#DCD6D3]">
+                <div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>
+              </div>
+            </div>
+
+            <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
+              <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
+                <strong class="font-bold text-[#2E2C2B] text-sm keep-word">股票預估變現淨額摘要</strong>
+                <button onclick="switchTab(5)" class="px-2.5 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold text-[11px] shrink-0 shadow-2xs">前往股市清單</button>
+              </div>
+              <div id="asset-stock-summary-box" class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1.5"></div>
+            </div>
+
+            <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
+              <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
+                <strong class="font-bold text-[#4D5A6E] text-sm keep-word" id="labor-section-title">勞工退休金專戶 (潔柔)</strong>
+                <button onclick="saveLaborData()" class="editable-only px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded-lg text-[11px] shadow-2xs">儲存勞退資料</button>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">提撥起始日</label>
+                  <input type="date" id="labor-start-date" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">預估退休年齡</label>
+                  <input type="number" id="labor-retire-age" placeholder="65" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
+                </div>
+                <div class="col-span-2">
+                  <label class="text-[10px] text-[#4D5A6E] font-extrabold block mb-0.5">資料更新日期</label>
+                  <input type="date" id="labor-update-date" class="w-full p-2 border border-[#BAC7DB] rounded-lg bg-white font-bold text-[#4D5A6E]">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥本金 ($)</label>
+                  <input type="text" id="labor-emp-principal" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">雇主提撥收益 ($)</label>
+                  <input type="text" id="labor-emp-income" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#556357]">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提本金 ($)</label>
+                  <input type="text" id="labor-self-principal" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#635D5A] font-bold block mb-0.5">個人自提收益 ($)</label>
+                  <input type="text" id="labor-self-income" placeholder="0" oninput="formatInputCurrency(this)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#556357]">
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-white border border-[#BAC7DB] rounded-xl flex justify-between items-center font-bold">
+                <span>勞退總獲利：<strong id="labor-profit-sum" class="text-[#556357]">$0</strong></span>
+                <span>累積收益率：<strong id="labor-rate-sum" class="text-[#4D5A6E]">0%</strong></span>
+              </div>
+
+              <div class="p-3 bg-[#DCE4F0] border border-[#A2B4CE] rounded-xl space-y-1 font-bold text-[#2E2C2B]">
+                <div class="flex justify-between items-center">
+                  <span>現有專戶總額：<strong id="labor-current-total">$0</strong></span>
+                  <span>預估退休總額：<strong id="labor-est-future-total" class="text-[#4D5A6E]">$0</strong></span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 分頁八：設定管理 (含 LINE 推播設定與測試) -->
+        <main id="tab-8" class="swipe-page">
+          <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
+            <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
+              <h2 class="text-base font-bold text-[#5C5069]">設定管理</h2>
+              <button onclick="logout()" class="px-3 py-1 bg-[#784D4E] text-white text-xs font-bold rounded-lg">登出系統</button>
+            </div>
+
+            <!-- 新增：LINE Bot 整合區塊 -->
+            <div class="p-4 bg-[#E8F0E8] border border-[#B2C1B4] rounded-2xl space-y-3 text-xs">
+              <div class="flex justify-between items-center border-b border-[#B2C1B4] pb-2">
+                <strong class="font-bold text-[#435045] text-sm">LINE Bot 智慧提醒推播設定</strong>
+                <span class="px-2 py-0.5 bg-[#B2C1B4] text-[#2E2C2B] font-bold rounded text-[10px]">連線就緒</span>
+              </div>
+              <p class="text-[11px] text-[#556357]">系統已成功綁定您的 LINE Bot (@610jivww)。您可以填入存取 Token 啟用自動化定存與結帳日提醒！</p>
+              
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-[10px] font-bold text-[#435045] mb-1">LINE Channel Access Token (Long-lived)</label>
+                  <input type="password" id="line-access-token" placeholder="請貼上 Messaging API 生成的 Token" class="w-full p-2.5 border border-[#B2C1B4] rounded-xl bg-white text-xs font-mono">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-[#435045] mb-1">您的 Target User ID</label>
+                  <input type="text" id="line-target-user-id" value="U375dcf04d252ffb326d81bf96bd85fce" readonly class="w-full p-2.5 border border-[#B2C1B4] rounded-xl bg-[#F0F4F0] text-xs font-mono font-bold text-[#435045]">
+                </div>
+              </div>
+
+              <div class="flex gap-2 pt-1">
+                <button onclick="saveLineSettings()" class="editable-only flex-1 py-2.5 bg-[#556357] text-white font-bold rounded-xl shadow-xs">儲存 LINE 設定</button>
+                <button onclick="testSendLineMessage()" class="flex-1 py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-xl shadow-xs">測試發送 LINE 訊息</button>
+              </div>
+            </div>
+
+            <div id="backup-reminder-banner" class="hidden p-3 bg-[#F7EDED] border border-[#C89B9C] rounded-xl text-xs text-[#784D4E] font-bold">
+              系統提示：您已超過 30 天未匯出 JSON 備份檔，建議立即下載備份。
+            </div>
+
+            <div class="p-4 bg-[#EAE8F0] border border-[#C5BFE0] rounded-xl space-y-3 text-xs">
+              <strong class="font-bold text-[#5A4E7A] block text-sm">使用者帳號與權限設定</strong>
+              
+              <div class="editable-only p-3 bg-white rounded-lg border border-[#C5BFE0] space-y-2">
+                <strong class="font-bold text-[#2E2C2B] block">新增 / 修改家人帳號</strong>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" id="user-input-name" placeholder="使用者帳號 (例: yuxuan)" class="p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3]">
+                  <input type="password" id="user-input-pass" placeholder="密碼" class="p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3]">
+                </div>
+                <div class="flex gap-2 items-center">
+                  <select id="user-input-role" class="flex-1 p-2 border border-[#DCD6D3] rounded bg-white font-bold">
+                    <option value="admin">最高管理者 (可編輯刪除)</option>
+                    <option value="viewer">家人成員 (僅供檢視)</option>
+                  </select>
+                  <button onclick="saveUserAccount()" class="px-3 py-2 bg-[#78699B] text-white font-bold rounded">新增/更新</button>
+                </div>
+              </div>
+
+              <div id="user-accounts-list" class="space-y-1.5 pt-1"></div>
+            </div>
+
+            <div class="p-4 bg-[#CEC7DB] border border-[#BBB3CB] rounded-xl space-y-2 text-xs text-[#2E2C2B]">
+              <strong class="font-bold text-[#453A52] block text-sm">全站備份與還原</strong>
+              <div class="flex gap-2 pt-1">
+                <button onclick="exportBackupJSON()" class="flex-1 py-2 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-lg">匯出 JSON 備份檔</button>
+                <label class="editable-only flex-1 py-2 bg-[#3D3A39] text-white font-bold rounded-lg text-center cursor-pointer">
+                  匯入 JSON 備份
+                  <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                </label>
+              </div>
+            </div>
+
+            <div class="space-y-3 pt-2 border-t border-[#F2ECE9]">
+              <h3 class="text-xs font-bold text-[#2E2C2B]">銀行資訊管理</h3>
+              <div class="flex gap-2 editable-only">
+                <input type="text" id="setting-bank-input" placeholder="輸入銀行 (例: 812 台新銀行)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+                <button onclick="addBankFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增銀行</button>
+              </div>
+              <div id="setting-bank-list" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+              <h3 class="text-xs font-bold text-[#2E2C2B]">證券商管理</h3>
+              <div class="flex gap-2 editable-only">
+                <input type="text" id="setting-broker-input" placeholder="輸入證券商 (例: 9800 國泰綜合證券)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+                <button onclick="addBrokerFromSetting()" class="px-3 py-2 bg-[#B2C1B4] text-[#2E2C2B] rounded-lg text-xs font-bold">新增證券商</button>
+              </div>
+              <div id="setting-broker-list" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+              <h3 class="text-xs font-bold text-[#4D5A6E]">信用卡管理</h3>
+
+              <div class="editable-only p-3.5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-2.5 text-xs">
+                <strong class="font-bold text-[#4D5A6E] block">新增信用卡</strong>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">發卡銀行</label>
+                    <select id="card-bank-input" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-[#2E2C2B]">
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">卡別名稱</label>
+                    <input type="text" id="card-name-input" placeholder="例: FlyGo 飛狗卡" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white">
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">結帳日</label>
+                    <input type="number" id="card-cutoff-input" placeholder="1~31 (例: 15)" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold text-[#635D5A] mb-0.5">到期日 (MM/YY)</label>
+                    <input type="text" id="card-expiry-input" placeholder="例: 12/28" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold">
+                  </div>
+                </div>
+                <button onclick="addCustomCard()" class="w-full py-2.5 bg-[#98A4B7] hover:bg-[#8391A6] text-white font-bold rounded-lg text-xs">新增信用卡</button>
+              </div>
+
+              <div id="custom-card-list" class="space-y-2"></div>
+            </div>
+
+            <!-- 獨立拆分：支出分類管理 -->
+            <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+              <h3 class="text-xs font-bold text-[#784D4E]">支出分類管理</h3>
+              <div class="flex gap-2 editable-only">
+                <input type="text" id="setting-expense-category-input" placeholder="輸入支出分類名稱 (例: 餐飲)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+                <button onclick="addCategoryFromSetting('支出')" class="px-3 py-2 bg-[#C89B9C] text-[#2E2C2B] rounded-lg text-xs font-bold">新增支出分類</button>
+              </div>
+              <div id="setting-expense-category-list" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <!-- 獨立拆分：收入分類管理 -->
+            <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+              <h3 class="text-xs font-bold text-[#4D5A6E]">收入分類管理</h3>
+              <div class="flex gap-2 editable-only">
+                <input type="text" id="setting-income-category-input" placeholder="輸入收入分類名稱 (例: 薪資收入)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+                <button onclick="addCategoryFromSetting('收入')" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增收入分類</button>
+              </div>
+              <div id="setting-income-category-list" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
+              <h3 class="text-xs font-bold text-[#2E2C2B]">支付與收入管道</h3>
+              <div class="flex gap-2 editable-only">
+                <input type="text" id="setting-account-input" placeholder="輸入管道名稱" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+                <button onclick="addAccountFromSetting()" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增管道</button>
+              </div>
+              <div id="setting-account-list" class="space-y-1.5 text-xs"></div>
+            </div>
+          </section>
+        </main>
+
+      </div>
+    </div>
 
   </div>
 
@@ -985,6 +1019,10 @@
     const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
 
+    /* --- LINE Bot 認證參數 --- */
+    let lineChannelAccessToken = localStorage.getItem('line_access_token') || '';
+    let lineTargetUserId = 'U375dcf04d252ffb326d81bf96bd85fce';
+
     /* --- Google Calendar API 設定 --- */
     const GOOGLE_API_KEY = 'AIzaSyCOq21RAnpMerL-gRNxN1UwBLbo1fnZsOM';
     const GOOGLE_CALENDAR_ID = '1eb3dbcdbb929072f5ab6a98878d3e40328753a2f069e901cbde755da5633546@group.calendar.google.com';
@@ -1006,16 +1044,10 @@
     let activeBankTab = 'LINE';
 
     // 銀行金額預設
-    let bankTotals = {
-      'LINE': 0,
-      'LAND': 0
-    };
+    let bankTotals = { 'LINE': 0, 'LAND': 0 };
 
     // 專款細項預設
-    let bankBudgetPlans = {
-      'LINE': [],
-      'LAND': []
-    };
+    let bankBudgetPlans = { 'LINE': [], 'LAND': [] };
 
     function parseCurrencyNumber(val) {
       if (!val) return 0;
@@ -1111,6 +1143,97 @@
       'Prefer': 'return=representation'
     };
 
+    /* --- LINE Bot 訊息發送邏輯 --- */
+    function saveLineSettings() {
+      const tokenInput = document.getElementById('line-access-token').value.trim();
+      if (tokenInput) {
+        lineChannelAccessToken = tokenInput;
+        localStorage.setItem('line_access_token', tokenInput);
+        alert('已成功儲存 LINE Channel Access Token！');
+      } else {
+        alert('請輸入有效的 Access Token');
+      }
+    }
+
+    async function sendLineBotNotification(messageText) {
+      if (!lineChannelAccessToken) {
+        console.log('未設定 LINE Channel Access Token，無法推播。');
+        return false;
+      }
+
+      try {
+        const res = await fetch('https://api.line.me/v2/bot/message/push', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + lineChannelAccessToken
+          },
+          body: JSON.stringify({
+            to: lineTargetUserId,
+            messages: [{ type: 'text', text: messageText }]
+          })
+        });
+
+        if (res.ok) {
+          console.log('LINE 訊息推播成功！');
+          return true;
+        } else {
+          console.log('LINE 訊息推播失敗：', await res.text());
+          return false;
+        }
+      } catch (e) {
+        console.log('LINE API 呼叫異常：', e);
+        return false;
+      }
+    }
+
+    async function testSendLineMessage() {
+      if (!lineChannelAccessToken) {
+        const input = prompt('請輸入 LINE Channel Access Token (long-lived)：');
+        if (input && input.trim()) {
+          lineChannelAccessToken = input.trim();
+          localStorage.setItem('line_access_token', lineChannelAccessToken);
+        } else {
+          return alert('未提供 Token，無法測試。');
+        }
+      }
+
+      const success = await sendLineBotNotification('🎉【財務總控系統】測試通知連線成功！系統將會定期為您提醒信用卡結帳與定存到期事項。');
+      if (success) {
+        alert('已成功推播測試訊息至您的 LINE！');
+      } else {
+        alert('推播失敗，請檢查 Token 是否正確。');
+      }
+    }
+
+    function checkScheduledNotifications() {
+      const today = new Date();
+      const todayDay = today.getDate();
+      const todayStr = getTodayString();
+
+      // 1. 檢查信用卡結帳日
+      userCards.forEach(c => {
+        if (c.cutoff && Math.abs(c.cutoff - todayDay) <= 1) {
+          const alertKey = `alert_card_${c.bank}_${c.name}_${todayStr}`;
+          if (!localStorage.getItem(alertKey)) {
+            sendLineBotNotification(`💳【信用卡結帳提醒】\n${c.bank} - ${c.name} 每月 ${c.cutoff} 號為結帳日，請留意信用卡對帳單與應繳金額！`);
+            localStorage.setItem(alertKey, 'true');
+          }
+        }
+      });
+
+      // 2. 檢查定存到期
+      fixedDeposits.forEach(d => {
+        if (d.date && d.date === todayStr) {
+          const alertKey = `alert_deposit_${d.bank}_${d.date}`;
+          if (!localStorage.getItem(alertKey)) {
+            sendLineBotNotification(`🏦【定存到期提醒】\n您於 ${d.bank} 的定存 $${d.amount.toLocaleString()} 今天 (${d.date}) 到期囉！預估利息: $${d.interest||0}`);
+            localStorage.setItem(alertKey, 'true');
+          }
+        }
+      });
+    }
+
     function switchBankTab(bankKey) {
       activeBankTab = bankKey;
       document.getElementById('bank-tab-LINE').className = bankKey === 'LINE' ? 'py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs font-bold' : 'py-2 rounded-lg text-[#524D4B] font-bold';
@@ -1167,7 +1290,7 @@
       `;
 
       if (plans.length === 0) {
-        html += '<div class="text-center text-[#827C78] py-2">尚無專款項目。</div>';
+        html += '<div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>';
       } else {
         html += plans.map((b, idx) => `
           <div class="bg-white p-2.5 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
@@ -1183,7 +1306,6 @@
       container.innerHTML = html;
     }
 
-    // 動態算渲染專款扣抵下拉選單
     function renderBudgetDeductionOptions() {
       const select = document.getElementById('budget_deduction_item');
       if (!select) return;
@@ -1370,6 +1492,7 @@
       }
       updateTopHeaderStatus();
       checkBackupReminder();
+      checkScheduledNotifications();
     }
 
     function checkBackupReminder() {
@@ -1422,6 +1545,10 @@
       renderForexPage(currentForexMember);
       renderAssets(currentAssetMember);
       renderUserAccountsList();
+
+      if (document.getElementById('line-access-token')) {
+        document.getElementById('line-access-token').value = lineChannelAccessToken;
+      }
     }
 
     function getTodayString() {
@@ -1640,7 +1767,6 @@
       renderCalendar();
     }
 
-    /* --- 核心試算 logic (國泰證券實測精準校正公式) --- */
     function getMemberStockHoldings(member) {
       const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
       const holdings = {};
@@ -2725,7 +2851,6 @@
       }
     }
 
-    /* --- 獨立拆分：分類新增與刪除邏輯 --- */
     function addCategoryFromSetting(type) {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
       const inputId = type === '支出' ? 'setting-expense-category-input' : 'setting-income-category-input';
@@ -2846,7 +2971,6 @@
         `).join('');
       }
 
-      // 渲染支出分類清單
       const expCatContainer = document.getElementById('setting-expense-category-list');
       if (expCatContainer) {
         expCatContainer.innerHTML = customExpenseCategories.map((c, idx) => `
@@ -2860,7 +2984,6 @@
         `).join('');
       }
 
-      // 渲染收入分類清單
       const incCatContainer = document.getElementById('setting-income-category-list');
       if (incCatContainer) {
         incCatContainer.innerHTML = customIncomeCategories.map((c, idx) => `
@@ -2985,7 +3108,6 @@
       navigator.clipboard.writeText(text).then(() => alert('已複製請款文字！'));
     }
 
-    /* --- 預備資金與雙年度開銷邏輯 --- */
     function toggleFundDueDate() {
       const type = document.getElementById('modal-fund-type').value;
       const box = document.getElementById('fund-duedate-box');
@@ -3296,6 +3418,7 @@
 
       document.getElementById('submit-btn').innerText = '儲存修改內容';
       document.getElementById('cancel-edit-btn').classList.remove('hidden');
+      switchTab(1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -3357,7 +3480,6 @@
 
       const numericAmt = (entryMode === '支出') ? -Math.abs(totalAmount) : Math.abs(totalAmount);
 
-      // 自動連動扣減專款金額邏輯
       if (entryMode === '支出' && deductionVal) {
         const [bankKey, itemName] = deductionVal.split(':');
         const plan = bankBudgetPlans[bankKey]?.find(p => p.name === itemName);
@@ -3505,49 +3627,67 @@
       }).join('');
     }
 
+    /* --- 滑動切換與導覽列平滑連動邏輯 --- */
     function switchTab(tabIndex) {
       currentTabIndex = tabIndex;
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const swipeWrapper = document.getElementById('swipe-wrapper');
+      if (swipeWrapper) {
+        const offsetPct = -(tabIndex - 1) * (100 / 8);
+        swipeWrapper.style.transform = `translateX(${offsetPct}%)`;
+      }
+
       document.querySelectorAll('.nav-btn').forEach(el => {
-        el.className = 'nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]';
+        el.className = 'nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6] whitespace-nowrap';
       });
 
-      document.getElementById(`tab-${tabIndex}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`nav-btn-${tabIndex}`);
       if (activeBtn) {
-        activeBtn.className = 'nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] font-bold shadow-xs';
+        activeBtn.className = 'nav-btn shrink-0 px-4 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] font-bold shadow-xs whitespace-nowrap';
+        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
 
       if (tabIndex === 2) renderCashFlowTab();
       if (tabIndex === 3) renderAATab();
-      if (tabIndex === 4) {
-        fetchGoogleCalendarEvents();
-        renderCalendar();
-      }
-      if (tabIndex === 5) renderAssets(currentAssetMember);
-      if (tabIndex === 6) {
+      if (tabIndex === 4) { fetchGoogleCalendarEvents(); renderCalendar(); }
+      if (tabIndex === 5) renderStockPage(currentStockMember);
+      if (tabIndex === 6) renderForexPage(currentForexMember);
+      if (tabIndex === 7) renderAssets(currentAssetMember);
+      if (tabIndex === 8) {
         renderCardBankOptions();
         renderSettingLists();
         renderCustomCardList();
         renderUserAccountsList();
         checkBackupReminder();
       }
-      if (tabIndex === 7) renderStockPage(currentStockMember);
-      if (tabIndex === 8) renderForexPage(currentForexMember);
     }
 
     let touchStartX = 0;
+    let touchStartY = 0;
     let touchEndX = 0;
+    let touchEndY = 0;
     const mainApp = document.getElementById('main-app-container');
 
-    mainApp.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, false);
-    mainApp.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, false);
+    mainApp.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    mainApp.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipe();
+    }, { passive: true });
 
     function handleSwipe() {
       const diffX = touchEndX - touchStartX;
-      if (Math.abs(diffX) > 80) {
-        if (diffX < 0 && currentTabIndex < 8) switchTab(currentTabIndex + 1);
-        else if (diffX > 0 && currentTabIndex > 1) switchTab(currentTabIndex - 1);
+      const diffY = touchEndY - touchStartY;
+
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 60) {
+        if (diffX < 0 && currentTabIndex < 8) {
+          switchTab(currentTabIndex + 1);
+        } else if (diffX > 0 && currentTabIndex > 1) {
+          switchTab(currentTabIndex - 1);
+        }
       }
     }
 
