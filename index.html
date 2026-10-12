@@ -75,7 +75,7 @@
       </div>
     </header>
 
-    <!-- 分頁導覽列 (精簡導覽列) -->
+    <!-- 分頁導覽列 -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
       <div class="grid grid-cols-4 gap-1 text-center text-[10px] font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
@@ -123,13 +123,20 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道</label>
-            <select id="account_name" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道 (包含專款小錢包)</label>
+            <select id="account_name" onchange="handleAccountChange()" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
+            </select>
+          </div>
+
+          <!-- 動態連動專款收支袋選單 -->
+          <div id="sub-bag-container" class="hidden p-3 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-1">
+            <label class="block text-xs font-bold text-[#4D5A6E]">對應扣減/入帳之「收支袋」</label>
+            <select id="sub_bag_select" class="w-full p-2.5 border border-[#DCD6D3] rounded-lg text-xs font-bold bg-white text-[#2E2C2B] outline-none">
             </select>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">金額 ($ / 點)</label>
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">金額 ($)</label>
             <input type="text" id="amount_ntd" required placeholder="0" oninput="formatInputCurrency(this)" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-lg font-extrabold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
           </div>
 
@@ -203,7 +210,7 @@
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
           <div>
             <h2 class="text-base font-bold text-[#2E2C2B]">現金收支總額 (大錢包)</h2>
-            <p class="text-[11px] text-[#827C78]">包含月度現金流與專款帳戶管理</p>
+            <p class="text-[11px] text-[#827C78]">包含月度現金流與連線/土銀專款管理</p>
           </div>
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
@@ -237,7 +244,7 @@
               <input type="text" id="line-fund-name" placeholder="收支袋名稱" class="p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3]">
               <input type="text" id="line-fund-amount" placeholder="金額 ($)" oninput="formatInputCurrency(this)" class="p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3] font-bold">
             </div>
-            <input type="text" id="line-fund-note" placeholder="備註/週期 (例: 共5週)" class="w-full p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3]">
+            <input type="text" id="line-fund-note" placeholder="備註/週期 (例: 生活費/預算)" class="w-full p-2 border border-[#DCD6D3] rounded bg-[#F7F4F3]">
             <button onclick="addDedicatedFund('line')" class="w-full py-2 bg-[#4D5A6E] hover:bg-[#3B4758] text-white font-bold rounded shadow-xs">+ 新增至連線錢包</button>
           </div>
 
@@ -1076,8 +1083,9 @@
 
     let customCategories = ['生活費', '薪資收入', '現金回饋/股息', '點數折抵'];
     let customAccounts = [
-      { name: '現金/口袋皮夾', active: true },
-      { name: '預設銀行主帳戶', active: true }
+      { name: '現金 / 口袋皮夾', active: true },
+      { name: '連線銀行專款小錢包', active: true },
+      { name: '土地銀行專款小錢包', active: true }
     ];
 
     let bankList = [...defaultBankList];
@@ -1351,6 +1359,7 @@
 
       saveAllSettingsLocalAndCloud();
       renderDedicatedFunds();
+      handleAccountChange();
     }
 
     function editDedicatedFund(bankType, id) {
@@ -1370,6 +1379,7 @@
         item.note = newNote !== null ? newNote.trim() : item.note;
         saveAllSettingsLocalAndCloud();
         renderDedicatedFunds();
+        handleAccountChange();
       }
     }
 
@@ -1395,6 +1405,7 @@
         currentDedicatedFunds[bankType] = currentDedicatedFunds[bankType].filter(f => f.id !== id);
         saveAllSettingsLocalAndCloud();
         renderDedicatedFunds();
+        handleAccountChange();
       }
     }
 
@@ -1431,6 +1442,32 @@
           }
         }
       });
+    }
+
+    function handleAccountChange() {
+      const accountName = document.getElementById('account_name').value;
+      const subBagContainer = document.getElementById('sub-bag-container');
+      const subBagSelect = document.getElementById('sub_bag_select');
+
+      if (accountName === '連線銀行專款小錢包') {
+        const funds = currentDedicatedFunds.line || [];
+        if (funds.length === 0) {
+          subBagSelect.innerHTML = `<option value="">尚無專款收支袋，請先至「現金收支」新增</option>`;
+        } else {
+          subBagSelect.innerHTML = funds.map(f => `<option value="${f.id}">[連線] ${f.name} (剩餘: $${f.amount.toLocaleString()})</option>`).join('');
+        }
+        subBagContainer.classList.remove('hidden');
+      } else if (accountName === '土地銀行專款小錢包') {
+        const funds = currentDedicatedFunds.land || [];
+        if (funds.length === 0) {
+          subBagSelect.innerHTML = `<option value="">尚無專款收支袋，請先至「現金收支」新增</option>`;
+        } else {
+          subBagSelect.innerHTML = funds.map(f => `<option value="${f.id}">[土銀] ${f.name} (剩餘: $${f.amount.toLocaleString()})</option>`).join('');
+        }
+        subBagContainer.classList.remove('hidden');
+      } else {
+        subBagContainer.classList.add('hidden');
+      }
     }
 
     function getTodayString() {
@@ -1475,7 +1512,8 @@
         html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號 / 到期:${c.expiry||'--'})</option>`;
       });
 
-      select.innerHTML = html || `<option value="一般管道">一般管道</option>`;
+      select.innerHTML = html || `<option value="現金 / 口袋皮夾">現金 / 口袋皮夾</option>`;
+      handleAccountChange();
     }
 
     function updateTopHeaderStatus() {
@@ -3351,6 +3389,23 @@
       const category = document.getElementById('category').value;
 
       totalAmount = (entryMode === '支出') ? -Math.abs(totalAmount) : Math.abs(totalAmount);
+
+      // 檢查是否選擇專款小錢包進行自動扣款/增加
+      if (bankName === '連線銀行專款小錢包' || bankName === '土地銀行專款小錢包') {
+        const bankType = bankName === '連線銀行專款小錢包' ? 'line' : 'land';
+        const subBagId = Number(document.getElementById('sub_bag_select').value);
+        const matchFund = currentDedicatedFunds[bankType]?.find(f => f.id === subBagId);
+
+        if (matchFund) {
+          if (entryMode === '支出') {
+            matchFund.amount = Math.max(0, matchFund.amount - Math.abs(totalAmount));
+          } else {
+            matchFund.amount += Math.abs(totalAmount);
+          }
+          saveAllSettingsLocalAndCloud();
+          renderDedicatedFunds();
+        }
+      }
 
       const recordToInsert = {
         item_name: rawItemName,
