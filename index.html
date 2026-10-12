@@ -35,7 +35,7 @@
 <body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen select-none">
 
   <!-- 登入驗證保護遮罩 -->
-  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#3D3A39]/90 backdrop-blur-md px-4">
+  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#3D3A39]/90 backdrop-blur-md px-4 hidden">
     <div class="bg-white w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl border border-[#DCD6D3]">
       <div class="text-center space-y-1">
         <h2 class="text-lg font-bold text-[#2E2C2B]">財務總控系統驗證</h2>
@@ -75,7 +75,7 @@
       </div>
     </header>
 
-    <!-- 分頁導覽列 -->
+    <!-- 分頁導覽列 (共 9 個分頁) -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5 space-y-1.5">
       <div class="grid grid-cols-4 gap-1 text-center text-[10px] font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
@@ -83,11 +83,12 @@
         <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">AA請款</button>
         <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">財務月曆</button>
       </div>
-      <div class="grid grid-cols-4 gap-1 text-center text-[10px] font-bold">
-        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
-        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
-        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
-        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
+      <div class="grid grid-cols-5 gap-1 text-center text-[10px] font-bold">
+        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
+        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
+        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
+        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
+        <button onclick="switchTab(9)" id="nav-btn-9" class="nav-btn py-2 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">登錄紀錄</button>
       </div>
     </nav>
 
@@ -128,7 +129,6 @@
             </select>
           </div>
 
-          <!-- 動態連動專款收支袋選單 -->
           <div id="sub-bag-container" class="hidden p-3 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-1">
             <label class="block text-xs font-bold text-[#4D5A6E]">對應扣減/入帳之「收支袋」</label>
             <select id="sub_bag_select" class="w-full p-2.5 border border-[#DCD6D3] rounded-lg text-xs font-bold bg-white text-[#2E2C2B] outline-none">
@@ -215,7 +215,6 @@
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
 
-        <!-- 當月剩餘現金流卡片 -->
         <div class="bg-[#B2C1B4] p-5 rounded-xl text-[#2E2C2B] shadow-sm space-y-3">
           <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
             <span class="text-xs text-[#435045] font-medium">當月淨剩餘現金流</span>
@@ -228,7 +227,6 @@
           </div>
         </div>
 
-        <!-- 連線銀行專款區塊 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
             <div>
@@ -253,7 +251,6 @@
           </div>
         </div>
 
-        <!-- 土地銀行專款區塊 -->
         <div class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
             <div>
@@ -278,7 +275,6 @@
           </div>
         </div>
 
-        <!-- 專款預算追蹤 -->
         <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
           <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">專款預算追蹤</strong>
           <div class="grid grid-cols-2 gap-2 editable-only">
@@ -338,7 +334,6 @@
     <!-- 分頁四：財務月曆 -->
     <main id="tab-4" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
-        
         <div class="space-y-3">
           <div class="flex justify-between items-center">
             <h2 class="text-base font-bold text-[#2E2C2B]">財務月曆與 Google 行程</h2>
@@ -361,19 +356,16 @@
 
         <div class="bg-[#F7F4F3] p-4 rounded-xl border border-[#DCD6D3] space-y-4 pt-4 border-t border-[#DCD6D3]">
           <strong class="text-xs font-bold text-[#2E2C2B] block border-b border-[#DCD6D3] pb-2">近六個月收支趨勢圖</strong>
-          <div id="six-month-chart-box" class="h-32 flex items-end justify-between gap-1 pt-4 px-1">
-          </div>
+          <div id="six-month-chart-box" class="h-32 flex items-end justify-between gap-1 pt-4 px-1"></div>
 
           <strong class="text-xs font-bold text-[#2E2C2B] block border-b border-[#DCD6D3] pb-2 pt-2">當月支出分類佔比</strong>
-          <div id="category-expense-pie-box" class="space-y-2">
-          </div>
+          <div id="category-expense-pie-box" class="space-y-2"></div>
         </div>
 
         <div id="credit-bill-summary" class="p-4 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl text-xs space-y-1">
           <strong class="font-bold text-[#524D4B] block">信用卡應繳與結帳提醒：</strong>
           <div id="credit-bill-details" class="text-[#635D5A] space-y-0.5 pt-1">計算中...</div>
         </div>
-
       </section>
     </main>
 
@@ -420,8 +412,7 @@
           </div>
         </div>
 
-        <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs">
-        </div>
+        <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs"></div>
 
         <div class="space-y-3 pt-2">
           <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
@@ -497,18 +488,14 @@
           <button onclick="switchAssetMember('宇軒')" id="asset-tab-宇軒" class="asset-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 (儲蓄)</button>
         </div>
 
-        <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3">
-        </div>
-
-        <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3">
-        </div>
+        <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3"></div>
+        <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3"></div>
 
         <div class="bg-[#F8F9FA] p-5 border border-[#E2E8F0] rounded-2xl space-y-3">
           <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-2">
             <strong class="font-bold text-[#2E2C2B] text-xs keep-word">資產結構明細</strong>
           </div>
-          <div id="asset-breakdown-list" class="space-y-2 text-xs">
-          </div>
+          <div id="asset-breakdown-list" class="space-y-2 text-xs"></div>
         </div>
 
         <div class="p-5 bg-[#EAE8F0] border border-[#C5BFE0] rounded-2xl space-y-3 text-xs">
@@ -531,7 +518,6 @@
           </div>
         </div>
 
-        <!-- 連續雙年度開銷與資金覆蓋率 -->
         <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-4 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
             <strong class="font-bold text-[#2E2C2B] text-sm keep-word">未來開銷與資金覆蓋率</strong>
@@ -541,8 +527,7 @@
             </div>
           </div>
 
-          <div id="annual-coverage-dual-cards" class="space-y-3">
-          </div>
+          <div id="annual-coverage-dual-cards" class="space-y-3"></div>
 
           <div class="space-y-2 pt-2 border-t border-[#DCD6D3]">
             <div class="flex justify-between items-center">
@@ -575,8 +560,7 @@
             <strong class="font-bold text-[#2E2C2B] text-sm keep-word">股票預估變現淨額摘要</strong>
             <button onclick="switchTab(7)" class="px-2.5 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold text-[11px] shrink-0 shadow-2xs">前往股市清單</button>
           </div>
-          <div id="asset-stock-summary-box" class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1.5">
-          </div>
+          <div id="asset-stock-summary-box" class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1.5"></div>
         </div>
 
         <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
@@ -661,8 +645,7 @@
             </div>
           </div>
 
-          <div id="user-accounts-list" class="space-y-1.5 pt-1">
-          </div>
+          <div id="user-accounts-list" class="space-y-1.5 pt-1"></div>
         </div>
 
         <div class="p-4 bg-[#CEC7DB] border border-[#BBB3CB] rounded-xl space-y-2 text-xs text-[#2E2C2B]">
@@ -742,6 +725,37 @@
             <button onclick="addAccountFromSetting()" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增管道</button>
           </div>
           <div id="setting-account-list" class="space-y-1.5 text-xs"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁九：登錄紀錄 (NEW) -->
+    <main id="tab-9" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
+          <div>
+            <h2 class="text-base font-bold text-[#5A4E7A]">系統登錄歷史與時間紀錄</h2>
+            <p class="text-[11px] text-[#827C78]">記錄使用者每次成功登入系統之時間與權限</p>
+          </div>
+          <button onclick="clearLoginLogs()" class="editable-only px-3 py-1.5 bg-[#F7EDED] text-[#784D4E] hover:bg-[#EBD2D2] text-xs font-bold rounded-lg border border-[#C89B9C]">清除紀錄</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="bg-[#EAE8F0] p-3.5 rounded-xl border border-[#C5BFE0] space-y-1">
+            <span class="text-[#5A4E7A] font-bold block text-[11px]">最近一次登入時間</span>
+            <strong id="last-login-time-display" class="text-sm text-[#2E2C2B] block">--</strong>
+          </div>
+          <div class="bg-[#E8EDF5] p-3.5 rounded-xl border border-[#BAC7DB] space-y-1">
+            <span class="text-[#4D5A6E] font-bold block text-[11px]">歷史總登入次數</span>
+            <strong id="total-login-count-display" class="text-sm text-[#2E2C2B] block">0 次</strong>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <strong class="font-bold text-[#2E2C2B] block text-xs border-b border-[#F2ECE9] pb-2">精確登入歷程明細</strong>
+          <div id="login-logs-list" class="space-y-2 max-h-96 overflow-y-auto">
+            <div class="text-center text-[#827C78] py-4 text-xs">尚無登入歷史紀錄。</div>
+          </div>
         </div>
       </section>
     </main>
@@ -1025,6 +1039,8 @@
       { name: 'yuxuan', pass: '123456', role: 'viewer' }
     ];
 
+    let userLoginLogs = []; // 歷史登錄紀錄數據
+
     let entryMode = '支出';
     let currentAssetMember = '全部';
     let currentStockMember = '潔柔';
@@ -1143,6 +1159,7 @@
       }
     }
 
+    /* --- 登入驗證與歷史紀錄邏輯 --- */
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('login-username').value.trim();
@@ -1152,17 +1169,34 @@
       const matchUser = userAccounts.find(account => account.name === u && account.pass === p);
       if (matchUser) {
         currentUser = { name: matchUser.name, role: matchUser.role };
-        sessionStorage.setItem('jeyrou_logged_user', JSON.stringify(currentUser));
+        
+        // 使用 localStorage 實現免重複登入
+        localStorage.setItem('jeyrou_logged_user', JSON.stringify(currentUser));
+        
+        // 紀錄登入時間與使用者
+        const nowStr = new Date().toLocaleString('zh-TW', { hour12: false });
+        userLoginLogs.unshift({
+          id: Date.now(),
+          user: currentUser.name,
+          role: currentUser.role,
+          time: nowStr,
+          type: '密碼驗證登入'
+        });
+
         document.getElementById('login-modal').classList.add('hidden');
         errBox.classList.add('hidden');
+        
+        saveAllSettingsLocalAndCloud();
         applyUserRoleUI();
+        renderLoginLogs();
       } else {
         errBox.classList.remove('hidden');
       }
     }
 
     function checkLoginSession() {
-      const stored = sessionStorage.getItem('jeyrou_logged_user');
+      // 改為使用 localStorage 以保持持久登入狀態
+      const stored = localStorage.getItem('jeyrou_logged_user');
       if (stored) {
         try {
           currentUser = JSON.parse(stored);
@@ -1177,8 +1211,58 @@
     }
 
     function logout() {
-      sessionStorage.removeItem('jeyrou_logged_user');
+      localStorage.removeItem('jeyrou_logged_user');
       location.reload();
+    }
+
+    function renderLoginLogs() {
+      const listContainer = document.getElementById('login-logs-list');
+      const lastTimeEl = document.getElementById('last-login-time-display');
+      const countEl = document.getElementById('total-login-count-display');
+
+      if (countEl) countEl.innerText = `${userLoginLogs.length} 次`;
+
+      if (userLoginLogs.length > 0) {
+        if (lastTimeEl) lastTimeEl.innerText = userLoginLogs[0].time;
+      } else {
+        if (lastTimeEl) lastTimeEl.innerText = '--';
+      }
+
+      if (!listContainer) return;
+
+      if (userLoginLogs.length === 0) {
+        listContainer.innerHTML = '<div class="text-center text-[#827C78] py-4 text-xs">尚無登入歷史紀錄。</div>';
+        return;
+      }
+
+      listContainer.innerHTML = userLoginLogs.map((log, idx) => `
+        <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs gap-2 shadow-2xs">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <strong class="text-[#2E2C2B] font-extrabold text-sm">${log.user}</strong>
+              <span class="px-2 py-0.5 text-[9px] rounded font-bold ${log.role === 'admin' ? 'bg-[#EAE8F0] text-[#5A4E7A]' : 'bg-[#E8EDF5] text-[#4D5A6E]'}">
+                ${log.role === 'admin' ? '最高管理者' : '家人成員'}
+              </span>
+            </div>
+            <span class="text-[10px] text-[#827C78] block mt-0.5">狀態：${log.type || '系統自動驗證'}</span>
+          </div>
+          <div class="text-right shrink-0">
+            <strong class="text-[#5A4E7A] font-bold block text-xs">${log.time}</strong>
+            ${currentUser?.role === 'admin' ? `
+              <button onclick="userLoginLogs.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderLoginLogs();" class="text-[10px] text-[#784D4E] hover:underline font-bold mt-0.5">刪除紀錄</button>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function clearLoginLogs() {
+      if (currentUser?.role !== 'admin') return alert('唯讀帳號無法清除！');
+      if (confirm('確定要清空所有歷史登入紀錄嗎？')) {
+        userLoginLogs = [];
+        saveAllSettingsLocalAndCloud();
+        renderLoginLogs();
+      }
     }
 
     function applyUserRoleUI() {
@@ -1243,7 +1327,7 @@
         userCards, budgetPlans, aaListItems, currentDedicatedFunds, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
-        laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
+        laborDataByMember, annualExpenses, annualFundList, userAccounts, userLoginLogs, lastExportDate,
         updatedAt: new Date().toISOString()
       };
 
@@ -1305,6 +1389,7 @@
 
     function applySettingsObject(data) {
       if (data.userAccounts) userAccounts = data.userAccounts;
+      if (data.userLoginLogs) userLoginLogs = data.userLoginLogs;
       if (data.customCategories) customCategories = data.customCategories;
       if (data.customAccounts) customAccounts = data.customAccounts;
       if (data.bankList && data.bankList.length > 0) bankList = sortByCode(data.bankList);
@@ -1337,9 +1422,10 @@
       renderForexPage(currentForexMember);
       renderAssets(currentAssetMember);
       renderUserAccountsList();
+      renderLoginLogs();
     }
 
-    /* --- 小錢包與收支袋管理邏輯（連線/土銀） --- */
+    /* --- 小錢包與收支袋管理邏輯 --- */
     function addDedicatedFund(bankType) {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
       const nameEl = document.getElementById(`${bankType}-fund-name`);
@@ -3302,7 +3388,7 @@
         userCards, budgetPlans, currentDedicatedFunds, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
-        laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
+        laborDataByMember, annualExpenses, annualFundList, userAccounts, userLoginLogs, lastExportDate,
         exportDate: lastExportDate
       };
       saveAllSettingsLocalAndCloud();
@@ -3398,7 +3484,6 @@
 
       totalAmount = (entryMode === '支出') ? -Math.abs(totalAmount) : Math.abs(totalAmount);
 
-      // 檢查是否選擇專款小錢包進行自動扣款/增加
       if (bankName === '連線銀行專款小錢包' || bankName === '土地銀行專款小錢包') {
         const bankType = bankName === '連線銀行專款小錢包' ? 'line' : 'land';
         const subBagId = Number(document.getElementById('sub_bag_select').value);
@@ -3579,6 +3664,7 @@
       }
       if (tabIndex === 7) renderStockPage(currentStockMember);
       if (tabIndex === 8) renderForexPage(currentForexMember);
+      if (tabIndex === 9) renderLoginLogs();
     }
 
     let touchStartX = 0;
@@ -3591,7 +3677,7 @@
     function handleSwipe() {
       const diffX = touchEndX - touchStartX;
       if (Math.abs(diffX) > 80) {
-        if (diffX < 0 && currentTabIndex < 8) switchTab(currentTabIndex + 1);
+        if (diffX < 0 && currentTabIndex < 9) switchTab(currentTabIndex + 1);
         else if (diffX > 0 && currentTabIndex > 1) switchTab(currentTabIndex - 1);
       }
     }
