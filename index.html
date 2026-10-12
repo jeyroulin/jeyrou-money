@@ -123,16 +123,8 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道 (刷卡/現金工具)</label>
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道</label>
             <select id="account_name" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
-            </select>
-          </div>
-
-          <!-- 雙層連動：專款預算扣抵選單 -->
-          <div id="budget-deduction-container">
-            <label class="block text-xs font-bold text-[#4D5A6E] mb-1">專款預算扣抵 (選填 - 自動扣減現金專款)</label>
-            <select id="budget_deduction_item" class="w-full box-border p-3 border border-[#BAC7DB] rounded-xl text-sm font-bold text-[#4D5A6E] bg-[#E8EDF5] outline-none">
-              <option value="">-- 不使用專款扣抵 --</option>
             </select>
           </div>
 
@@ -205,12 +197,12 @@
       </section>
     </main>
 
-    <!-- 分頁二：現金收支與專款預算 (連線銀行/土地銀行) -->
+    <!-- 分頁二：現金收支 -->
     <main id="tab-2" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-2">
           <div>
-            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與專款預算</h2>
+            <h2 class="text-base font-bold text-[#2E2C2B]">現金收支與預算專款</h2>
           </div>
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
@@ -227,28 +219,15 @@
           </div>
         </div>
 
-        <!-- 專款切換分頁 -->
         <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-xl space-y-3 text-xs">
-          <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2">
-            <strong class="text-[#2E2C2B] text-sm font-bold">銀行現金專款管理</strong>
-            <button onclick="setBankTotalAmount()" class="editable-only text-[11px] bg-[#DDD7D4] px-2 py-1 rounded font-bold text-[#4D5A6E]">設定總額</button>
+          <strong class="text-[#2E2C2B] text-sm font-bold block border-b border-[#DCD6D3] pb-2">專款預算追蹤</strong>
+          <div class="grid grid-cols-2 gap-2 editable-only">
+            <input type="text" id="budget-item-name" placeholder="專款名稱" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
+            <input type="text" id="budget-item-limit" placeholder="預算金額 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
           </div>
+          <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增專款預算</button>
 
-          <!-- 切換按鈕 -->
-          <div class="grid grid-cols-2 gap-1 bg-[#DDD7D4] p-1 rounded-xl text-xs font-bold">
-            <button onclick="switchBankTab('LINE')" id="bank-tab-LINE" class="py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">連線銀行 0</button>
-            <button onclick="switchBankTab('LAND')" id="bank-tab-LAND" class="py-2 rounded-lg text-[#524D4B]">土地銀行 0</button>
-          </div>
-
-          <!-- 新增專款輸入框 -->
-          <div class="grid grid-cols-2 gap-2 editable-only pt-1">
-            <input type="text" id="budget-item-name" placeholder="專款項目 (例: 生活費)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none">
-            <input type="text" id="budget-item-limit" placeholder="專款額度 ($)" oninput="formatInputCurrency(this)" class="p-2.5 border border-[#DCD6D3] rounded-lg bg-white outline-none font-bold">
-          </div>
-          <button onclick="addBudgetPlan()" class="editable-only w-full py-2.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-lg">新增至目前銀行專款</button>
-
-          <!-- 專款列表與金額試算 -->
-          <div id="budget-plans-list" class="space-y-2 pt-2">
+          <div id="budget-plans-list" class="space-y-3 pt-2">
             <div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>
           </div>
         </div>
@@ -502,9 +481,11 @@
             </div>
           </div>
 
+          <!-- 連續雙年度進度卡片區 -->
           <div id="annual-coverage-dual-cards" class="space-y-3">
           </div>
 
+          <!-- 新增預備資金按鈕與開銷輸入列 -->
           <div class="space-y-2 pt-2 border-t border-[#DCD6D3]">
             <div class="flex justify-between items-center">
               <span class="font-bold text-[#2E2C2B] text-xs">新增年度開銷明細</span>
@@ -526,6 +507,7 @@
             </div>
           </div>
 
+          <!-- 附件二樣式的乾淨細項清單 (無外框，僅底線) -->
           <div id="annual-items-list" class="space-y-1.5 pt-2 max-h-60 overflow-y-auto border-t border-[#DCD6D3]">
             <div class="text-[#827C78] text-center py-2">尚無年度開銷項目</div>
           </div>
@@ -687,24 +669,13 @@
           <div id="custom-card-list" class="space-y-2"></div>
         </div>
 
-        <!-- 獨立拆分：支出分類管理 -->
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#784D4E]">支出分類管理</h3>
+          <h3 class="text-xs font-bold text-[#2E2C2B]">支出與收入分類</h3>
           <div class="flex gap-2 editable-only">
-            <input type="text" id="setting-expense-category-input" placeholder="輸入支出分類名稱 (例: 餐飲)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addCategoryFromSetting('支出')" class="px-3 py-2 bg-[#C89B9C] text-[#2E2C2B] rounded-lg text-xs font-bold">新增支出分類</button>
+            <input type="text" id="setting-category-input" placeholder="輸入分類名稱" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
+            <button onclick="addCategoryFromSetting()" class="px-3 py-2 bg-[#CEC7DB] text-[#2E2C2B] rounded-lg text-xs font-bold">新增分類</button>
           </div>
-          <div id="setting-expense-category-list" class="space-y-1.5 text-xs"></div>
-        </div>
-
-        <!-- 獨立拆分：收入分類管理 -->
-        <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
-          <h3 class="text-xs font-bold text-[#4D5A6E]">收入分類管理</h3>
-          <div class="flex gap-2 editable-only">
-            <input type="text" id="setting-income-category-input" placeholder="輸入收入分類名稱 (例: 薪資收入)" class="flex-1 p-2 border border-[#DCD6D3] rounded-lg text-xs outline-none bg-[#F7F4F3]">
-            <button onclick="addCategoryFromSetting('收入')" class="px-3 py-2 bg-[#98A4B7] text-[#2E2C2B] rounded-lg text-xs font-bold">新增收入分類</button>
-          </div>
-          <div id="setting-income-category-list" class="space-y-1.5 text-xs"></div>
+          <div id="setting-category-list" class="space-y-1.5 text-xs"></div>
         </div>
 
         <div class="space-y-3 pt-4 border-t border-[#F2ECE9]">
@@ -1003,20 +974,6 @@
     let currentForexMember = '潔柔';
     let allTransactions = [];
 
-    let activeBankTab = 'LINE';
-
-    // 銀行金額預設
-    let bankTotals = {
-      'LINE': 0,
-      'LAND': 0
-    };
-
-    // 專款細項預設
-    let bankBudgetPlans = {
-      'LINE': [],
-      'LAND': []
-    };
-
     function parseCurrencyNumber(val) {
       if (!val) return 0;
       return Number(String(val).replace(/,/g, '')) || 0;
@@ -1067,10 +1024,7 @@
       '9600 富邦證券', '9800 國泰綜合證券'
     ]);
 
-    // 獨立拆分：支出與收入分類
-    let customExpenseCategories = ['餐飲生活', '購物消費', '交通加油', '教育學習', '娛樂出遊', '醫療健保', '其他支出'];
-    let customIncomeCategories = ['薪資收入', '加班費x1.34', '加班費x1.67', '現金回饋/股息', '點數折抵', '勞退自付額', '健保自付額', '勞退自自提撥x6%'];
-
+    let customCategories = ['生活費', '薪資收入', '現金回饋/股息', '點數折抵'];
     let customAccounts = [
       { name: '現金/口袋皮夾', active: true },
       { name: '預設銀行主帳戶', active: true }
@@ -1079,6 +1033,7 @@
     let bankList = [...defaultBankList];
     let brokerList = [...defaultBrokerList];
     let userCards = [];
+    let budgetPlans = [];
     let aaListItems = [];
 
     let laborDataByMember = {
@@ -1098,7 +1053,7 @@
     let stocksList = [];
     let expandedStockCode = null;
     let annualExpenses = { "2027": [], "2028": [] };
-    let annualFundList = [];
+    let annualFundList = []; // 預備資金清單 (銀行、活存/定存、到期日、金額)
     let lastExportDate = null;
 
     let calYear = new Date().getFullYear();
@@ -1110,104 +1065,6 @@
       'Content-Type': 'application/json',
       'Prefer': 'return=representation'
     };
-
-    function switchBankTab(bankKey) {
-      activeBankTab = bankKey;
-      document.getElementById('bank-tab-LINE').className = bankKey === 'LINE' ? 'py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs font-bold' : 'py-2 rounded-lg text-[#524D4B] font-bold';
-      document.getElementById('bank-tab-LAND').className = bankKey === 'LAND' ? 'py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs font-bold' : 'py-2 rounded-lg text-[#524D4B] font-bold';
-      renderBudgetPlans();
-    }
-
-    function setBankTotalAmount() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const currentVal = bankTotals[activeBankTab] || 0;
-      const bankName = activeBankTab === 'LINE' ? '連線銀行' : '土地銀行';
-      const input = prompt(`請輸入【${bankName}】當前總金額 ($)：`, currentVal);
-      if (input !== null && !isNaN(Number(input))) {
-        bankTotals[activeBankTab] = Number(input);
-        document.getElementById(`bank-tab-${activeBankTab}`).innerText = `${bankName} ${Number(input).toLocaleString()}`;
-        saveAllSettingsLocalAndCloud();
-        renderBudgetPlans();
-        renderBudgetDeductionOptions();
-      }
-    }
-
-    function addBudgetPlan() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const name = document.getElementById('budget-item-name').value.trim();
-      const limit = parseCurrencyNumber(document.getElementById('budget-item-limit').value);
-      if (!name) return alert('請輸入專款項目名稱');
-
-      if (!bankBudgetPlans[activeBankTab]) bankBudgetPlans[activeBankTab] = [];
-      bankBudgetPlans[activeBankTab].push({ name, limit });
-
-      document.getElementById('budget-item-name').value = '';
-      document.getElementById('budget-item-limit').value = '';
-      saveAllSettingsLocalAndCloud();
-      renderBudgetPlans();
-      renderBudgetDeductionOptions();
-    }
-
-    function renderBudgetPlans() {
-      const container = document.getElementById('budget-plans-list');
-      if (!container) return;
-
-      const plans = bankBudgetPlans[activeBankTab] || [];
-      const totalBankAmt = bankTotals[activeBankTab] || 0;
-      const totalPlanned = plans.reduce((sum, p) => sum + p.limit, 0);
-      const remaining = totalBankAmt - totalPlanned;
-
-      let html = `
-        <div class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1">
-          <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
-            <span>專款規劃小計：$${totalPlanned.toLocaleString()}</span>
-            <span class="${remaining >= 0 ? 'text-[#556357]' : 'text-[#784D4E]'}">${remaining >= 0 ? '未指派餘額' : '超出試算'}：$${Math.abs(remaining).toLocaleString()}</span>
-          </div>
-        </div>
-      `;
-
-      if (plans.length === 0) {
-        html += '<div class="text-center text-[#827C78] py-2">尚無專款項目。</div>';
-      } else {
-        html += plans.map((b, idx) => `
-          <div class="bg-white p-2.5 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
-            <span class="font-bold text-[#2E2C2B]">${b.name}</span>
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="font-bold text-[#3D3A39]">$${b.limit.toLocaleString()}</span>
-              <button onclick="bankBudgetPlans['${activeBankTab}'].splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans(); renderBudgetDeductionOptions();" class="editable-only text-[#784D4E] text-xs font-bold">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      container.innerHTML = html;
-    }
-
-    // 動態算渲染專款扣抵下拉選單
-    function renderBudgetDeductionOptions() {
-      const select = document.getElementById('budget_deduction_item');
-      if (!select) return;
-
-      let html = `<option value="">-- 不使用專款扣抵 --</option>`;
-
-      if (bankBudgetPlans['LINE'] && bankBudgetPlans['LINE'].length > 0) {
-        html += `<optgroup label="連線銀行現金專款">`;
-        bankBudgetPlans['LINE'].forEach(p => {
-          html += `<option value="LINE:${p.name}">連線銀行 ➔ ${p.name} ($${p.limit.toLocaleString()})</option>`;
-        });
-        html += `</optgroup>`;
-      }
-
-      if (bankBudgetPlans['LAND'] && bankBudgetPlans['LAND'].length > 0) {
-        html += `<optgroup label="土地銀行現金專款">`;
-        bankBudgetPlans['LAND'].forEach(p => {
-          html += `<option value="LAND:${p.name}">土地銀行 ➔ ${p.name} ($${p.limit.toLocaleString()})</option>`;
-        });
-        html += `</optgroup>`;
-      }
-
-      select.innerHTML = html;
-    }
 
     async function fetchGoogleCalendarEvents() {
       if (!GOOGLE_API_KEY || GOOGLE_API_KEY === 'YOUR_GOOGLE_API_KEY') return;
@@ -1323,8 +1180,8 @@
       brokerList = sortByCode(brokerList);
 
       const settingsPayload = {
-        customExpenseCategories, customIncomeCategories, customAccounts, bankList, brokerList,
-        userCards, bankTotals, bankBudgetPlans, aaListItems, fixedDeposits, insurancePolicies,
+        customCategories, customAccounts, bankList, brokerList,
+        userCards, budgetPlans, aaListItems, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
         laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
@@ -1389,14 +1246,12 @@
 
     function applySettingsObject(data) {
       if (data.userAccounts) userAccounts = data.userAccounts;
-      if (data.customExpenseCategories) customExpenseCategories = data.customExpenseCategories;
-      if (data.customIncomeCategories) customIncomeCategories = data.customIncomeCategories;
+      if (data.customCategories) customCategories = data.customCategories;
       if (data.customAccounts) customAccounts = data.customAccounts;
       if (data.bankList && data.bankList.length > 0) bankList = sortByCode(data.bankList);
       if (data.brokerList && data.brokerList.length > 0) brokerList = sortByCode(data.brokerList);
       if (data.userCards) userCards = data.userCards;
-      if (data.bankTotals) bankTotals = data.bankTotals;
-      if (data.bankBudgetPlans) bankBudgetPlans = data.bankBudgetPlans;
+      if (data.budgetPlans) budgetPlans = data.budgetPlans;
       if (data.aaListItems) aaListItems = data.aaListItems;
       if (data.fixedDeposits) fixedDeposits = data.fixedDeposits;
       if (data.insurancePolicies) insurancePolicies = data.insurancePolicies;
@@ -1416,7 +1271,6 @@
       renderSettingLists();
       renderCustomCardList();
       renderBudgetPlans();
-      renderBudgetDeductionOptions();
       renderAATab();
       renderStockPage(currentStockMember);
       renderForexPage(currentForexMember);
@@ -1443,22 +1297,18 @@
       const title = document.getElementById('form-mode-title');
       const btnExp = document.getElementById('mode-btn-expense');
       const btnInc = document.getElementById('mode-btn-income');
-      const deductionContainer = document.getElementById('budget-deduction-container');
 
       if (mode === '支出') {
         title.innerText = '快捷記帳 (支出)';
         title.className = 'text-base font-bold text-[#784D4E]';
         btnExp.className = 'px-3 py-1.5 rounded-lg bg-[#C89B9C] text-[#2E2C2B] shadow-2xs';
         btnInc.className = 'px-3 py-1.5 rounded-lg text-[#524D4B]';
-        if (deductionContainer) deductionContainer.classList.remove('hidden');
       } else {
         title.innerText = '快捷記帳 (收入)';
         title.className = 'text-base font-bold text-[#4D5A6E]';
         btnInc.className = 'px-3 py-1.5 rounded-lg bg-[#98A4B7] text-[#2E2C2B] shadow-2xs';
         btnExp.className = 'px-3 py-1.5 rounded-lg text-[#524D4B]';
-        if (deductionContainer) deductionContainer.classList.add('hidden');
       }
-      renderCategoryOptions();
       renderAccountOptions();
     }
 
@@ -1543,6 +1393,7 @@
         if (userCards.length === 0) {
           creditDetailBox.innerText = '尚無信用卡資料。';
         } else {
+          // 依發卡銀行進行歸類整合 (優化後版本)
           const groupedCards = {};
           userCards.forEach(c => {
             if (!groupedCards[c.bank]) {
@@ -2268,6 +2119,7 @@
       const forexHoldings = getMemberForexHoldings(member);
       const forexTotalNTD = forexHoldings.reduce((sum, h) => sum + h.currentNTDValue, 0);
 
+      // 預備資金自動連動並加總至個人的「現金總資產」
       const annualFundTotal = annualFundList.reduce((sum, f) => sum + f.amount, 0);
 
       let stockMarketVal = 0;
@@ -2725,17 +2577,13 @@
       }
     }
 
-    /* --- 獨立拆分：分類新增與刪除邏輯 --- */
-    function addCategoryFromSetting(type) {
+    function addCategoryFromSetting() {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
-      const inputId = type === '支出' ? 'setting-expense-category-input' : 'setting-income-category-input';
-      const input = document.getElementById(inputId);
+      const input = document.getElementById('setting-category-input');
       const val = input.value.trim();
-      if (!val) return alert(`請輸入${type}分類名稱`);
-
-      const targetList = type === '支出' ? customExpenseCategories : customIncomeCategories;
-      if (!targetList.includes(val)) {
-        targetList.push(val);
+      if (!val) return alert('請輸入分類名稱');
+      if (!customCategories.includes(val)) {
+        customCategories.push(val);
         input.value = '';
         saveAllSettingsLocalAndCloud();
         renderSettingLists();
@@ -2743,23 +2591,21 @@
       }
     }
 
-    function editCategory(type, idx) {
+    function editCategory(idx) {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
-      const targetList = type === '支出' ? customExpenseCategories : customIncomeCategories;
-      const newName = prompt(`請修改${type}分類名稱：`, targetList[idx]);
+      const newName = prompt('請修改分類名稱：', customCategories[idx]);
       if (newName && newName.trim()) {
-        targetList[idx] = newName.trim();
+        customCategories[idx] = newName.trim();
         saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderCategoryOptions();
       }
     }
 
-    function deleteCategory(type, idx) {
+    function deleteCategory(idx) {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
-      const targetList = type === '支出' ? customExpenseCategories : customIncomeCategories;
-      if (confirm(`確定要刪除「${targetList[idx]}」分類嗎？`)) {
-        targetList.splice(idx, 1);
+      if (confirm(`確定要刪除「${customCategories[idx]}」分類嗎？`)) {
+        customCategories.splice(idx, 1);
         saveAllSettingsLocalAndCloud();
         renderSettingLists();
         renderCategoryOptions();
@@ -2846,29 +2692,14 @@
         `).join('');
       }
 
-      // 渲染支出分類清單
-      const expCatContainer = document.getElementById('setting-expense-category-list');
-      if (expCatContainer) {
-        expCatContainer.innerHTML = customExpenseCategories.map((c, idx) => `
+      const catContainer = document.getElementById('setting-category-list');
+      if (catContainer) {
+        catContainer.innerHTML = customCategories.map((c, idx) => `
           <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
             <span class="font-bold text-[#3D3A39]">${c}</span>
             <div class="space-x-2 shrink-0 editable-only">
-              <button onclick="editCategory('支出', ${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
-              <button onclick="deleteCategory('支出', ${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      // 渲染收入分類清單
-      const incCatContainer = document.getElementById('setting-income-category-list');
-      if (incCatContainer) {
-        incCatContainer.innerHTML = customIncomeCategories.map((c, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
-            <span class="font-bold text-[#3D3A39]">${c}</span>
-            <div class="space-x-2 shrink-0 editable-only">
-              <button onclick="editCategory('收入', ${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
-              <button onclick="deleteCategory('收入', ${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+              <button onclick="editCategory(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
+              <button onclick="deleteCategory(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
             </div>
           </div>
         `).join('');
@@ -2893,9 +2724,38 @@
 
     function renderCategoryOptions() {
       const select = document.getElementById('category');
-      if (!select) return;
-      const targetCategories = entryMode === '支出' ? customExpenseCategories : customIncomeCategories;
-      select.innerHTML = targetCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+      if (select) select.innerHTML = customCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    function addBudgetPlan() {
+      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      const name = document.getElementById('budget-item-name').value.trim();
+      const limit = parseCurrencyNumber(document.getElementById('budget-item-limit').value);
+      if (!name || limit <= 0) return alert('請輸入名稱與金額');
+
+      budgetPlans.push({ name, limit });
+      document.getElementById('budget-item-name').value = '';
+      document.getElementById('budget-item-limit').value = '';
+      saveAllSettingsLocalAndCloud();
+      renderBudgetPlans();
+    }
+
+    function renderBudgetPlans() {
+      const container = document.getElementById('budget-plans-list');
+      if (!container) return;
+      if (budgetPlans.length === 0) {
+        container.innerHTML = '<div class="text-center text-[#827C78] py-2">尚無專款預算項目。</div>';
+        return;
+      }
+      container.innerHTML = budgetPlans.map((b, idx) => `
+        <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
+          <span class="font-bold text-[#2E2C2B]">${b.name}</span>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="font-bold text-[#3D3A39]">上限: $${b.limit.toLocaleString()}</span>
+            <button onclick="budgetPlans.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans();" class="editable-only text-[#784D4E] text-xs font-bold">刪除</button>
+          </div>
+        </div>
+      `).join('');
     }
 
     function addAAItem() {
@@ -3140,6 +3000,7 @@
           const items = annualExpenses[year] || [];
           const totalExpense = items.reduce((sum, i) => sum + i.amount, 0);
 
+          // 資金來源：100% 只採計手動新增填寫的預備資金 (原始自動算金額歸零)
           const userFunds = annualFundList.filter(f => f.year === year);
           const savedAmount = userFunds.reduce((sum, f) => sum + f.amount, 0);
 
@@ -3222,9 +3083,9 @@
 
     function exportToCSV() {
       if (allTransactions.length === 0) return alert('目前無資料可匯出');
-      let csv = '\uFEFF日期,項目,金額,管道,成員,分類,扣抵專款\n';
+      let csv = '\uFEFF日期,項目,金額,管道,成員,分類\n';
       allTransactions.forEach(t => {
-        csv += `"${t.transaction_date || ''}","${t.item_name || ''}","${t.amount_ntd || 0}","${t.account_name || ''}","${t.member_tag || ''}","${t.category || ''}","${t.deduction_item || ''}"\n`;
+        csv += `"${t.transaction_date || ''}","${t.item_name || ''}","${t.amount_ntd || 0}","${t.account_name || ''}","${t.member_tag || ''}","${t.category || ''}"\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -3237,10 +3098,10 @@
     function exportBackupJSON() {
       lastExportDate = new Date().toISOString();
       const backupData = {
-        customExpenseCategories, customIncomeCategories, customAccounts,
+        customCategories, customAccounts,
         bankList: sortByCode(bankList),
         brokerList: sortByCode(brokerList),
-        userCards, bankTotals, bankBudgetPlans, fixedDeposits, insurancePolicies,
+        userCards, budgetPlans, fixedDeposits, insurancePolicies,
         forexTransactions, forexLatestRates,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
         laborDataByMember, annualExpenses, annualFundList, userAccounts, lastExportDate,
@@ -3286,13 +3147,9 @@
       document.getElementById('item_name').value = tx.item_name;
       document.getElementById('amount_ntd').value = Math.abs(tx.amount_ntd).toLocaleString();
       document.getElementById('member_tag').value = tx.member_tag || '潔柔';
+      document.getElementById('category').value = tx.category || '生活費';
 
       setEntryMode(tx.amount_ntd < 0 ? '支出' : '收入');
-      document.getElementById('category').value = tx.category || customExpenseCategories[0];
-
-      if (document.getElementById('budget_deduction_item')) {
-        document.getElementById('budget_deduction_item').value = tx.deduction_item || '';
-      }
 
       document.getElementById('submit-btn').innerText = '儲存修改內容';
       document.getElementById('cancel-edit-btn').classList.remove('hidden');
@@ -3303,7 +3160,6 @@
       document.getElementById('editing_tx_id').value = '';
       document.getElementById('item_name').value = '';
       document.getElementById('amount_ntd').value = '';
-      if (document.getElementById('budget_deduction_item')) document.getElementById('budget_deduction_item').value = '';
       document.getElementById('submit-btn').innerText = '儲存紀錄';
       document.getElementById('cancel-edit-btn').classList.add('hidden');
     }
@@ -3311,18 +3167,6 @@
     async function deleteTransaction(id) {
       if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
       if (!confirm('確定要刪除這筆紀錄嗎？')) return;
-
-      const tx = allTransactions.find(t => t.id === id);
-      if (tx && tx.deduction_item && Number(tx.amount_ntd) < 0) {
-        const [bankKey, itemName] = tx.deduction_item.split(':');
-        const plan = bankBudgetPlans[bankKey]?.find(p => p.name === itemName);
-        if (plan) {
-          plan.limit += Math.abs(Number(tx.amount_ntd));
-          saveAllSettingsLocalAndCloud();
-          renderBudgetPlans();
-        }
-      }
-
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${id}`, {
           method: 'DELETE',
@@ -3353,28 +3197,15 @@
       const bankName = document.getElementById('account_name').value;
       const memberTag = document.getElementById('member_tag').value;
       const category = document.getElementById('category').value;
-      const deductionVal = document.getElementById('budget_deduction_item')?.value || '';
 
-      const numericAmt = (entryMode === '支出') ? -Math.abs(totalAmount) : Math.abs(totalAmount);
-
-      // 自動連動扣減專款金額邏輯
-      if (entryMode === '支出' && deductionVal) {
-        const [bankKey, itemName] = deductionVal.split(':');
-        const plan = bankBudgetPlans[bankKey]?.find(p => p.name === itemName);
-        if (plan) {
-          plan.limit = Math.max(0, plan.limit - Math.abs(totalAmount));
-          saveAllSettingsLocalAndCloud();
-          renderBudgetPlans();
-        }
-      }
+      totalAmount = (entryMode === '支出') ? -Math.abs(totalAmount) : Math.abs(totalAmount);
 
       const recordToInsert = {
         item_name: rawItemName,
-        amount_ntd: numericAmt,
+        amount_ntd: totalAmount,
         account_name: bankName,
         member_tag: memberTag,
         category: category,
-        deduction_item: deductionVal,
         transaction_date: customDate
       };
 
@@ -3485,13 +3316,12 @@
         const isExpense = Number(t.amount_ntd) < 0;
         const amtStr = (isExpense ? '-' : '+') + '$' + Math.abs(Number(t.amount_ntd)).toLocaleString();
         const amtClass = isExpense ? 'text-[#784D4E]' : 'text-[#556357]';
-        const deductionText = t.deduction_item ? ` | 扣抵專款: ${t.deduction_item.split(':')[1]}` : '';
 
         return `
           <div class="p-3 bg-[#FFFFFF] border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs gap-2">
             <div class="min-w-0">
               <div class="font-bold text-[#2E2C2B] truncate">${t.item_name || '無品項'}</div>
-              <div class="text-[10px] text-[#827C78] mt-0.5 truncate">${t.account_name || ''} - ${t.member_tag || ''} - ${t.transaction_date || ''}${deductionText}</div>
+              <div class="text-[10px] text-[#827C78] mt-0.5 truncate">${t.account_name || ''} - ${t.member_tag || ''} - ${t.transaction_date || ''}</div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
               <div class="font-extrabold ${amtClass} text-sm">${amtStr}</div>
