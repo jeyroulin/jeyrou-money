@@ -32,7 +32,6 @@
     .read-only-hide {
       display: none !important;
     }
-    /* 隱藏滾動條但保持可滑動功能 */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -44,8 +43,8 @@
 </head>
 <body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen select-none">
 
-  <!-- 登入驗證保護遮罩 -->
-  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#3D3A39]/90 backdrop-blur-md px-4 hidden">
+  <!-- 登入驗證保護遮罩 (資安加強：重新整理強制跳出) -->
+  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#3D3A39]/90 backdrop-blur-md px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl border border-[#DCD6D3]">
       <div class="text-center space-y-1">
         <h2 class="text-lg font-bold text-[#2E2C2B]">財務總控系統驗證</h2>
@@ -88,7 +87,7 @@
       </div>
     </header>
 
-    <!-- 響應式分頁導覽列 (全新順序：1快捷記帳 -> 2現金收支 -> 3AA請款 -> 4財務月曆 -> 5股市清單 -> 6外幣儲蓄 -> 7資產總表 -> 8設定管理 -> 9登錄紀錄) -->
+    <!-- 導覽列 (順序：1快捷記帳 -> 2現金收支 -> 3AA請款 -> 4財務月曆 -> 5股市清單 -> 6外幣儲蓄 -> 7資產總表 -> 8設定管理 -> 9登錄紀錄) -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5">
       <div class="flex overflow-x-auto no-scrollbar sm:grid sm:grid-cols-5 md:grid-cols-9 gap-1.5 text-center text-[11px] font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
@@ -102,11 +101,6 @@
         <button onclick="switchTab(9)" id="nav-btn-9" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">登錄紀錄</button>
       </div>
     </nav>
-
-    <div id="error-alert" class="hidden mb-4 p-3.5 bg-[#F7EDED] border border-[#C89B9C] rounded-xl text-[#784D4E] text-xs break-all">
-      <strong class="font-bold block mb-1">系統提示：</strong>
-      <span id="error-msg" class="font-mono"></span>
-    </div>
 
     <!-- 分頁一：快捷記帳 -->
     <main id="tab-1" class="tab-content">
@@ -135,7 +129,7 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道 (包含專款小錢包)</label>
+            <label class="block text-xs font-bold text-[#524D4B] mb-1">支付 / 收入管道</label>
             <select id="account_name" onchange="handleAccountChange()" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold text-[#2E2C2B] bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
             </select>
           </div>
@@ -225,9 +219,7 @@
           <input type="month" id="cashflow-month-select" onchange="renderCashFlowTab()" class="p-2 border border-[#DCD6D3] rounded-xl text-xs font-bold text-[#524D4B] bg-[#F7F4F3] outline-none">
         </div>
 
-        <!-- 潔柔與宇軒拆分顯示卡片 -->
         <div class="space-y-3">
-          <!-- 成員切換籤 -->
           <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
             <button onclick="switchCashflowMember('潔柔')" id="cashflow-tab-潔柔" class="cashflow-member-btn flex-1 py-2 rounded-lg bg-white text-[#2E2C2B] shadow-2xs">潔柔 現金流</button>
             <button onclick="switchCashflowMember('宇軒')" id="cashflow-tab-宇軒" class="cashflow-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒 現金流</button>
@@ -305,7 +297,7 @@
       </section>
     </main>
 
-    <!-- 分頁三：AA 請款專區 (需求 4：支援月份選擇與動態過濾) -->
+    <!-- 分頁三：AA 請款專區 -->
     <main id="tab-3" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-3">
@@ -387,7 +379,7 @@
       </section>
     </main>
 
-    <!-- 分頁五：股市清單 (需求 3: 移至第 5 分頁) -->
+    <!-- 分頁五：股市清單 -->
     <main id="tab-5" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
@@ -430,7 +422,6 @@
           </div>
         </div>
 
-        <!-- 需求 5：優化手機版個股圓餅圖垂直排版 -->
         <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs"></div>
 
         <div class="space-y-3 pt-2">
@@ -444,14 +435,59 @@
       </section>
     </main>
 
-    <!-- 分頁六：外幣儲蓄與投資 (需求 3: 移至第 6 分頁) -->
+    <!-- 分頁六：外幣儲蓄與投資（整合中國信託匯率、APP 折讓與到價提醒設定） -->
     <main id="tab-6" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
           <div class="min-w-0">
-            <h2 class="text-base font-bold text-[#4A5B6E] keep-word">外幣儲蓄與投資</h2>
+            <h2 class="text-base font-bold text-[#4A5B6E] keep-word">中國信託外幣儲蓄與 LINE 提醒設定</h2>
           </div>
           <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
+        </div>
+
+        <!-- 需求 2：中信 APP 到價提醒與試算設定區塊 -->
+        <div class="p-4 bg-[#EBF0EC] border border-[#B2C1B4] rounded-2xl space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b border-[#B2C1B4] pb-2">
+            <strong class="font-bold text-[#2E2C2B] text-sm">中信 APP 即時匯率與 LINE 到價提醒</strong>
+            <button onclick="updateCtbcForexRates()" class="text-[10px] bg-[#556357] hover:bg-[#435045] text-white font-bold px-2.5 py-1 rounded-lg">更新即時匯率</button>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-3 bg-white p-3 rounded-xl border border-[#DCD6D3]">
+            <div class="space-y-1">
+              <span class="font-bold text-[#4A5B6E] block">美金 (USD) 牌告/APP優惠</span>
+              <div class="text-xs text-[#2E2C2B]">牌告：<strong id="ctbc-usd-raw">31.835</strong></div>
+              <div class="text-xs text-[#556357]">APP優惠價(讓3.5分)：<strong id="ctbc-usd-discount" class="text-sm font-extrabold">31.800</strong></div>
+            </div>
+            <div class="space-y-1">
+              <span class="font-bold text-[#4A5B6E] block">日幣 (JPY) 牌告/APP優惠</span>
+              <div class="text-xs text-[#2E2C2B]">牌告：<strong id="ctbc-jpy-raw">0.2164</strong></div>
+              <div class="text-xs text-[#556357]">APP優惠價(讓0.14分)：<strong id="ctbc-jpy-discount" class="text-sm font-extrabold">0.2150</strong></div>
+            </div>
+          </div>
+
+          <!-- 到價提醒金額輸入 (空白代表免通知) -->
+          <div class="space-y-2 pt-1">
+            <strong class="font-bold text-[#2E2C2B] block text-xs">LINE 到價提醒條件 (每日早上 10:00 統一檢查)</strong>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-[#635D5A] font-bold block">USD 低點通知 ($)</label>
+                <input type="number" step="0.01" id="line-alert-usd-low" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+              </div>
+              <div>
+                <label class="text-[10px] text-[#635D5A] font-bold block">USD 高點通知 ($)</label>
+                <input type="number" step="0.01" id="line-alert-usd-high" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+              </div>
+              <div>
+                <label class="text-[10px] text-[#635D5A] font-bold block">JPY 低點通知 ($)</label>
+                <input type="number" step="0.0001" id="line-alert-jpy-low" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+              </div>
+              <div>
+                <label class="text-[10px] text-[#635D5A] font-bold block">JPY 高點通知 ($)</label>
+                <input type="number" step="0.0001" id="line-alert-jpy-high" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+              </div>
+            </div>
+            <p class="text-[10px] text-[#827C78]">* 說明：填寫金額後，系統將於每日 10:00 自動比對中信 APP 優惠價並推播至您的 LINE。</p>
+          </div>
         </div>
 
         <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
@@ -462,7 +498,7 @@
         <div class="bg-[#5B6B7C] text-white p-5 rounded-2xl shadow-sm space-y-4">
           <div class="flex justify-between items-center border-b border-[#708092] pb-3">
             <span class="text-xs text-[#DCE3EC] font-bold" id="forex-dashboard-title">【潔柔】外幣資產總值</span>
-            <button onclick="updateForexRatesOnline()" class="text-[10px] bg-[#4A5B6E] hover:bg-[#3B4A5B] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#708092]">更新即時匯率</button>
+            <span class="text-[10px] bg-[#4A5B6E] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#708092]">中信 Home Bank 計算</span>
           </div>
           <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="forex-grand-total-ntd">$0</div>
           
@@ -494,7 +530,7 @@
       </section>
     </main>
 
-    <!-- 分頁七：資產總表 (需求 3: 移至第 7 分頁; 需求 1 & 2: 正確過濾與加總宇軒現金流) -->
+    <!-- 分頁七：資產總表 -->
     <main id="tab-7" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div>
@@ -510,7 +546,6 @@
         <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3"></div>
         <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3"></div>
 
-        <!-- 需求 1：選擇「潔柔」時隱藏宇軒卡片；選擇「宇軒」或「全部」時顯示 -->
         <div id="yuxuan-cashflow-fixed-card" class="bg-[#B2C1B4] p-5 rounded-2xl text-[#2E2C2B] shadow-sm space-y-3">
           <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
             <span class="text-xs text-[#435045] font-bold">【宇軒】當月淨剩餘現金流</span>
@@ -647,12 +682,26 @@
       </section>
     </main>
 
-    <!-- 分頁八：設定管理與帳號權限 (需求 3: 移至第 8 分頁; 需求 7: 全站備份文案校正) -->
+    <!-- 分頁八：設定管理與帳號權限（包含寫死 LINE API 紀錄區塊） -->
     <main id="tab-8" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
           <h2 class="text-base font-bold text-[#5C5069]">設定管理</h2>
           <button onclick="logout()" class="px-3 py-1 bg-[#784D4E] text-white text-xs font-bold rounded-lg">登出系統</button>
+        </div>
+
+        <!-- 需求 3：管理設定內寫死 LINE API 設定資訊紀錄 -->
+        <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-2 text-xs">
+          <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2">
+            <strong class="font-bold text-[#4D5A6E] text-sm">LINE Messaging API 系統參數留存庫</strong>
+            <span class="text-[10px] bg-[#98A4B7] text-white px-2 py-0.5 rounded font-bold">固定紀錄（不開放線上異動）</span>
+          </div>
+          <div class="space-y-1.5 font-mono text-[#2E2C2B]">
+            <div><strong>Channel ID:</strong> <span class="bg-white px-2 py-0.5 rounded border border-[#DCD6D3]">2011982183</span></div>
+            <div class="break-all"><strong>Channel secret:</strong> <span class="bg-white px-2 py-0.5 rounded border border-[#DCD6D3]">c8fa11041fb8b7bd5c681aad89effd26</span></div>
+            <div><strong>基本 ID:</strong> <span class="bg-white px-2 py-0.5 rounded border border-[#DCD6D3]">@610jivww</span></div>
+            <div class="break-all"><strong>Your user ID:</strong> <span class="bg-white px-2 py-0.5 rounded border border-[#DCD6D3]">U375dcf04d252ffb326d81bf96bd85fce</span></div>
+          </div>
         </div>
 
         <div id="backup-reminder-banner" class="hidden p-3 bg-[#F7EDED] border border-[#C89B9C] rounded-xl text-xs text-[#784D4E] font-bold">
@@ -681,7 +730,6 @@
           <div id="user-accounts-list" class="space-y-1.5 pt-1"></div>
         </div>
 
-        <!-- 需求 7：文案修正為「JSON 全站備份檔」 -->
         <div class="p-5 bg-[#CEC7DB] border border-[#BBB3CB] rounded-2xl space-y-3 text-xs text-[#2E2C2B]">
           <strong class="font-bold text-[#453A52] block text-sm border-b border-[#BBB3CB] pb-2">全站備份與還原</strong>
           <div class="grid grid-cols-2 gap-3 pt-1">
@@ -763,7 +811,7 @@
       </section>
     </main>
 
-    <!-- 分頁九：登錄紀錄 (需求 3: 移至第 9 分頁) -->
+    <!-- 分頁九：登錄紀錄 -->
     <main id="tab-9" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
@@ -830,16 +878,16 @@
           <div>
             <label class="block font-bold mb-1 text-[#524D4B]">選擇幣別</label>
             <select id="modal-forex-currency" onchange="autoFillForexRate()" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
-              <option value="USD">USD 美金</option>
-              <option value="JPY">JPY 日圓</option>
+              <option value="USD">USD 美金 (中信)</option>
+              <option value="JPY">JPY 日圓 (中信)</option>
               <option value="EUR">EUR 歐元</option>
               <option value="KRW">KRW 韓元</option>
               <option value="CNY">CNY 人民幣</option>
             </select>
           </div>
           <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">成交匯率</label>
-            <input type="number" step="0.0001" id="modal-forex-rate" oninput="calcForexNTD()" placeholder="例如: 31.5" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+            <label class="block font-bold mb-1 text-[#524D4B]">成交匯率 (含優惠)</label>
+            <input type="number" step="0.0001" id="modal-forex-rate" oninput="calcForexNTD()" placeholder="例如: 31.8" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -1017,7 +1065,7 @@
     </div>
   </div>
 
-  <!-- 預備資金 Modal (活存/定存) -->
+  <!-- 預備資金 Modal -->
   <div id="annual-fund-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl border border-[#DCD6D3]">
       <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">新增預備資金 (活存/定存)</h3>
@@ -1061,24 +1109,32 @@
     const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
 
+    /* --- 寫死 LINE Messaging API 系統留存設定 --- */
+    const LINE_CONFIG = {
+      channelId: "2011982183",
+      channelSecret: "c8fa11041fb8b7bd5c681aad89effd26",
+      basicId: "@610jivww",
+      userId: "U375dcf04d252ffb326d81bf96bd85fce"
+    };
+
     /* --- Google Calendar API 設定 --- */
     const GOOGLE_API_KEY = 'AIzaSyCOq21RAnpMerL-gRNxN1UwBLbo1fnZsOM';
     const GOOGLE_CALENDAR_ID = '1eb3dbcdbb929072f5ab6a98878d3e40328753a2f069e901cbde755da5633546@group.calendar.google.com';
     let googleCalendarEvents = [];
 
-    // 需求 3：順序維護陣列（1快捷記帳 -> 2現金收支 -> 3AA請款 -> 4財務月曆 -> 5股市清單 -> 6外幣儲蓄 -> 7資產總表 -> 8設定管理 -> 9登錄紀錄）
     const tabOrderList = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     let currentTabIndex = 1;
 
+    /* 資安加強：改用記憶體全域變數儲存，重新整理 (F5) 狀態立即清空 */
+    let isMemoryAuthenticated = false;
     let currentUser = null;
     let userAccounts = [
       { name: 'admin', pass: '123456', role: 'admin' },
       { name: 'yuxuan', pass: '123456', role: 'viewer' },
-      { name: '訪客', pass: '0000', role: 'guest' } // 需求 9：新增訪客帳號
+      { name: '訪客', pass: '0000', role: 'guest' }
     ];
 
     let userLoginLogs = []; 
-
     let entryMode = '支出';
     let currentAssetMember = '全部';
     let currentStockMember = '潔柔';
@@ -1086,12 +1142,21 @@
     let currentCashflowMember = '潔柔';
     let allTransactions = [];
 
+    /* 中信外幣即時匯率與 LINE 到價提醒設定變數 (空白為 null 免通知) */
+    let ctbcRates = {
+      usdRaw: 31.835, usdDiscount: 31.800, // 美金讓 3.5 分
+      jpyRaw: 0.2164, jpyDiscount: 0.2150  // 日幣讓 0.14 分
+    };
+    let lineAlertSettings = {
+      usdLow: null, usdHigh: null,
+      jpyLow: null, jpyHigh: null
+    };
+
     function parseCurrencyNumber(val) {
       if (!val) return 0;
       return Number(String(val).replace(/,/g, '')) || 0;
     }
 
-    /* 需求 9：訪客個資屏蔽輔助函式 */
     function maskDisplayValue(num) {
       if (currentUser?.role === 'guest') {
         return '***';
@@ -1156,7 +1221,6 @@
     let userCards = [];
     let budgetPlans = [];
     
-    // 需求 4：AA請款單預設資料加入月份欄位 month
     let aaListItems = [
       { title: '宇軒餐費', guanheAmt: 0, jierouAmt: 0, month: '2026-10' },
       { title: '宇軒保險(2026年)', guanheAmt: 2000, jierouAmt: 0, month: '2026-10' },
@@ -1195,7 +1259,7 @@
     let lastExportDate = null;
 
     let calYear = 2026;
-    let calMonth = 9; // 10月
+    let calMonth = 9;
 
     const fetchHeaders = {
       'apikey': SUPABASE_KEY,
@@ -1222,6 +1286,7 @@
       }
     }
 
+    /* 資安加強：登入只紀錄於記憶體中，關閉或重新整理強制重新登入 */
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('login-username').value.trim();
@@ -1231,9 +1296,7 @@
       const matchUser = userAccounts.find(account => account.name === u && account.pass === p);
       if (matchUser) {
         currentUser = { name: matchUser.name, role: matchUser.role };
-        
-        // 需求 8：資安升級，Login Session 改用 sessionStorage 儲存
-        sessionStorage.setItem('jeyrou_logged_user', JSON.stringify(currentUser));
+        isMemoryAuthenticated = true;
         
         const nowStr = new Date().toLocaleString('zh-TW', { hour12: false });
         userLoginLogs.unshift({
@@ -1256,24 +1319,59 @@
     }
 
     function checkLoginSession() {
-      // 需求 8：使用 sessionStorage 判斷 Login Session，重新整理/重開分頁均需登入
-      const stored = sessionStorage.getItem('jeyrou_logged_user');
-      if (stored) {
-        try {
-          currentUser = JSON.parse(stored);
-          document.getElementById('login-modal').classList.add('hidden');
-          applyUserRoleUI();
-        } catch(e) {
-          document.getElementById('login-modal').classList.remove('hidden');
-        }
-      } else {
+      if (!isMemoryAuthenticated) {
         document.getElementById('login-modal').classList.remove('hidden');
       }
     }
 
     function logout() {
-      sessionStorage.removeItem('jeyrou_logged_user');
+      isMemoryAuthenticated = false;
       location.reload();
+    }
+
+    function saveForexAlertSettings() {
+      const uLow = document.getElementById('line-alert-usd-low').value;
+      const uHigh = document.getElementById('line-alert-usd-high').value;
+      const jLow = document.getElementById('line-alert-jpy-low').value;
+      const jHigh = document.getElementById('line-alert-jpy-high').value;
+
+      lineAlertSettings.usdLow = uLow !== '' ? Number(uLow) : null;
+      lineAlertSettings.usdHigh = uHigh !== '' ? Number(uHigh) : null;
+      lineAlertSettings.jpyLow = jLow !== '' ? Number(jLow) : null;
+      lineAlertSettings.jpyHigh = jHigh !== '' ? Number(jHigh) : null;
+
+      saveAllSettingsLocalAndCloud();
+    }
+
+    async function updateCtbcForexRates() {
+      try {
+        const res = await fetch('https://open.er-api.com/v6/latest/USD');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.rates && data.rates.TWD) {
+            const usdTwd = data.rates.TWD;
+            ctbcRates.usdRaw = usdTwd;
+            ctbcRates.usdDiscount = +(usdTwd - 0.035).toFixed(4); // 中信 APP USD 折讓 3.5 分
+            
+            if (data.rates.JPY) {
+              const jpyTwd = usdTwd / data.rates.JPY;
+              ctbcRates.jpyRaw = +jpyTwd.toFixed(4);
+              ctbcRates.jpyDiscount = +(jpyTwd - 0.0014).toFixed(4); // 中信 APP JPY 折讓 0.14 分
+            }
+          }
+        }
+      } catch (e) {}
+
+      document.getElementById('ctbc-usd-raw').innerText = ctbcRates.usdRaw;
+      document.getElementById('ctbc-usd-discount').innerText = ctbcRates.usdDiscount;
+      document.getElementById('ctbc-jpy-raw').innerText = ctbcRates.jpyRaw;
+      document.getElementById('ctbc-jpy-discount').innerText = ctbcRates.jpyDiscount;
+
+      forexLatestRates['USD'] = ctbcRates.usdDiscount;
+      forexLatestRates['JPY'] = ctbcRates.jpyDiscount;
+
+      saveAllSettingsLocalAndCloud();
+      renderForexPage(currentForexMember);
     }
 
     function renderLoginLogs() {
@@ -1336,7 +1434,6 @@
         badge.innerText = `${currentUser.name} (${roleText})`;
       }
 
-      // 需求 9：訪客與唯讀成員隱藏所有編輯控制按鈕
       if (currentUser.role === 'viewer' || currentUser.role === 'guest') {
         document.querySelectorAll('.editable-only').forEach(el => el.classList.add('read-only-hide'));
       } else {
@@ -1390,7 +1487,7 @@
       const settingsPayload = {
         customCategories, customAccounts, bankList, brokerList,
         userCards, budgetPlans, aaListItems, currentDedicatedFunds, fixedDeposits, insurancePolicies,
-        forexTransactions, forexLatestRates,
+        forexTransactions, forexLatestRates, ctbcRates, lineAlertSettings,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
         laborDataByMember, annualExpenses, annualFundList, userAccounts, userLoginLogs, lastExportDate,
         updatedAt: new Date().toISOString()
@@ -1467,6 +1564,14 @@
       if (data.insurancePolicies) insurancePolicies = data.insurancePolicies;
       if (data.forexTransactions) forexTransactions = data.forexTransactions;
       if (data.forexLatestRates) forexLatestRates = data.forexLatestRates;
+      if (data.ctbcRates) ctbcRates = data.ctbcRates;
+      if (data.lineAlertSettings) {
+        lineAlertSettings = data.lineAlertSettings;
+        document.getElementById('line-alert-usd-low').value = lineAlertSettings.usdLow !== null ? lineAlertSettings.usdLow : '';
+        document.getElementById('line-alert-usd-high').value = lineAlertSettings.usdHigh !== null ? lineAlertSettings.usdHigh : '';
+        document.getElementById('line-alert-jpy-low').value = lineAlertSettings.jpyLow !== null ? lineAlertSettings.jpyLow : '';
+        document.getElementById('line-alert-jpy-high').value = lineAlertSettings.jpyHigh !== null ? lineAlertSettings.jpyHigh : '';
+      }
       if (data.stocksList) stocksList = data.stocksList;
       if (data.stockAccountCash) stockAccountCash = data.stockAccountCash;
       if (data.stockCashLogs) stockCashLogs = data.stockCashLogs;
@@ -1900,7 +2005,9 @@
 
     function autoFillForexRate() {
       const curr = document.getElementById('modal-forex-currency').value;
-      const rate = forexLatestRates[curr] || 1.0;
+      let rate = forexLatestRates[curr] || 1.0;
+      if (curr === 'USD') rate = ctbcRates.usdDiscount;
+      if (curr === 'JPY') rate = ctbcRates.jpyDiscount;
       document.getElementById('modal-forex-rate').value = rate;
       calcForexNTD();
     }
@@ -1968,28 +2075,6 @@
       renderForexPage(member);
     }
 
-    async function updateForexRatesOnline() {
-      try {
-        const res = await fetch('https://open.er-api.com/v6/latest/TWD');
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.rates) {
-            if (data.rates.USD) forexLatestRates['USD'] = +(1 / data.rates.USD).toFixed(4);
-            if (data.rates.JPY) forexLatestRates['JPY'] = +(1 / data.rates.JPY).toFixed(4);
-            if (data.rates.EUR) forexLatestRates['EUR'] = +(1 / data.rates.EUR).toFixed(4);
-            if (data.rates.KRW) forexLatestRates['KRW'] = +(1 / data.rates.KRW).toFixed(4);
-            if (data.rates.CNY) forexLatestRates['CNY'] = +(1 / data.rates.CNY).toFixed(4);
-            saveAllSettingsLocalAndCloud();
-            renderForexPage(currentForexMember);
-            renderAssets(currentAssetMember);
-            alert('已成功聯網更新國際最新匯率！');
-            return;
-          }
-        }
-      } catch (e) {}
-      alert('更新完成。');
-    }
-
     function getMemberForexHoldings(member) {
       const txs = forexTransactions.filter(f => member === '全部' || f.owner === member);
       const holdings = {};
@@ -2008,7 +2093,10 @@
       });
 
       return Object.values(holdings).filter(h => h.totalAmount > 0).map(h => {
-        const latestRate = forexLatestRates[h.currency] || 1.0;
+        let latestRate = forexLatestRates[h.currency] || 1.0;
+        if (h.currency === 'USD') latestRate = ctbcRates.usdDiscount;
+        if (h.currency === 'JPY') latestRate = ctbcRates.jpyDiscount;
+
         const currentNTDValue = Math.round(h.totalAmount * latestRate);
         const profit = currentNTDValue - h.totalNTDCost;
         const avgRate = h.totalAmount > 0 ? (h.totalNTDCost / h.totalAmount).toFixed(4) : 0;
@@ -2046,7 +2134,7 @@
               <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-2">
                 <div>持有數量：<strong class="text-[#2E2C2B] font-bold">${currentUser?.role === 'guest' ? '***' : h.totalAmount.toLocaleString()} ${h.currency}</strong></div>
                 <div>均買匯率：<strong class="text-[#2E2C2B] font-bold">${h.avgRate}</strong></div>
-                <div>參考匯率：<strong class="text-[#4A5B6E] font-bold">${h.latestRate}</strong></div>
+                <div>中信優惠價：<strong class="text-[#4A5B6E] font-bold">${h.latestRate}</strong></div>
                 <div>未實現損益：<strong class="${isP ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">${currentUser?.role === 'guest' ? '***' : ((isP ? '+' : '') + '$' + h.profit.toLocaleString())}</strong></div>
               </div>
             </div>
@@ -2306,7 +2394,6 @@
       renderStockPage(member);
     }
 
-    // 需求 5：手機版改為「上方圓餅圖 + 下方文字」垂直適應排版
     function renderStockPieCard(member, holdings, totalMarketVal) {
       const container = document.getElementById('stock-pie-card');
       if (!container) return;
@@ -2398,7 +2485,6 @@
           const isExpanded = expandedStockCode === h.code;
           const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
-          // 需求 6：持股卡片關鍵數據統一字級大小 text-sm font-bold
           return `
             <div class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
               <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
@@ -2464,7 +2550,6 @@
     function renderAssets(member) {
       currentAssetMember = member;
 
-      // 需求 1：潔柔分頁時隱藏宇軒卡片
       const fixedCard = document.getElementById('yuxuan-cashflow-fixed-card');
       if (fixedCard) {
         if (member === '潔柔') {
@@ -2474,7 +2559,6 @@
         }
       }
 
-      // 需求 2：計算宇軒現金流金額 ($1,437) 並依分頁條件加總
       const yuxuanCashNet = 1437;
 
       const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
@@ -2503,8 +2587,6 @@
       }
 
       const stockGrandTotal = stockMarketVal + stockCashVal;
-      
-      // 需求 2：宇軒現金流餘額併入個人與現金總資產
       const extraYuxuanCash = (member === '宇軒' || member === '全部') ? yuxuanCashNet : 0;
       const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + annualFundTotal + extraYuxuanCash;
 
@@ -3171,7 +3253,6 @@
       renderAATab();
     }
 
-    // 需求 4：AA請款單明細依選擇月份進行動態過濾
     function renderAATab() {
       const container = document.getElementById('aa-items-container');
       if (!container) return;
@@ -3185,7 +3266,6 @@
         titleDisplay.innerText = `${yearStr}年${monthStr}月 請款單明細`;
       }
 
-      // 動態過濾特定月份的請款資料
       const filteredAA = aaListItems.filter(i => (i.month || '2026-10') === selMonth);
 
       let guanheTotal = 0;
@@ -3493,7 +3573,6 @@
       renderDedicatedFunds();
     }
 
-    // 需求 7：匯出 Excel 檔 (.xlsx)
     function exportToExcel() {
       if (currentUser?.role === 'guest') return alert('訪客模式不支援資料匯出！');
       if (allTransactions.length === 0) return alert('目前無資料可匯出');
@@ -3514,7 +3593,6 @@
       XLSX.writeFile(workbook, `財務總控_記帳紀錄_${getTodayString()}.xlsx`);
     }
 
-    // 需求 7：JSON 全站備份檔匯出
     function exportBackupJSON() {
       if (currentUser?.role === 'guest') return alert('訪客模式不支援全站備份匯出！');
       lastExportDate = new Date().toISOString();
@@ -3523,9 +3601,10 @@
         bankList: sortByCode(bankList),
         brokerList: sortByCode(brokerList),
         userCards, budgetPlans, currentDedicatedFunds, fixedDeposits, insurancePolicies,
-        forexTransactions, forexLatestRates,
+        forexTransactions, forexLatestRates, ctbcRates, lineAlertSettings,
         stocksList, stockAccountCash, stockCashLogs, manualStockPrices,
         laborDataByMember, annualExpenses, annualFundList, userAccounts, userLoginLogs, lastExportDate,
+        lineConfig: LINE_CONFIG,
         exportDate: lastExportDate
       };
       saveAllSettingsLocalAndCloud();
@@ -3772,7 +3851,6 @@
       }).join('');
     }
 
-    // 需求 3：順序切換邏輯
     function switchTab(tabIndex) {
       currentTabIndex = tabIndex;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -3805,7 +3883,6 @@
       if (tabIndex === 9) renderLoginLogs();
     }
 
-    // 需求 3：觸控滑動順序完全依照 tabOrderList 陣列 (1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9)
     let touchStartX = 0;
     let touchEndX = 0;
     const mainApp = document.getElementById('main-app-container');
@@ -3818,12 +3895,10 @@
       if (Math.abs(diffX) > 80) {
         const curPos = tabOrderList.indexOf(currentTabIndex);
         if (diffX < 0) {
-          // 向左滑動：跳至下一個分頁
           if (curPos < tabOrderList.length - 1) {
             switchTab(tabOrderList[curPos + 1]);
           }
         } else if (diffX > 0) {
-          // 向右滑動：跳至上一個分頁
           if (curPos > 0) {
             switchTab(tabOrderList[curPos - 1]);
           }
@@ -3835,6 +3910,8 @@
       checkLoginSession();
       initTodayDate();
       await loadAllSettingsLocalAndCloud();
+      updateCtbcForexRates(); // 預設載入中信即時匯率
+      
       const badge = document.getElementById('status-badge');
       try {
         const res = await fetch(SUPABASE_URL + '/rest/v1/transactions?select=*&limit=1', { method: 'GET', headers: fetchHeaders });
