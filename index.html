@@ -62,9 +62,6 @@
         <div id="login-error" class="text-[#784D4E] text-xs hidden text-center font-bold">帳號或密碼錯誤！</div>
         <button type="submit" class="w-full py-3.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-xl shadow-sm text-sm">解鎖登入</button>
       </form>
-      <div class="text-center pt-2 border-t border-[#F2ECE9]">
-        <p class="text-[10px] text-[#827C78]">訪客體驗帳號：<strong class="text-[#524D4B]">訪客</strong> / 密碼：<strong class="text-[#524D4B]">0000</strong></p>
-      </div>
     </div>
   </div>
 
@@ -435,7 +432,7 @@
       </section>
     </main>
 
-    <!-- 分頁六：外幣儲蓄與投資（新增【儲存提醒設定】與【發送測試推播】顯眼按鈕） -->
+    <!-- 分頁六：外幣儲蓄與投資 -->
     <main id="tab-6" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
@@ -445,7 +442,7 @@
           <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
         </div>
 
-        <!-- 需求與優化重點：中信 APP 到價提醒與試算設定區塊（含儲存按鈕與測試按鈕） -->
+        <!-- 中信 APP 到價提醒與試算設定區塊 -->
         <div class="p-4 bg-[#EBF0EC] border border-[#B2C1B4] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#B2C1B4] pb-2">
             <strong class="font-bold text-[#2E2C2B] text-sm">中信 APP 即時匯率與 LINE 到價提醒</strong>
@@ -487,7 +484,6 @@
               </div>
             </div>
             
-            <!-- 補強：明確的【儲存提醒設定】與【發送測試推播】按鈕 -->
             <div class="flex gap-2 pt-1">
               <button onclick="saveForexAlertSettings(true)" class="editable-only flex-1 py-2.5 bg-[#556357] hover:bg-[#435045] text-white font-bold rounded-xl shadow-2xs text-xs">
                 💾 儲存提醒設定
@@ -1326,7 +1322,7 @@
         saveAllSettingsLocalAndCloud();
         applyUserRoleUI();
         renderLoginLogs();
-        switchTab(currentTabIndex); // 重新宣染現有分頁遮蔽邏輯
+        switchTab(currentTabIndex);
       } else {
         errBox.classList.remove('hidden');
       }
@@ -1343,7 +1339,6 @@
       location.reload();
     }
 
-    /* 儲存 LINE 到價提醒設定 */
     function saveForexAlertSettings(showAlert = false) {
       if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       
@@ -1361,7 +1356,6 @@
       if (showAlert) alert('已成功儲存 LINE 到價提醒條件！');
     }
 
-    /* 發送 LINE 測試推播 */
     function sendLineTestPush() {
       if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法執行測試！');
       saveForexAlertSettings(false);
@@ -1386,12 +1380,12 @@
           if (data && data.rates && data.rates.TWD) {
             const usdTwd = data.rates.TWD;
             ctbcRates.usdRaw = +usdTwd.toFixed(4);
-            ctbcRates.usdDiscount = +(usdTwd - 0.035).toFixed(4); // 中信 APP 美金折讓 3.5 分
+            ctbcRates.usdDiscount = +(usdTwd - 0.035).toFixed(4);
             
             if (data.rates.JPY) {
               const jpyTwd = usdTwd / data.rates.JPY;
               ctbcRates.jpyRaw = +jpyTwd.toFixed(4);
-              ctbcRates.jpyDiscount = +(jpyTwd - 0.0014).toFixed(4); // 中信 APP 日圓折讓 0.14 分
+              ctbcRates.jpyDiscount = +(jpyTwd - 0.0014).toFixed(4);
             }
           }
         }
@@ -2382,7 +2376,6 @@
       }
     }
 
-    /* 串接證交所 (TWSE) 即時行情 API */
     async function fetchAllStockPricesOnline() {
       const holdings = getMemberStockHoldings(currentStockMember);
       if (holdings.length === 0) return alert('目前沒有持股項目可校正！');
@@ -2977,7 +2970,6 @@
       document.getElementById('labor-retire-age').value = data.retireAge || 65;
       document.getElementById('labor-update-date').value = data.updateDate || getTodayString();
       
-      /* 訪客模式下脫敏遮蔽輸入框數值 */
       const isGuest = currentUser?.role === 'guest';
       document.getElementById('labor-emp-principal').value = isGuest ? '***' : (data.empPrincipal ? data.empPrincipal.toLocaleString() : '');
       document.getElementById('labor-emp-income').value = isGuest ? '***' : (data.empIncome ? data.empIncome.toLocaleString() : '');
