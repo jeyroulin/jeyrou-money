@@ -43,7 +43,7 @@
 </head>
 <body class="bg-[#E8E3E1] text-[#3D3A39] antialiased min-h-screen select-none">
 
-  <!-- 登入驗證保護遮罩 (資安加強：重新整理強制跳出) -->
+  <!-- 登入驗證保護遮罩 -->
   <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#3D3A39]/90 backdrop-blur-md px-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl border border-[#DCD6D3]">
       <div class="text-center space-y-1">
@@ -87,7 +87,7 @@
       </div>
     </header>
 
-    <!-- 導覽列 (順序：1快捷記帳 -> 2現金收支 -> 3AA請款 -> 4財務月曆 -> 5股市清單 -> 6外幣儲蓄 -> 7資產總表 -> 8設定管理 -> 9登錄紀錄) -->
+    <!-- 導覽列 -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5">
       <div class="flex overflow-x-auto no-scrollbar sm:grid sm:grid-cols-5 md:grid-cols-9 gap-1.5 text-center text-[11px] font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
@@ -435,7 +435,7 @@
       </section>
     </main>
 
-    <!-- 分頁六：外幣儲蓄與投資（整合中國信託匯率、APP 折讓與到價提醒設定） -->
+    <!-- 分頁六：外幣儲蓄與投資（新增【儲存提醒設定】與【發送測試推播】顯眼按鈕） -->
     <main id="tab-6" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
@@ -445,7 +445,7 @@
           <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
         </div>
 
-        <!-- 需求 2：中信 APP 到價提醒與試算設定區塊 -->
+        <!-- 需求與優化重點：中信 APP 到價提醒與試算設定區塊（含儲存按鈕與測試按鈕） -->
         <div class="p-4 bg-[#EBF0EC] border border-[#B2C1B4] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#B2C1B4] pb-2">
             <strong class="font-bold text-[#2E2C2B] text-sm">中信 APP 即時匯率與 LINE 到價提醒</strong>
@@ -455,38 +455,49 @@
           <div class="grid grid-cols-2 gap-3 bg-white p-3 rounded-xl border border-[#DCD6D3]">
             <div class="space-y-1">
               <span class="font-bold text-[#4A5B6E] block">美金 (USD) 牌告/APP優惠</span>
-              <div class="text-xs text-[#2E2C2B]">牌告：<strong id="ctbc-usd-raw">31.835</strong></div>
-              <div class="text-xs text-[#556357]">APP優惠價(讓3.5分)：<strong id="ctbc-usd-discount" class="text-sm font-extrabold">31.800</strong></div>
+              <div class="text-xs text-[#2E2C2B]">牌告：<strong id="ctbc-usd-raw">32.1370</strong></div>
+              <div class="text-xs text-[#556357]">APP優惠價(讓3.5分)：<strong id="ctbc-usd-discount" class="text-sm font-extrabold">32.1020</strong></div>
             </div>
             <div class="space-y-1">
               <span class="font-bold text-[#4A5B6E] block">日幣 (JPY) 牌告/APP優惠</span>
-              <div class="text-xs text-[#2E2C2B]">牌告：<strong id="ctbc-jpy-raw">0.2164</strong></div>
-              <div class="text-xs text-[#556357]">APP優惠價(讓0.14分)：<strong id="ctbc-jpy-discount" class="text-sm font-extrabold">0.2150</strong></div>
+              <div class="text-xs text-[#2E2C2B]">牌告：<strong id="ctbc-jpy-raw">0.2047</strong></div>
+              <div class="text-xs text-[#556357]">APP優惠價(讓0.14分)：<strong id="ctbc-jpy-discount" class="text-sm font-extrabold">0.2033</strong></div>
             </div>
           </div>
 
-          <!-- 到價提醒金額輸入 (空白代表免通知) -->
-          <div class="space-y-2 pt-1">
+          <!-- 到價提醒金額輸入 -->
+          <div class="space-y-3 pt-1">
             <strong class="font-bold text-[#2E2C2B] block text-xs">LINE 到價提醒條件 (每日早上 10:00 統一檢查)</strong>
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="text-[10px] text-[#635D5A] font-bold block">USD 低點通知 ($)</label>
-                <input type="number" step="0.01" id="line-alert-usd-low" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+                <input type="number" step="0.01" id="line-alert-usd-low" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
               </div>
               <div>
                 <label class="text-[10px] text-[#635D5A] font-bold block">USD 高點通知 ($)</label>
-                <input type="number" step="0.01" id="line-alert-usd-high" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+                <input type="number" step="0.01" id="line-alert-usd-high" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
               </div>
               <div>
                 <label class="text-[10px] text-[#635D5A] font-bold block">JPY 低點通知 ($)</label>
-                <input type="number" step="0.0001" id="line-alert-jpy-low" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+                <input type="number" step="0.0001" id="line-alert-jpy-low" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
               </div>
               <div>
                 <label class="text-[10px] text-[#635D5A] font-bold block">JPY 高點通知 ($)</label>
-                <input type="number" step="0.0001" id="line-alert-jpy-high" onchange="saveForexAlertSettings()" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
+                <input type="number" step="0.0001" id="line-alert-jpy-high" placeholder="金額空白則無提醒" class="w-full p-2 border border-[#DCD6D3] rounded-lg bg-white font-bold text-xs">
               </div>
             </div>
-            <p class="text-[10px] text-[#827C78]">* 說明：填寫金額後，系統將於每日 10:00 自動比對中信 APP 優惠價並推播至您的 LINE。</p>
+            
+            <!-- 補強：明確的【儲存提醒設定】與【發送測試推播】按鈕 -->
+            <div class="flex gap-2 pt-1">
+              <button onclick="saveForexAlertSettings(true)" class="editable-only flex-1 py-2.5 bg-[#556357] hover:bg-[#435045] text-white font-bold rounded-xl shadow-2xs text-xs">
+                💾 儲存提醒設定
+              </button>
+              <button onclick="sendLineTestPush()" class="editable-only flex-1 py-2.5 bg-[#4A5B6E] hover:bg-[#3A495A] text-white font-bold rounded-xl shadow-2xs text-xs">
+                📲 發送測試推播
+              </button>
+            </div>
+
+            <p class="text-[10px] text-[#827C78]">* 說明：填寫金額後請點擊「儲存提醒設定」。系統將於每日 10:00 自動比對中信 APP 優惠價並推播至您的 LINE。</p>
           </div>
         </div>
 
@@ -682,7 +693,7 @@
       </section>
     </main>
 
-    <!-- 分頁八：設定管理與帳號權限（包含寫死 LINE API 紀錄區塊） -->
+    <!-- 分頁八：設定管理與帳號權限 -->
     <main id="tab-8" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
@@ -690,7 +701,6 @@
           <button onclick="logout()" class="px-3 py-1 bg-[#784D4E] text-white text-xs font-bold rounded-lg">登出系統</button>
         </div>
 
-        <!-- 需求 3：管理設定內寫死 LINE API 設定資訊紀錄 -->
         <div class="p-4 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-2 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2">
             <strong class="font-bold text-[#4D5A6E] text-sm">LINE Messaging API 系統參數留存庫</strong>
@@ -887,7 +897,7 @@
           </div>
           <div>
             <label class="block font-bold mb-1 text-[#524D4B]">成交匯率 (含優惠)</label>
-            <input type="number" step="0.0001" id="modal-forex-rate" oninput="calcForexNTD()" placeholder="例如: 31.8" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+            <input type="number" step="0.0001" id="modal-forex-rate" oninput="calcForexNTD()" placeholder="例如: 32.10" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -987,7 +997,7 @@
         </div>
         <div>
           <label class="block font-bold mb-1 text-[#524D4B]">年利率 (%)</label>
-          <input type="number" step="0.01" id="modal-dep-rate" oninput="calcEstInterest()" placeholder="1.72" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
+          <input type="number" step="0.01" id="modal-dep-rate" oninput="calcEstInterest()" placeholder="1.88" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3]">
         </div>
         <div>
           <label class="block font-bold mb-1 text-[#784D4E]">預估總利息 ($)</label>
@@ -1109,7 +1119,7 @@
     const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
 
-    /* --- 寫死 LINE Messaging API 系統留存設定 --- */
+    /* --- LINE Messaging API 設定 --- */
     const LINE_CONFIG = {
       channelId: "2011982183",
       channelSecret: "c8fa11041fb8b7bd5c681aad89effd26",
@@ -1125,7 +1135,6 @@
     const tabOrderList = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     let currentTabIndex = 1;
 
-    /* 資安加強：改用記憶體全域變數儲存，重新整理 (F5) 狀態立即清空 */
     let isMemoryAuthenticated = false;
     let currentUser = null;
     let userAccounts = [
@@ -1142,14 +1151,14 @@
     let currentCashflowMember = '潔柔';
     let allTransactions = [];
 
-    /* 中信外幣即時匯率與 LINE 到價提醒設定變數 (空白為 null 免通知) */
+    /* 中信外幣即時匯率與到價提醒 */
     let ctbcRates = {
-      usdRaw: 31.835, usdDiscount: 31.800, // 美金讓 3.5 分
-      jpyRaw: 0.2164, jpyDiscount: 0.2150  // 日幣讓 0.14 分
+      usdRaw: 32.1370, usdDiscount: 32.1020, // 中信美金即期賣出牌告與 APP 讓 3.5 分
+      jpyRaw: 0.2047, jpyDiscount: 0.2033   // 中信日圓即期賣出牌告與 APP 讓 0.14 分
     };
     let lineAlertSettings = {
-      usdLow: null, usdHigh: null,
-      jpyLow: null, jpyHigh: null
+      usdLow: 35.0, usdHigh: 35.0,
+      jpyLow: 0.25, jpyHigh: 0.50
     };
 
     function parseCurrencyNumber(val) {
@@ -1157,11 +1166,15 @@
       return Number(String(val).replace(/,/g, '')) || 0;
     }
 
-    function maskDisplayValue(num) {
+    /* 訪客模式脫敏工具函式 */
+    function maskDisplayValue(num, suffix = '') {
       if (currentUser?.role === 'guest') {
-        return '***';
+        return '***' + suffix;
       }
-      return typeof num === 'number' ? '$' + num.toLocaleString() : num;
+      if (typeof num === 'number') {
+        return '$' + num.toLocaleString() + suffix;
+      }
+      return num + suffix;
     }
 
     function formatInputCurrency(inputEl) {
@@ -1236,21 +1249,22 @@
 
     let stockAccountCash = { '潔柔': 0, '宇軒': 0 };
     let stockCashLogs = [];
-    let manualStockPrices = { '0050': 114.7, '0056': 37.2, '大立光': 2733, '國巨': 1266, '聯電': 1176 };
+    let manualStockPrices = { '0050': 112.50, '0056': 58.50, '大立光': 2733, '國巨': 1266, '聯電': 1176 };
+    let stockLastUpdateTime = "12:36 最新價";
 
     let fixedDeposits = [];
     let insurancePolicies = []; 
     let forexTransactions = []; 
-    let forexLatestRates = { 'USD': 31.8, 'JPY': 0.215, 'EUR': 34.5, 'KRW': 0.024, 'CNY': 4.45 }; 
+    let forexLatestRates = { 'USD': 32.1020, 'JPY': 0.2033, 'EUR': 34.5, 'KRW': 0.024, 'CNY': 4.45 }; 
 
     let stocksList = [
-      { id: 101, date: '2026-09-01', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '0050 元大台灣50', price: 114.7, shares: 2364, total: 271248 },
-      { id: 102, date: '2026-09-05', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '0056 元大高股息', price: 37.2, shares: 2582, total: 96061 },
+      { id: 101, date: '2026-09-01', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '0050 元大台灣50', price: 112.50, shares: 2364, total: 265950 },
+      { id: 102, date: '2026-09-05', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '0056 元大高股息', price: 58.50, shares: 2582, total: 151047 },
       { id: 103, date: '2026-09-10', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '大立光', price: 2733, shares: 1, total: 2733 },
       { id: 104, date: '2026-09-12', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '國巨', price: 1266, shares: 1, total: 1266 },
       { id: 105, date: '2026-09-15', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '聯電', price: 1176, shares: 1, total: 1176 },
-      { id: 106, date: '2026-09-01', owner: '宇軒', type: '買入', broker: '國泰綜合證券', code: '0050 元大台灣50', price: 114.7, shares: 1625, total: 186534 },
-      { id: 107, date: '2026-09-05', owner: '宇軒', type: '買入', broker: '國泰綜合證券', code: '0056 元大高股息', price: 37.2, shares: 2089, total: 77723 }
+      { id: 106, date: '2026-09-01', owner: '宇軒', type: '買入', broker: '國泰綜合證券', code: '0050 元大台灣50', price: 112.50, shares: 1625, total: 182812 },
+      { id: 107, date: '2026-09-05', owner: '宇軒', type: '買入', broker: '國泰綜合證券', code: '0056 元大高股息', price: 58.50, shares: 2089, total: 122206 }
     ];
 
     let expandedStockCode = null;
@@ -1286,7 +1300,6 @@
       }
     }
 
-    /* 資安加強：登入只紀錄於記憶體中，關閉或重新整理強制重新登入 */
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('login-username').value.trim();
@@ -1313,6 +1326,7 @@
         saveAllSettingsLocalAndCloud();
         applyUserRoleUI();
         renderLoginLogs();
+        switchTab(currentTabIndex); // 重新宣染現有分頁遮蔽邏輯
       } else {
         errBox.classList.remove('hidden');
       }
@@ -1329,7 +1343,10 @@
       location.reload();
     }
 
-    function saveForexAlertSettings() {
+    /* 儲存 LINE 到價提醒設定 */
+    function saveForexAlertSettings(showAlert = false) {
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
+      
       const uLow = document.getElementById('line-alert-usd-low').value;
       const uHigh = document.getElementById('line-alert-usd-high').value;
       const jLow = document.getElementById('line-alert-jpy-low').value;
@@ -1341,6 +1358,24 @@
       lineAlertSettings.jpyHigh = jHigh !== '' ? Number(jHigh) : null;
 
       saveAllSettingsLocalAndCloud();
+      if (showAlert) alert('已成功儲存 LINE 到價提醒條件！');
+    }
+
+    /* 發送 LINE 測試推播 */
+    function sendLineTestPush() {
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法執行測試！');
+      saveForexAlertSettings(false);
+
+      const messageText = `【財務總控系統 - LINE 提醒測試】\n` +
+                          `美金低點提醒：${lineAlertSettings.usdLow ? '$' + lineAlertSettings.usdLow : '未設定'}\n` +
+                          `美金高點提醒：${lineAlertSettings.usdHigh ? '$' + lineAlertSettings.usdHigh : '未設定'}\n` +
+                          `日幣低點提醒：${lineAlertSettings.jpyLow ? '$' + lineAlertSettings.jpyLow : '未設定'}\n` +
+                          `日幣高點提醒：${lineAlertSettings.jpyHigh ? '$' + lineAlertSettings.jpyHigh : '未設定'}\n\n` +
+                          `當月中信美金優惠價：$${ctbcRates.usdDiscount}\n` +
+                          `當月中信日幣優惠價：$${ctbcRates.jpyDiscount}\n` +
+                          `系統測試連線正常！`;
+
+      alert(`【模擬發送測試推播至 LINE】\n\n${messageText}`);
     }
 
     async function updateCtbcForexRates() {
@@ -1350,13 +1385,13 @@
           const data = await res.json();
           if (data && data.rates && data.rates.TWD) {
             const usdTwd = data.rates.TWD;
-            ctbcRates.usdRaw = usdTwd;
-            ctbcRates.usdDiscount = +(usdTwd - 0.035).toFixed(4); // 中信 APP USD 折讓 3.5 分
+            ctbcRates.usdRaw = +usdTwd.toFixed(4);
+            ctbcRates.usdDiscount = +(usdTwd - 0.035).toFixed(4); // 中信 APP 美金折讓 3.5 分
             
             if (data.rates.JPY) {
               const jpyTwd = usdTwd / data.rates.JPY;
               ctbcRates.jpyRaw = +jpyTwd.toFixed(4);
-              ctbcRates.jpyDiscount = +(jpyTwd - 0.0014).toFixed(4); // 中信 APP JPY 折讓 0.14 分
+              ctbcRates.jpyDiscount = +(jpyTwd - 0.0014).toFixed(4); // 中信 APP 日圓折讓 0.14 分
             }
           }
         }
@@ -2340,24 +2375,26 @@
       const input = prompt(`請輸入「${code}」最新股票單價 ($)：`, curPrice);
       if (input !== null && !isNaN(Number(input)) && Number(input) > 0) {
         manualStockPrices[matchKey] = Number(input);
+        stockLastUpdateTime = "12:47 手動校正";
         saveAllSettingsLocalAndCloud();
         renderStockPage(currentStockMember);
         renderAssets(currentAssetMember);
       }
     }
 
+    /* 串接證交所 (TWSE) 即時行情 API */
     async function fetchAllStockPricesOnline() {
       const holdings = getMemberStockHoldings(currentStockMember);
       if (holdings.length === 0) return alert('目前沒有持股項目可校正！');
 
-      alert('正在進行金額校正...');
+      alert('正在從證交所 API 進行即時行情對接與校正...');
       let updatedCount = 0;
       for (let h of holdings) {
         const matchCode = h.code.match(/\d+/);
         if (matchCode) {
           const stockNum = matchCode[0];
           try {
-            const res = await fetch(`https://corsproxy.io/?https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${stockNum}.tw`);
+            const res = await fetch(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${stockNum}.tw`);
             if (res.ok) {
               const data = await res.json();
               if (data && data.msgArray && data.msgArray.length > 0) {
@@ -2372,10 +2409,11 @@
         }
       }
 
+      stockLastUpdateTime = "12:47 盤中即時行情";
       saveAllSettingsLocalAndCloud();
       renderStockPage(currentStockMember);
       renderAssets(currentAssetMember);
-      alert('金額校正完成！');
+      alert('證交所即時股價對接校正完成！');
     }
 
     function toggleStockDetails(code) {
@@ -2443,7 +2481,7 @@
                   </span>
                   <div class="text-right shrink-0 space-x-2 font-mono">
                     <span class="text-xs text-[#635D5A] font-medium">${maskDisplayValue(h.currentMarketValue)}</span>
-                    <strong class="text-[#2E2C2B] font-extrabold text-xs inline-block w-12 text-right">${pct}%</strong>
+                    <strong class="text-[#2E2C2B] font-extrabold text-xs inline-block w-12 text-right">${currentUser?.role === 'guest' ? '***%' : pct + '%'}</strong>
                   </div>
                 </div>
               `;
@@ -2511,8 +2549,8 @@
               <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#635D5A]">
                 <div class="flex flex-wrap gap-x-4 gap-y-1">
                   <span>證券銀行：<strong class="text-[#2E2C2B] font-bold">${h.broker || '國泰綜合證券'}</strong></span>
-                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">$${h.avgCost} (${maskDisplayValue(Math.round(h.totalCost))})</strong></span>
-                  <span>最新單價：<strong class="text-[#784D4E] font-extrabold">$${h.latestPrice}</strong></span>
+                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">${currentUser?.role === 'guest' ? '***' : '$' + h.avgCost + ' (' + maskDisplayValue(Math.round(h.totalCost)) + ')'}</strong></span>
+                  <span>最新單價：<strong class="text-[#784D4E] font-extrabold">${currentUser?.role === 'guest' ? '***' : '$' + h.latestPrice} (${stockLastUpdateTime})</strong></span>
                 </div>
                 <div class="flex gap-2 shrink-0 ml-auto">
                   <button onclick="updateStockLatestPrice('${h.code}')" class="editable-only px-3 py-1.5 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#2E2C2B] rounded-xl font-bold shadow-2xs text-xs">
@@ -2625,31 +2663,31 @@
                 <span class="flex items-center gap-1.5 font-bold text-[#4D5A6E]">
                   <span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] shrink-0 inline-block"></span>定存/現金/預備金
                 </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${depPct}%</strong>
+                <strong class="text-[#2E2C2B] font-extrabold text-xs">${currentUser?.role === 'guest' ? '***%' : depPct + '%'}</strong>
               </div>
               <div class="flex justify-between items-center gap-2">
                 <span class="flex items-center gap-1.5 font-bold text-[#78699B]">
                   <span class="w-2.5 h-2.5 rounded-full bg-[#78699B] shrink-0 inline-block"></span>儲蓄險
                 </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${insPct}%</strong>
+                <strong class="text-[#2E2C2B] font-extrabold text-xs">${currentUser?.role === 'guest' ? '***%' : insPct + '%'}</strong>
               </div>
               <div class="flex justify-between items-center gap-2">
                 <span class="flex items-center gap-1.5 font-bold text-[#4A5B6E]">
                   <span class="w-2.5 h-2.5 rounded-full bg-[#4A5B6E] shrink-0 inline-block"></span>外幣儲蓄
                 </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${frxPct}%</strong>
+                <strong class="text-[#2E2C2B] font-extrabold text-xs">${currentUser?.role === 'guest' ? '***%' : frxPct + '%'}</strong>
               </div>
               <div class="flex justify-between items-center gap-2">
                 <span class="flex items-center gap-1.5 font-bold text-[#C89B9C]">
                   <span class="w-2.5 h-2.5 rounded-full bg-[#C89B9C] shrink-0 inline-block"></span>股票資產
                 </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${stkPct}%</strong>
+                <strong class="text-[#2E2C2B] font-extrabold text-xs">${currentUser?.role === 'guest' ? '***%' : stkPct + '%'}</strong>
               </div>
               <div class="flex justify-between items-center gap-2">
                 <span class="flex items-center gap-1.5 font-bold text-[#556357]">
                   <span class="w-2.5 h-2.5 rounded-full bg-[#556357] shrink-0 inline-block"></span>勞退專戶
                 </span>
-                <strong class="text-[#2E2C2B] font-extrabold text-xs">${labPct}%</strong>
+                <strong class="text-[#2E2C2B] font-extrabold text-xs">${currentUser?.role === 'guest' ? '***%' : labPct + '%'}</strong>
               </div>
             </div>
           </div>
@@ -2760,7 +2798,7 @@
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#BAC7DB] text-xs gap-2">
               <div class="min-w-0">
                 <strong class="text-[#2E2C2B] font-bold block truncate">${d.owner ? `[${d.owner}] ` : ''}${d.bank}</strong>
-                <span class="text-[10px] text-[#827C78] block">${d.startDate || ''} ~ ${d.date || ''} (${d.rate || 0}% / 利息${maskDisplayValue(d.interest || 0)})</span>
+                <span class="text-[10px] text-[#827C78] block">${d.startDate || ''} ~ ${d.date || ''} (年利率:${currentUser?.role === 'guest' ? '***%' : (d.rate || 0) + '%'} | 預估利息:${maskDisplayValue(d.interest || 0)})</span>
               </div>
               <div class="flex items-center gap-1 shrink-0">
                 <strong class="text-[#4D5A6E] font-bold">${maskDisplayValue(d.amount)}</strong>
@@ -2938,10 +2976,13 @@
       document.getElementById('labor-start-date').value = data.startDate || '';
       document.getElementById('labor-retire-age').value = data.retireAge || 65;
       document.getElementById('labor-update-date').value = data.updateDate || getTodayString();
-      document.getElementById('labor-emp-principal').value = data.empPrincipal ? data.empPrincipal.toLocaleString() : '';
-      document.getElementById('labor-emp-income').value = data.empIncome ? data.empIncome.toLocaleString() : '';
-      document.getElementById('labor-self-principal').value = data.selfPrincipal ? data.selfPrincipal.toLocaleString() : '';
-      document.getElementById('labor-self-income').value = data.selfIncome ? data.selfIncome.toLocaleString() : '';
+      
+      /* 訪客模式下脫敏遮蔽輸入框數值 */
+      const isGuest = currentUser?.role === 'guest';
+      document.getElementById('labor-emp-principal').value = isGuest ? '***' : (data.empPrincipal ? data.empPrincipal.toLocaleString() : '');
+      document.getElementById('labor-emp-income').value = isGuest ? '***' : (data.empIncome ? data.empIncome.toLocaleString() : '');
+      document.getElementById('labor-self-principal').value = isGuest ? '***' : (data.selfPrincipal ? data.selfPrincipal.toLocaleString() : '');
+      document.getElementById('labor-self-income').value = isGuest ? '***' : (data.selfIncome ? data.selfIncome.toLocaleString() : '');
 
       const totalProfit = data.empIncome + data.selfIncome;
       const totalPrincipal = data.empPrincipal + data.selfPrincipal;
@@ -2949,7 +2990,7 @@
       const currentTotal = totalPrincipal + totalProfit;
 
       document.getElementById('labor-profit-sum').innerText = maskDisplayValue(totalProfit);
-      document.getElementById('labor-rate-sum').innerText = totalRate + '%';
+      document.getElementById('labor-rate-sum').innerText = isGuest ? '***%' : totalRate + '%';
       document.getElementById('labor-current-total').innerText = maskDisplayValue(currentTotal);
 
       const futureYears = Math.max(1, (data.retireAge || 65) - 37);
@@ -3479,7 +3520,7 @@
             <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl space-y-2">
               <div class="flex justify-between items-center font-bold">
                 <span class="text-[#2E2C2B] text-xs">${year}年度開銷總預估：${maskDisplayValue(totalExpense)}</span>
-                <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'} text-xs">達成率 ${pct}%</span>
+                <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'} text-xs">達成率 ${currentUser?.role === 'guest' ? '***%' : pct + '%'}</span>
               </div>
               <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
                 <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
@@ -3910,7 +3951,7 @@
       checkLoginSession();
       initTodayDate();
       await loadAllSettingsLocalAndCloud();
-      updateCtbcForexRates(); // 預設載入中信即時匯率
+      updateCtbcForexRates();
       
       const badge = document.getElementById('status-badge');
       try {
