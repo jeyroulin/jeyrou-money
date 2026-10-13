@@ -63,6 +63,9 @@
         <div id="login-error" class="text-[#784D4E] text-xs hidden text-center font-bold">帳號或密碼錯誤！</div>
         <button type="submit" class="w-full py-3.5 bg-[#B2C1B4] hover:bg-[#9EB0A1] text-[#2E2C2B] font-bold rounded-xl shadow-sm text-sm">解鎖登入</button>
       </form>
+      <div class="text-center pt-2 border-t border-[#F2ECE9]">
+        <p class="text-[10px] text-[#827C78]">訪客體驗帳號：<strong class="text-[#524D4B]">訪客</strong> / 密碼：<strong class="text-[#524D4B]">0000</strong></p>
+      </div>
     </div>
   </div>
 
@@ -85,17 +88,17 @@
       </div>
     </header>
 
-    <!-- 響應式分頁導覽列 (順序：1快捷記帳 -> 2現金收支 -> 3AA請款 -> 4財務月曆 -> 5資產總表 -> 6設定管理 -> 7股市清單 -> 8外幣儲蓄 -> 9登錄紀錄) -->
+    <!-- 響應式分頁導覽列 (全新順序：1快捷記帳 -> 2現金收支 -> 3AA請款 -> 4財務月曆 -> 5股市清單 -> 6外幣儲蓄 -> 7資產總表 -> 8設定管理 -> 9登錄紀錄) -->
     <nav class="sticky top-2 z-40 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-sm border border-[#DCD6D3] mb-5">
       <div class="flex overflow-x-auto no-scrollbar sm:grid sm:grid-cols-5 md:grid-cols-9 gap-1.5 text-center text-[11px] font-bold">
         <button onclick="switchTab(1)" id="nav-btn-1" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#B2C1B4] text-[#2E2C2B] shadow-xs">快捷記帳</button>
         <button onclick="switchTab(2)" id="nav-btn-2" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">現金收支</button>
         <button onclick="switchTab(3)" id="nav-btn-3" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">AA請款</button>
         <button onclick="switchTab(4)" id="nav-btn-4" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">財務月曆</button>
-        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
-        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
-        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
-        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
+        <button onclick="switchTab(5)" id="nav-btn-5" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">股市清單</button>
+        <button onclick="switchTab(6)" id="nav-btn-6" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">外幣儲蓄</button>
+        <button onclick="switchTab(7)" id="nav-btn-7" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">資產總表</button>
+        <button onclick="switchTab(8)" id="nav-btn-8" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">設定管理</button>
         <button onclick="switchTab(9)" id="nav-btn-9" class="nav-btn shrink-0 sm:shrink px-3 py-2.5 rounded-xl bg-[#DDD7D4] text-[#524D4B] hover:bg-[#D1C9C6]">登錄紀錄</button>
       </div>
     </nav>
@@ -177,8 +180,7 @@
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-3">
         <div class="flex items-center justify-between">
           <h2 class="text-base font-bold text-[#2E2C2B]">對帳與校正歷史</h2>
-          <!-- 修正匯出功能：調整成直接匯出 Excel 檔 (.xlsx) -->
-          <button onclick="exportToExcel()" class="text-xs bg-[#F7F4F3] text-[#524D4B] px-3 py-1.5 rounded-lg font-bold border border-[#DCD6D3] hover:bg-[#EAE5E3]">匯出 Excel 檔</button>
+          <button onclick="exportToExcel()" class="editable-only text-xs bg-[#F7F4F3] text-[#524D4B] px-3 py-1.5 rounded-lg font-bold border border-[#DCD6D3] hover:bg-[#EAE5E3]">匯出 Excel 檔</button>
         </div>
 
         <div class="space-y-2 p-3 bg-[#F7F4F3] rounded-xl border border-[#DCD6D3] text-xs">
@@ -303,10 +305,9 @@
       </section>
     </main>
 
-    <!-- 分頁三：AA 請款專區 -->
+    <!-- 分頁三：AA 請款專區 (需求 4：支援月份選擇與動態過濾) -->
     <main id="tab-3" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
-        <!-- 修正附件二：增加月份選取器，並明確連動與標示月份 -->
         <div class="flex items-center justify-between border-b border-[#F2ECE9] pb-3">
           <h2 class="text-base font-bold text-[#784D4E]">AA制請款與代墊計算</h2>
           <div class="flex items-center gap-1">
@@ -327,7 +328,6 @@
 
         <div class="bg-[#4D4545] text-[#F7F4F3] p-5 rounded-xl space-y-2 text-xs shadow-inner">
           <div class="flex justify-between items-center text-[#E8C2C3] font-bold border-b border-[#635A5A] pb-2">
-            <!-- 標示清楚月份 -->
             <span id="aa-title-display" class="text-sm">2026年10月 請款單明細</span>
             <button onclick="copyAAListText()" class="text-[11px] bg-[#3B3434] text-[#DDD7D4] px-2.5 py-1 rounded hover:bg-[#2B2525] border border-[#635A5A]">複製請款文字</button>
           </div>
@@ -387,8 +387,115 @@
       </section>
     </main>
 
-    <!-- 分頁五：資產總表 -->
+    <!-- 分頁五：股市清單 (需求 3: 移至第 5 分頁) -->
     <main id="tab-5" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
+        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
+          <div class="min-w-0">
+            <h2 class="text-base font-bold text-[#2E2C2B] keep-word">股票資產分析與預估現值</h2>
+          </div>
+          <div class="flex gap-1 shrink-0">
+            <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">金額校正</button>
+            <button onclick="openStockModal()" class="editable-only px-3 py-2 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
+          </div>
+        </div>
+
+        <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
+          <button onclick="switchStockMember('潔柔')" id="stock-tab-潔柔" class="stock-member-btn flex-1 py-2 rounded-lg bg-white text-[#4D5A6E] shadow-2xs">潔柔股票帳戶</button>
+          <button onclick="switchStockMember('宇軒')" id="stock-tab-宇軒" class="stock-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒股票帳戶</button>
+        </div>
+
+        <div class="bg-[#4D5A6E] text-white p-5 rounded-2xl shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-[#687890] pb-3 gap-2">
+            <span class="text-xs text-[#C5D0DF] font-bold keep-word" id="stock-dashboard-title">【潔柔】股票資產預估現值</span>
+            <button onclick="setInitialStockCash()" class="editable-only text-[10px] bg-[#374252] hover:bg-[#2A3340] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#687890]">校正現金餘額</button>
+          </div>
+          
+          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="stock-account-grand-total">$0</div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#687890] leading-relaxed">
+            <div>
+              <span class="text-[#C5D0DF] block text-[11px] mb-0.5">預估變現淨額：</span>
+              <strong id="stock-total-market-val" class="text-white text-sm font-bold">$0</strong>
+            </div>
+            <div>
+              <span class="text-[#C5D0DF] block text-[11px] mb-0.5">交割戶現金餘額：</span>
+              <strong id="stock-total-cash-val" class="text-[#B2C1B4] text-sm font-bold block">$0</strong>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-2 border-t border-[#5F6F87]">
+            <span>投入總成本：<strong id="stock-total-cost-val" class="font-bold">$0</strong></span>
+            <span>淨損益：<strong id="stock-total-profit-val" class="text-sm font-extrabold">$0</strong></span>
+          </div>
+        </div>
+
+        <!-- 需求 5：優化手機版個股圓餅圖垂直排版 -->
+        <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs"></div>
+
+        <div class="space-y-3 pt-2">
+          <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
+            <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單 (現值高至低排序)</h3>
+          </div>
+          <div id="stock-detailed-list" class="space-y-3">
+            <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁六：外幣儲蓄與投資 (需求 3: 移至第 6 分頁) -->
+    <main id="tab-6" class="tab-content hidden">
+      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
+        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
+          <div class="min-w-0">
+            <h2 class="text-base font-bold text-[#4A5B6E] keep-word">外幣儲蓄與投資</h2>
+          </div>
+          <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
+        </div>
+
+        <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
+          <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#4A5B6E] shadow-2xs font-bold">潔柔外幣帳戶</button>
+          <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#635D5A]">宇軒外幣帳戶</button>
+        </div>
+
+        <div class="bg-[#5B6B7C] text-white p-5 rounded-2xl shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-[#708092] pb-3">
+            <span class="text-xs text-[#DCE3EC] font-bold" id="forex-dashboard-title">【潔柔】外幣資產總值</span>
+            <button onclick="updateForexRatesOnline()" class="text-[10px] bg-[#4A5B6E] hover:bg-[#3B4A5B] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#708092]">更新即時匯率</button>
+          </div>
+          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="forex-grand-total-ntd">$0</div>
+          
+          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#708092] leading-relaxed">
+            <div>
+              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">購入外幣總成本：</span>
+              <strong id="forex-total-cost-ntd" class="text-white text-sm font-bold">$0</strong>
+            </div>
+            <div>
+              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">外幣投資損益：</span>
+              <strong id="forex-total-profit-ntd" class="text-sm font-extrabold block">$0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <strong class="font-bold text-[#2E2C2B] block text-xs border-b border-[#F2ECE9] pb-2">外幣持份與損益明細</strong>
+          <div id="forex-holdings-list" class="space-y-2.5">
+            <div class="text-center text-[#827C78] py-4 text-xs">尚無外幣紀錄。</div>
+          </div>
+        </div>
+
+        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
+          <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">外幣買賣歷程</strong>
+          <div id="forex-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
+            <div class="text-center text-[#827C78] py-2">尚無交易紀錄。</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 分頁七：資產總表 (需求 3: 移至第 7 分頁; 需求 1 & 2: 正確過濾與加總宇軒現金流) -->
+    <main id="tab-7" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div>
           <h2 class="text-base font-bold text-[#4D5A6E] keep-word">資產總表</h2>
@@ -403,11 +510,11 @@
         <div id="asset-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3"></div>
         <div id="asset-dashboard-card" class="bg-[#4D5A6E] p-5 rounded-2xl text-white shadow-sm space-y-3"></div>
 
-        <!-- 附件一整合：宇軒現金流固定呈現於資產總表 -->
+        <!-- 需求 1：選擇「潔柔」時隱藏宇軒卡片；選擇「宇軒」或「全部」時顯示 -->
         <div id="yuxuan-cashflow-fixed-card" class="bg-[#B2C1B4] p-5 rounded-2xl text-[#2E2C2B] shadow-sm space-y-3">
           <div class="flex justify-between items-center border-b border-[#9EB0A1] pb-2">
             <span class="text-xs text-[#435045] font-bold">【宇軒】當月淨剩餘現金流</span>
-            <span class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">固定資產</span>
+            <span class="text-xs font-bold bg-[#9EB0A1] px-2 py-0.5 rounded text-[#2E2C2B]">固定資產加總項</span>
           </div>
           <div class="text-3xl font-extrabold tracking-tight text-[#1F1E1D]" id="yuxuan-fixed-net-display">$1,437</div>
           <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#9EB0A1] text-[#435045]">
@@ -483,12 +590,11 @@
         <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#DCD6D3] pb-2.5 gap-2">
             <strong class="font-bold text-[#2E2C2B] text-sm keep-word">股票預估變現淨額摘要</strong>
-            <button onclick="switchTab(7)" class="px-2.5 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold text-[11px] shrink-0 shadow-2xs">前往股市清單</button>
+            <button onclick="switchTab(5)" class="px-2.5 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-lg font-bold text-[11px] shrink-0 shadow-2xs">前往股市清單</button>
           </div>
           <div id="asset-stock-summary-box" class="p-3 bg-white rounded-xl border border-[#DCD6D3] space-y-1.5"></div>
         </div>
 
-        <!-- 修正附件五：勞退專戶統一中文字與數字字級，日期預設當日 -->
         <div class="p-5 bg-[#E8EDF5] border border-[#BAC7DB] rounded-2xl space-y-3 text-xs">
           <div class="flex justify-between items-center border-b border-[#BAC7DB] pb-2.5">
             <strong class="font-bold text-[#4D5A6E] text-sm keep-word" id="labor-section-title">勞工退休金專戶 (潔柔)</strong>
@@ -541,8 +647,8 @@
       </section>
     </main>
 
-    <!-- 分頁六：設定管理與帳號權限 -->
-    <main id="tab-6" class="tab-content hidden">
+    <!-- 分頁八：設定管理與帳號權限 (需求 3: 移至第 8 分頁; 需求 7: 全站備份文案校正) -->
+    <main id="tab-8" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-6">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
           <h2 class="text-base font-bold text-[#5C5069]">設定管理</h2>
@@ -566,6 +672,7 @@
               <select id="user-input-role" class="flex-1 p-2 border border-[#DCD6D3] rounded bg-white font-bold">
                 <option value="admin">最高管理者 (可編輯刪除)</option>
                 <option value="viewer">家人成員 (僅供檢視)</option>
+                <option value="guest">訪客模式 (隱藏敏感個資)</option>
               </select>
               <button onclick="saveUserAccount()" class="px-3 py-2 bg-[#78699B] text-white font-bold rounded">新增/更新</button>
             </div>
@@ -574,11 +681,11 @@
           <div id="user-accounts-list" class="space-y-1.5 pt-1"></div>
         </div>
 
-        <!-- 修正附件六：全站備份與還原格子欄位與按鈕對齊整齊 -->
+        <!-- 需求 7：文案修正為「JSON 全站備份檔」 -->
         <div class="p-5 bg-[#CEC7DB] border border-[#BBB3CB] rounded-2xl space-y-3 text-xs text-[#2E2C2B]">
           <strong class="font-bold text-[#453A52] block text-sm border-b border-[#BBB3CB] pb-2">全站備份與還原</strong>
           <div class="grid grid-cols-2 gap-3 pt-1">
-            <button onclick="exportBackupJSON()" class="w-full py-3 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-xl shadow-2xs">匯出 JSON 備份檔</button>
+            <button onclick="exportBackupJSON()" class="w-full py-3 bg-[#5C5069] hover:bg-[#493E54] text-white font-bold rounded-xl shadow-2xs">匯出 JSON 全站備份檔</button>
             <label class="editable-only w-full py-3 bg-[#3D3A39] hover:bg-[#2B2928] text-white font-bold rounded-xl text-center cursor-pointer shadow-2xs block">
               匯入 JSON 備份
               <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
@@ -656,114 +763,7 @@
       </section>
     </main>
 
-    <!-- 分頁七：股市清單 -->
-    <main id="tab-7" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
-        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
-          <div class="min-w-0">
-            <h2 class="text-base font-bold text-[#2E2C2B] keep-word">股票資產分析與預估現值</h2>
-          </div>
-          <div class="flex gap-1 shrink-0">
-            <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">金額校正</button>
-            <button onclick="openStockModal()" class="editable-only px-3 py-2 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
-          </div>
-        </div>
-
-        <div class="flex p-1 bg-[#DDD7D4] rounded-xl text-xs font-bold">
-          <button onclick="switchStockMember('潔柔')" id="stock-tab-潔柔" class="stock-member-btn flex-1 py-2 rounded-lg bg-white text-[#4D5A6E] shadow-2xs">潔柔股票帳戶</button>
-          <button onclick="switchStockMember('宇軒')" id="stock-tab-宇軒" class="stock-member-btn flex-1 py-2 rounded-lg text-[#524D4B]">宇軒股票帳戶</button>
-        </div>
-
-        <div class="bg-[#4D5A6E] text-white p-5 rounded-2xl shadow-sm space-y-4">
-          <div class="flex justify-between items-center border-b border-[#687890] pb-3 gap-2">
-            <span class="text-xs text-[#C5D0DF] font-bold keep-word" id="stock-dashboard-title">【潔柔】股票資產預估現值</span>
-            <button onclick="setInitialStockCash()" class="editable-only text-[10px] bg-[#374252] hover:bg-[#2A3340] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#687890]">校正現金餘額</button>
-          </div>
-          
-          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="stock-account-grand-total">$0</div>
-
-          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#687890] leading-relaxed">
-            <div>
-              <span class="text-[#C5D0DF] block text-[11px] mb-0.5">預估變現淨額：</span>
-              <strong id="stock-total-market-val" class="text-white text-sm font-bold">$0</strong>
-            </div>
-            <div>
-              <span class="text-[#C5D0DF] block text-[11px] mb-0.5">交割戶現金餘額：</span>
-              <strong id="stock-total-cash-val" class="text-[#B2C1B4] text-sm font-bold block">$0</strong>
-            </div>
-          </div>
-
-          <div class="flex justify-between items-center text-[11px] text-[#DCE4F0] pt-2 border-t border-[#5F6F87]">
-            <span>投入總成本：<strong id="stock-total-cost-val" class="font-bold">$0</strong></span>
-            <span>淨損益：<strong id="stock-total-profit-val" class="text-sm font-extrabold">$0</strong></span>
-          </div>
-        </div>
-
-        <!-- 修正附件三與附件四：優化排版讓圓餅圖與完整股票名稱清晰呈現 -->
-        <div id="stock-pie-card" class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 shadow-2xs"></div>
-
-        <div class="space-y-3 pt-2">
-          <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
-            <h3 class="text-xs font-bold text-[#2E2C2B] keep-word">持股卡片清單 (現值高至低排序)</h3>
-          </div>
-          <div id="stock-detailed-list" class="space-y-3">
-            <div class="text-center text-[#827C78] py-4 text-xs">尚無股票紀錄。</div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁八：外幣儲蓄與投資 -->
-    <main id="tab-8" class="tab-content hidden">
-      <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-5">
-        <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3 gap-2">
-          <div class="min-w-0">
-            <h2 class="text-base font-bold text-[#4A5B6E] keep-word">外幣儲蓄與投資</h2>
-          </div>
-          <button onclick="openForexModal()" class="editable-only px-3.5 py-2 bg-[#5B6B7C] hover:bg-[#4A5B6E] text-white font-bold rounded-xl text-xs shadow-xs shrink-0 transition">+ 交易外幣</button>
-        </div>
-
-        <div class="flex p-1 bg-[#E8E3E1] rounded-xl text-xs font-bold border border-[#DCD6D3]">
-          <button onclick="switchForexMember('潔柔')" id="forex-tab-潔柔" class="forex-member-btn flex-1 py-2 rounded-lg bg-white text-[#4A5B6E] shadow-2xs font-bold">潔柔外幣帳戶</button>
-          <button onclick="switchForexMember('宇軒')" id="forex-tab-宇軒" class="forex-member-btn flex-1 py-2 rounded-lg text-[#635D5A]">宇軒外幣帳戶</button>
-        </div>
-
-        <div class="bg-[#5B6B7C] text-white p-5 rounded-2xl shadow-sm space-y-4">
-          <div class="flex justify-between items-center border-b border-[#708092] pb-3">
-            <span class="text-xs text-[#DCE3EC] font-bold" id="forex-dashboard-title">【潔柔】外幣資產總值</span>
-            <button onclick="updateForexRatesOnline()" class="text-[10px] bg-[#4A5B6E] hover:bg-[#3B4A5B] text-[#E8EDF5] font-bold px-2.5 py-1 rounded-lg border border-[#708092]">更新即時匯率</button>
-          </div>
-          <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9]" id="forex-grand-total-ntd">$0</div>
-          
-          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-[#708092] leading-relaxed">
-            <div>
-              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">購入外幣總成本：</span>
-              <strong id="forex-total-cost-ntd" class="text-white text-sm font-bold">$0</strong>
-            </div>
-            <div>
-              <span class="text-[#DCE3EC] block text-[11px] mb-0.5">外幣投資損益：</span>
-              <strong id="forex-total-profit-ntd" class="text-sm font-extrabold block">$0</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <strong class="font-bold text-[#2E2C2B] block text-xs border-b border-[#F2ECE9] pb-2">外幣持份與損益明細</strong>
-          <div id="forex-holdings-list" class="space-y-2.5">
-            <div class="text-center text-[#827C78] py-4 text-xs">尚無外幣紀錄。</div>
-          </div>
-        </div>
-
-        <div class="p-5 bg-[#F7F4F3] border border-[#DCD6D3] rounded-2xl space-y-2 text-xs">
-          <strong class="font-bold text-[#2E2C2B] block text-sm border-b border-[#DCD6D3] pb-2">外幣買賣歷程</strong>
-          <div id="forex-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pt-1">
-            <div class="text-center text-[#827C78] py-2">尚無交易紀錄。</div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 分頁九：登錄紀錄 -->
+    <!-- 分頁九：登錄紀錄 (需求 3: 移至第 9 分頁) -->
     <main id="tab-9" class="tab-content hidden">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-[#DCD6D3] space-y-4">
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-3">
@@ -1066,14 +1066,15 @@
     const GOOGLE_CALENDAR_ID = '1eb3dbcdbb929072f5ab6a98878d3e40328753a2f069e901cbde755da5633546@group.calendar.google.com';
     let googleCalendarEvents = [];
 
-    // 順序維護陣列：1, 2, 3, 4, 5, 6, 7, 8, 9
+    // 需求 3：順序維護陣列（1快捷記帳 -> 2現金收支 -> 3AA請款 -> 4財務月曆 -> 5股市清單 -> 6外幣儲蓄 -> 7資產總表 -> 8設定管理 -> 9登錄紀錄）
     const tabOrderList = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     let currentTabIndex = 1;
 
     let currentUser = null;
     let userAccounts = [
       { name: 'admin', pass: '123456', role: 'admin' },
-      { name: 'yuxuan', pass: '123456', role: 'viewer' }
+      { name: 'yuxuan', pass: '123456', role: 'viewer' },
+      { name: '訪客', pass: '0000', role: 'guest' } // 需求 9：新增訪客帳號
     ];
 
     let userLoginLogs = []; 
@@ -1088,6 +1089,14 @@
     function parseCurrencyNumber(val) {
       if (!val) return 0;
       return Number(String(val).replace(/,/g, '')) || 0;
+    }
+
+    /* 需求 9：訪客個資屏蔽輔助函式 */
+    function maskDisplayValue(num) {
+      if (currentUser?.role === 'guest') {
+        return '***';
+      }
+      return typeof num === 'number' ? '$' + num.toLocaleString() : num;
     }
 
     function formatInputCurrency(inputEl) {
@@ -1146,11 +1155,13 @@
     let brokerList = [...defaultBrokerList];
     let userCards = [];
     let budgetPlans = [];
+    
+    // 需求 4：AA請款單預設資料加入月份欄位 month
     let aaListItems = [
-      { title: '宇軒餐費', guanheAmt: 0, jierouAmt: 0 },
-      { title: '宇軒保險(2026年)', guanheAmt: 2000, jierouAmt: 0 },
-      { title: '宇軒教育', guanheAmt: 6000, jierouAmt: 0 },
-      { title: '出遊經費', guanheAmt: 2000, jierouAmt: 0 }
+      { title: '宇軒餐費', guanheAmt: 0, jierouAmt: 0, month: '2026-10' },
+      { title: '宇軒保險(2026年)', guanheAmt: 2000, jierouAmt: 0, month: '2026-10' },
+      { title: '宇軒教育', guanheAmt: 6000, jierouAmt: 0, month: '2026-10' },
+      { title: '出遊經費', guanheAmt: 2000, jierouAmt: 0, month: '2026-10' }
     ];
     let currentDedicatedFunds = { line: [], land: [] };
 
@@ -1168,7 +1179,6 @@
     let forexTransactions = []; 
     let forexLatestRates = { 'USD': 31.8, 'JPY': 0.215, 'EUR': 34.5, 'KRW': 0.024, 'CNY': 4.45 }; 
 
-    // 初始化模擬股票持股（包含附件三、四顯示之股票數據）
     let stocksList = [
       { id: 101, date: '2026-09-01', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '0050 元大台灣50', price: 114.7, shares: 2364, total: 271248 },
       { id: 102, date: '2026-09-05', owner: '潔柔', type: '買入', broker: '國泰綜合證券', code: '0056 元大高股息', price: 37.2, shares: 2582, total: 96061 },
@@ -1222,7 +1232,8 @@
       if (matchUser) {
         currentUser = { name: matchUser.name, role: matchUser.role };
         
-        localStorage.setItem('jeyrou_logged_user', JSON.stringify(currentUser));
+        // 需求 8：資安升級，Login Session 改用 sessionStorage 儲存
+        sessionStorage.setItem('jeyrou_logged_user', JSON.stringify(currentUser));
         
         const nowStr = new Date().toLocaleString('zh-TW', { hour12: false });
         userLoginLogs.unshift({
@@ -1245,7 +1256,8 @@
     }
 
     function checkLoginSession() {
-      const stored = localStorage.getItem('jeyrou_logged_user');
+      // 需求 8：使用 sessionStorage 判斷 Login Session，重新整理/重開分頁均需登入
+      const stored = sessionStorage.getItem('jeyrou_logged_user');
       if (stored) {
         try {
           currentUser = JSON.parse(stored);
@@ -1260,7 +1272,7 @@
     }
 
     function logout() {
-      localStorage.removeItem('jeyrou_logged_user');
+      sessionStorage.removeItem('jeyrou_logged_user');
       location.reload();
     }
 
@@ -1290,7 +1302,7 @@
             <div class="flex items-center gap-2">
               <strong class="text-[#2E2C2B] font-extrabold text-sm">${log.user}</strong>
               <span class="px-2 py-0.5 text-[9px] rounded font-bold ${log.role === 'admin' ? 'bg-[#EAE8F0] text-[#5A4E7A]' : 'bg-[#E8EDF5] text-[#4D5A6E]'}">
-                ${log.role === 'admin' ? '最高管理者' : '家人成員'}
+                ${log.role === 'admin' ? '最高管理者' : (log.role === 'guest' ? '訪客' : '家人成員')}
               </span>
             </div>
             <span class="text-[10px] text-[#827C78] block mt-0.5">狀態：${log.type || '系統自動驗證'}</span>
@@ -1306,7 +1318,7 @@
     }
 
     function clearLoginLogs() {
-      if (currentUser?.role !== 'admin') return alert('唯讀帳號無法清除！');
+      if (currentUser?.role !== 'admin') return alert('唯讀或訪客帳號無法清除！');
       if (confirm('確定要清空所有歷史登入紀錄嗎？')) {
         userLoginLogs = [];
         saveAllSettingsLocalAndCloud();
@@ -1318,10 +1330,14 @@
       if (!currentUser) return;
       const badge = document.getElementById('current-user-badge');
       if (badge) {
-        badge.innerText = `${currentUser.name} (${currentUser.role === 'admin' ? '管理者' : '檢視'})`;
+        let roleText = '檢視';
+        if (currentUser.role === 'admin') roleText = '管理者';
+        if (currentUser.role === 'guest') roleText = '訪客展示';
+        badge.innerText = `${currentUser.name} (${roleText})`;
       }
 
-      if (currentUser.role === 'viewer') {
+      // 需求 9：訪客與唯讀成員隱藏所有編輯控制按鈕
+      if (currentUser.role === 'viewer' || currentUser.role === 'guest') {
         document.querySelectorAll('.editable-only').forEach(el => el.classList.add('read-only-hide'));
       } else {
         document.querySelectorAll('.editable-only').forEach(el => el.classList.remove('read-only-hide'));
@@ -1330,7 +1346,7 @@
     }
 
     function saveUserAccount() {
-      if (currentUser?.role !== 'admin') return alert('唯讀權限無法修改帳號！');
+      if (currentUser?.role !== 'admin') return alert('唯讀或訪客權限無法修改帳號！');
       const name = document.getElementById('user-input-name').value.trim();
       const pass = document.getElementById('user-input-pass').value.trim();
       const role = document.getElementById('user-input-role').value;
@@ -1358,7 +1374,7 @@
         <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] text-xs">
           <div>
             <strong class="text-[#2E2C2B] font-bold">${u.name}</strong>
-            <span class="text-[10px] text-[#827C78] ml-2">權限: ${u.role === 'admin' ? '最高管理者' : '僅供檢視'}</span>
+            <span class="text-[10px] text-[#827C78] ml-2">權限: ${u.role === 'admin' ? '最高管理者' : (u.role === 'guest' ? '訪客模式' : '僅供檢視')}</span>
           </div>
           ${currentUser?.role === 'admin' && u.name !== 'admin' ? `
             <button onclick="userAccounts.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderUserAccountsList();" class="text-[#784D4E] font-bold text-[11px]">刪除</button>
@@ -1475,7 +1491,7 @@
     }
 
     function addDedicatedFund(bankType) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const nameEl = document.getElementById(`${bankType}-fund-name`);
       const amtEl = document.getElementById(`${bankType}-fund-amount`);
       const noteEl = document.getElementById(`${bankType}-fund-note`);
@@ -1497,7 +1513,7 @@
     }
 
     function editDedicatedFund(bankType, id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法編輯！');
       const item = currentDedicatedFunds[bankType]?.find(f => f.id === id);
       if (!item) return;
 
@@ -1518,7 +1534,7 @@
     }
 
     function deductDedicatedFund(bankType, id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法扣款！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法扣款！');
       const item = currentDedicatedFunds[bankType]?.find(f => f.id === id);
       if (!item) return;
 
@@ -1534,7 +1550,7 @@
     }
 
     function deleteDedicatedFund(bankType, id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm('確定要刪除這個收支袋嗎？')) {
         currentDedicatedFunds[bankType] = currentDedicatedFunds[bankType].filter(f => f.id !== id);
         saveAllSettingsLocalAndCloud();
@@ -1551,7 +1567,7 @@
         const funds = currentDedicatedFunds[type] || [];
         const totalSum = funds.reduce((sum, item) => sum + item.amount, 0);
 
-        if (totalDisplay) totalDisplay.innerText = '$' + totalSum.toLocaleString();
+        if (totalDisplay) totalDisplay.innerText = maskDisplayValue(totalSum);
 
         if (container) {
           if (funds.length === 0) {
@@ -1564,7 +1580,7 @@
                   ${f.note ? `<span class="text-[10px] text-[#827C78] block truncate">${f.note}</span>` : ''}
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                  <strong class="text-sm font-extrabold ${type === 'line' ? 'text-[#4D5A6E]' : 'text-[#556357]'}">$${f.amount.toLocaleString()}</strong>
+                  <strong class="text-sm font-extrabold ${type === 'line' ? 'text-[#4D5A6E]' : 'text-[#556357]'}">${maskDisplayValue(f.amount)}</strong>
                   <div class="editable-only space-x-1">
                     <button onclick="deductDedicatedFund('${type}', ${f.id})" class="text-[10px] bg-[#EBF0EC] text-[#556357] px-2 py-1 rounded font-bold border border-[#B2C1B4]">扣款</button>
                     <button onclick="editDedicatedFund('${type}', ${f.id})" class="text-[10px] bg-[#F7F4F3] text-[#524D4B] px-1.5 py-1 rounded border border-[#DCD6D3]">修改</button>
@@ -1604,7 +1620,6 @@
       }
     }
 
-    // 修正需求8：確保今日正確顯示為 2026年10月13日
     function getTodayString() {
       return "2026-10-13";
     }
@@ -1652,7 +1667,8 @@
       html += `<option value="土地銀行專款小錢包">土地銀行專款小錢包</option>`;
 
       userCards.filter(c => c.active !== false).forEach(c => {
-        html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號 / 到期:${c.expiry||'--'})</option>`;
+        const cardExpiry = currentUser?.role === 'guest' ? '**/**' : (c.expiry||'--');
+        html += `<option value="${c.bank} ${c.name}">${c.bank} ${c.name} (結帳:${c.cutoff}號 / 到期:${cardExpiry})</option>`;
       });
 
       select.innerHTML = html;
@@ -1733,7 +1749,8 @@
             if (!groupedCards[c.bank]) {
               groupedCards[c.bank] = { cutoff: c.cutoff, cards: [] };
             }
-            groupedCards[c.bank].cards.push(`${c.name} (${c.expiry || '--'})`);
+            const expiryStr = currentUser?.role === 'guest' ? '**/**' : (c.expiry || '--');
+            groupedCards[c.bank].cards.push(`${c.name} (${expiryStr})`);
           });
 
           creditDetailBox.innerHTML = Object.entries(groupedCards).map(([bank, group]) => `
@@ -1805,7 +1822,7 @@
               <div class="space-y-1 text-xs">
                 <div class="flex justify-between font-bold text-[#2E2C2B]">
                   <span>${cat}</span>
-                  <span>$${amt.toLocaleString()} (${pct}%)</span>
+                  <span>${maskDisplayValue(amt)} (${pct}%)</span>
                 </div>
                 <div class="w-full bg-[#DDD7D4] h-1.5 rounded-full overflow-hidden">
                   <div class="bg-[#784D4E] h-1.5 rounded-full" style="width: ${pct}%"></div>
@@ -1911,7 +1928,7 @@
     }
 
     function saveForexModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const date = document.getElementById('modal-forex-date').value || getTodayString();
       const owner = document.getElementById('modal-forex-owner').value;
       const type = document.getElementById('modal-forex-type').value;
@@ -1931,7 +1948,7 @@
     }
 
     function deleteForexTransaction(txId) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm('確定要刪除這筆外幣交易紀錄嗎？')) {
         forexTransactions = forexTransactions.filter(f => f.id !== txId);
         saveAllSettingsLocalAndCloud();
@@ -2006,12 +2023,12 @@
       const totalCostNTD = holdings.reduce((sum, h) => sum + h.totalNTDCost, 0);
       const totalProfitNTD = grandTotalNTD - totalCostNTD;
 
-      document.getElementById('forex-grand-total-ntd').innerText = '$' + grandTotalNTD.toLocaleString();
-      document.getElementById('forex-total-cost-ntd').innerText = '$' + totalCostNTD.toLocaleString();
+      document.getElementById('forex-grand-total-ntd').innerText = maskDisplayValue(grandTotalNTD);
+      document.getElementById('forex-total-cost-ntd').innerText = maskDisplayValue(totalCostNTD);
       
       const profitEl = document.getElementById('forex-total-profit-ntd');
       const isProf = totalProfitNTD >= 0;
-      profitEl.innerText = (isProf ? '+' : '') + '$' + totalProfitNTD.toLocaleString();
+      profitEl.innerText = currentUser?.role === 'guest' ? '***' : ((isProf ? '+' : '') + '$' + totalProfitNTD.toLocaleString());
       profitEl.className = `text-sm font-extrabold ${isProf ? 'text-[#F2E5C9]' : 'text-[#E8C2C3]'}`;
 
       const listContainer = document.getElementById('forex-holdings-list');
@@ -2024,13 +2041,13 @@
             <div class="bg-white p-4 rounded-2xl border border-[#DCD6D3] space-y-2.5 text-xs">
               <div class="flex justify-between items-center font-bold">
                 <span class="text-sm font-extrabold text-[#4A5B6E]">${h.currency} 外幣儲蓄</span>
-                <span class="text-sm font-extrabold text-[#2E2C2B]">折合台幣: $${h.currentNTDValue.toLocaleString()}</span>
+                <span class="text-sm font-extrabold text-[#2E2C2B]">折合台幣: ${maskDisplayValue(h.currentNTDValue)}</span>
               </div>
               <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] border-t border-[#F2ECE9] pt-2">
-                <div>持有數量：<strong class="text-[#2E2C2B] font-bold">${h.totalAmount.toLocaleString()} ${h.currency}</strong></div>
+                <div>持有數量：<strong class="text-[#2E2C2B] font-bold">${currentUser?.role === 'guest' ? '***' : h.totalAmount.toLocaleString()} ${h.currency}</strong></div>
                 <div>均買匯率：<strong class="text-[#2E2C2B] font-bold">${h.avgRate}</strong></div>
                 <div>參考匯率：<strong class="text-[#4A5B6E] font-bold">${h.latestRate}</strong></div>
-                <div>未實現損益：<strong class="${isP ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">${isP ? '+' : ''}$${h.profit.toLocaleString()}</strong></div>
+                <div>未實現損益：<strong class="${isP ? 'text-[#556357]' : 'text-[#784D4E]'} font-bold">${currentUser?.role === 'guest' ? '***' : ((isP ? '+' : '') + '$' + h.profit.toLocaleString())}</strong></div>
               </div>
             </div>
           `;
@@ -2045,11 +2062,11 @@
         historyContainer.innerHTML = [...userTxs].reverse().map(f => `
           <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] text-xs gap-2">
             <div class="min-w-0">
-              <strong class="text-[#2E2C2B] font-bold block truncate">[${f.type}] ${f.amount.toLocaleString()} ${f.currency} (${f.bank})</strong>
+              <strong class="text-[#2E2C2B] font-bold block truncate">[${f.type}] ${currentUser?.role === 'guest' ? '***' : f.amount.toLocaleString()} ${f.currency} (${f.bank})</strong>
               <span class="text-[10px] text-[#827C78]">${f.date} | 匯率:${f.rate}</span>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <strong class="text-[#4A5B6E] font-bold">$${f.ntdTotal.toLocaleString()}</strong>
+              <strong class="text-[#4A5B6E] font-bold">${maskDisplayValue(f.ntdTotal)}</strong>
               <button onclick="deleteForexTransaction(${f.id})" class="editable-only text-[#784D4E] text-[10px] bg-[#F7EDED] px-2 py-0.5 rounded border border-[#C89B9C]">刪除</button>
             </div>
           </div>
@@ -2067,7 +2084,7 @@
     }
 
     function saveInsuranceModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const owner = document.getElementById('modal-ins-owner').value;
       const company = document.getElementById('modal-ins-company').value.trim();
       const policyNo = document.getElementById('modal-ins-no').value.trim();
@@ -2115,7 +2132,7 @@
     }
 
     function saveDepositModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const owner = document.getElementById('modal-dep-owner').value;
       const bank = document.getElementById('modal-dep-bank').value;
       const amount = parseCurrencyNumber(document.getElementById('modal-dep-amount').value);
@@ -2155,7 +2172,7 @@
     }
 
     function editStockTransaction(txId) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法編輯！');
       const tx = stocksList.find(s => s.id === Number(txId));
       if (!tx) return;
 
@@ -2177,7 +2194,7 @@
     }
 
     function setInitialStockCash() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       const member = currentStockMember;
       const currentCash = stockAccountCash[member] || 0;
       const input = prompt(`【校正提示】請輸入【${member}】交割戶真實現金餘額 ($)：`, currentCash);
@@ -2190,7 +2207,7 @@
     }
 
     function saveStockModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法儲存！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法儲存！');
       const editId = document.getElementById('editing-stock-id').value;
       const txDate = document.getElementById('modal-stock-date').value || getTodayString();
       const owner = document.getElementById('modal-stock-owner').value;
@@ -2219,7 +2236,7 @@
     }
 
     function deleteStockTransaction(txId) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm('確定要刪除這筆股票交易紀錄嗎？')) {
         stocksList = stocksList.filter(s => s.id !== Number(txId));
         saveAllSettingsLocalAndCloud();
@@ -2229,7 +2246,7 @@
     }
 
     function updateStockLatestPrice(code) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法校正！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法校正！');
       const matchKey = Object.keys(manualStockPrices).find(k => code.includes(k)) || code;
       const curPrice = manualStockPrices[matchKey] || 0;
       const input = prompt(`請輸入「${code}」最新股票單價 ($)：`, curPrice);
@@ -2289,7 +2306,7 @@
       renderStockPage(member);
     }
 
-    // 修正附件三與附件四：優化圓餅圖與完整股票名稱排版
+    // 需求 5：手機版改為「上方圓餅圖 + 下方文字」垂直適應排版
     function renderStockPieCard(member, holdings, totalMarketVal) {
       const container = document.getElementById('stock-pie-card');
       if (!container) return;
@@ -2321,24 +2338,24 @@
         <div class="flex justify-between items-center border-b border-[#F2ECE9] pb-2">
           <strong class="text-xs font-bold text-[#2E2C2B]">【${member}】個股資產配置佔比 (%)</strong>
         </div>
-        <div class="flex items-center gap-4 py-2 max-w-md mx-auto">
+        <div class="flex flex-col items-center gap-4 py-2 w-full">
           <div class="shrink-0 flex items-center justify-center p-1">
-            <svg width="105" height="105" viewBox="-2 -2 40 40" class="transform -rotate-90 overflow-visible">
+            <svg width="120" height="120" viewBox="-2 -2 40 40" class="transform -rotate-90 overflow-visible">
               ${circlesSVG}
             </svg>
           </div>
-          <div class="flex-1 space-y-2 text-xs min-w-0">
+          <div class="w-full space-y-2 text-xs">
             ${holdings.map((h, i) => {
               const pct = ((h.currentMarketValue / totalMarketVal) * 100).toFixed(1);
               const color = colors[i % colors.length];
               return `
-                <div class="flex justify-between items-center gap-2">
+                <div class="flex justify-between items-center gap-2 border-b border-dashed border-[#F2ECE9] pb-1.5">
                   <span class="flex items-center gap-1.5 font-bold text-[#2E2C2B] truncate min-w-0 text-xs">
                     <span class="w-2.5 h-2.5 rounded-full shrink-0 inline-block" style="background-color: ${color}"></span>
                     <span class="truncate">${h.code}</span>
                   </span>
                   <div class="text-right shrink-0 space-x-2 font-mono">
-                    <span class="text-xs text-[#635D5A] font-medium">$${h.currentMarketValue.toLocaleString()}</span>
+                    <span class="text-xs text-[#635D5A] font-medium">${maskDisplayValue(h.currentMarketValue)}</span>
                     <strong class="text-[#2E2C2B] font-extrabold text-xs inline-block w-12 text-right">${pct}%</strong>
                   </div>
                 </div>
@@ -2360,14 +2377,14 @@
       const grandTotal = totalMarketValue + cashValue;
       const totalProfit = totalMarketValue - totalCost;
 
-      document.getElementById('stock-account-grand-total').innerText = '$' + grandTotal.toLocaleString();
-      document.getElementById('stock-total-market-val').innerText = '$' + totalMarketValue.toLocaleString();
-      document.getElementById('stock-total-cash-val').innerText = '$' + cashValue.toLocaleString();
-      document.getElementById('stock-total-cost-val').innerText = '$' + totalCost.toLocaleString();
+      document.getElementById('stock-account-grand-total').innerText = maskDisplayValue(grandTotal);
+      document.getElementById('stock-total-market-val').innerText = maskDisplayValue(totalMarketValue);
+      document.getElementById('stock-total-cash-val').innerText = maskDisplayValue(cashValue);
+      document.getElementById('stock-total-cost-val').innerText = maskDisplayValue(totalCost);
       
       const profitEl = document.getElementById('stock-total-profit-val');
       const isPositive = totalProfit >= 0;
-      profitEl.innerText = (isPositive ? '+' : '') + '$' + totalProfit.toLocaleString();
+      profitEl.innerText = currentUser?.role === 'guest' ? '***' : ((isPositive ? '+' : '') + '$' + totalProfit.toLocaleString());
       profitEl.className = `text-sm font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
 
       renderStockPieCard(member, holdings, totalMarketValue);
@@ -2381,25 +2398,26 @@
           const isExpanded = expandedStockCode === h.code;
           const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
+          // 需求 6：持股卡片關鍵數據統一字級大小 text-sm font-bold
           return `
             <div class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
               <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-[#827C78]">股票名稱：</span>
-                  <strong class="text-[#2E2C2B] text-base font-extrabold">${h.code}</strong>
+                  <strong class="text-[#2E2C2B] text-sm font-bold">${h.code}</strong>
                 </div>
                 <div class="text-xs">
                   <span class="text-[#827C78]">持有股數：</span>
-                  <strong class="text-[#2E2C2B] font-bold">${h.shares.toLocaleString()} 股</strong>
+                  <strong class="text-[#2E2C2B] text-sm font-bold">${currentUser?.role === 'guest' ? '***' : h.shares.toLocaleString()} 股</strong>
                 </div>
                 <div class="text-xs">
                   <span class="text-[#827C78]">現值總額：</span>
-                  <strong class="text-[#4D5A6E] text-base font-extrabold">$${h.currentMarketValue.toLocaleString()}</strong>
+                  <strong class="text-[#4D5A6E] text-sm font-bold">${maskDisplayValue(h.currentMarketValue)}</strong>
                 </div>
                 <div class="text-xs">
                   <span class="text-[#827C78]">損益金額 / %數：</span>
-                  <strong class="${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} font-extrabold">
-                    ${isProf ? '+' : ''}$${h.unrealizedProfit.toLocaleString()} (${h.profitRate}%)
+                  <strong class="${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} text-sm font-bold">
+                    ${currentUser?.role === 'guest' ? '***' : ((isProf ? '+' : '') + '$' + h.unrealizedProfit.toLocaleString() + ' (' + h.profitRate + '%)')}
                   </strong>
                 </div>
               </div>
@@ -2407,7 +2425,7 @@
               <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#635D5A]">
                 <div class="flex flex-wrap gap-x-4 gap-y-1">
                   <span>證券銀行：<strong class="text-[#2E2C2B] font-bold">${h.broker || '國泰綜合證券'}</strong></span>
-                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">$${h.avgCost} ($${Math.round(h.totalCost).toLocaleString()})</strong></span>
+                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">$${h.avgCost} (${maskDisplayValue(Math.round(h.totalCost))})</strong></span>
                   <span>最新單價：<strong class="text-[#784D4E] font-extrabold">$${h.latestPrice}</strong></span>
                 </div>
                 <div class="flex gap-2 shrink-0 ml-auto">
@@ -2426,8 +2444,8 @@
                   ${sortedTxList.map(t => `
                     <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] gap-2">
                       <div class="min-w-0">
-                        <strong class="${t.type === '買入' ? 'text-[#784D4E]' : 'text-[#556357]'} font-bold block">[${t.type}] ${t.shares.toLocaleString()}股 @ $${t.price}</strong>
-                        <span class="text-[10px] text-[#827C78] block">日期：${t.date || '無'} | 總計：$${t.total.toLocaleString()}</span>
+                        <strong class="${t.type === '買入' ? 'text-[#784D4E]' : 'text-[#556357]'} font-bold block">[${t.type}] ${currentUser?.role === 'guest' ? '***' : t.shares.toLocaleString()}股 @ $${t.price}</strong>
+                        <span class="text-[10px] text-[#827C78] block">日期：${t.date || '無'} | 總計：${maskDisplayValue(t.total)}</span>
                       </div>
                       <div class="space-x-1 shrink-0 editable-only">
                         <button onclick="editStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] font-bold rounded-lg">編輯</button>
@@ -2445,6 +2463,19 @@
 
     function renderAssets(member) {
       currentAssetMember = member;
+
+      // 需求 1：潔柔分頁時隱藏宇軒卡片
+      const fixedCard = document.getElementById('yuxuan-cashflow-fixed-card');
+      if (fixedCard) {
+        if (member === '潔柔') {
+          fixedCard.classList.add('hidden');
+        } else {
+          fixedCard.classList.remove('hidden');
+        }
+      }
+
+      // 需求 2：計算宇軒現金流金額 ($1,437) 並依分頁條件加總
+      const yuxuanCashNet = 1437;
 
       const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
       const depositTotal = filteredDeposits.reduce((sum, d) => sum + d.amount, 0);
@@ -2472,7 +2503,10 @@
       }
 
       const stockGrandTotal = stockMarketVal + stockCashVal;
-      const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + annualFundTotal;
+      
+      // 需求 2：宇軒現金流餘額併入個人與現金總資產
+      const extraYuxuanCash = (member === '宇軒' || member === '全部') ? yuxuanCashNet : 0;
+      const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + annualFundTotal + extraYuxuanCash;
 
       let laborTotal = 0;
       if (member === '全部') {
@@ -2488,7 +2522,7 @@
       const grandTotal = cashAssetTotal + laborTotal;
       const totalVal = Math.max(1, grandTotal);
 
-      const depPct = (((depositTotal + annualFundTotal) / totalVal) * 100).toFixed(1);
+      const depPct = (((depositTotal + annualFundTotal + extraYuxuanCash) / totalVal) * 100).toFixed(1);
       const insPct = ((insuranceTotal / totalVal) * 100).toFixed(1);
       const frxPct = ((forexTotalNTD / totalVal) * 100).toFixed(1);
       const stkPct = (Math.max(0, stockGrandTotal / totalVal) * 100).toFixed(1);
@@ -2502,12 +2536,12 @@
           </div>
           <div class="flex items-center gap-3 py-1.5 max-w-sm mx-auto">
             <div class="shrink-0 flex items-center justify-center p-1">
-              ${renderBorderlessPieSVG(depositTotal + annualFundTotal, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
+              ${renderBorderlessPieSVG(depositTotal + annualFundTotal + extraYuxuanCash, insuranceTotal, forexTotalNTD, stockGrandTotal, laborTotal)}
             </div>
             <div class="flex-1 space-y-1.5 text-xs pl-1">
               <div class="flex justify-between items-center gap-2">
                 <span class="flex items-center gap-1.5 font-bold text-[#4D5A6E]">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] shrink-0 inline-block"></span>定存/預備金
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#4D5A6E] shrink-0 inline-block"></span>定存/現金/預備金
                 </span>
                 <strong class="text-[#2E2C2B] font-extrabold text-xs">${depPct}%</strong>
               </div>
@@ -2551,16 +2585,16 @@
           </div>
           <div>
             <span class="text-xs text-[#C5D0DF] block">個人總資產 (含勞退)</span>
-            <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9] mt-1">$${Math.round(grandTotal).toLocaleString()}</div>
+            <div class="text-3xl font-extrabold tracking-tight text-[#F2E5C9] mt-1">${maskDisplayValue(Math.round(grandTotal))}</div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-[#687890] text-xs">
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
-              <strong class="text-white text-xs block">現金總資產 (含預備金)：$${Math.round(cashAssetTotal).toLocaleString()}</strong>
+              <strong class="text-white text-xs block">現金總資產 (含預備金/現金流)：${maskDisplayValue(Math.round(cashAssetTotal))}</strong>
             </div>
             
             <div class="bg-[#374252]/80 p-3 rounded-xl border border-[#5F6F87]">
-              <strong class="text-[#F2E5C9] text-xs block">勞退總額：$${Math.round(laborTotal).toLocaleString()}</strong>
+              <strong class="text-[#F2E5C9] text-xs block">勞退總額：${maskDisplayValue(Math.round(laborTotal))}</strong>
             </div>
           </div>
         `;
@@ -2572,9 +2606,9 @@
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-[#4D5A6E] inline-block"></span>
-              <span class="font-bold text-[#2E2C2B]">銀行定存/預備資金總額</span>
+              <span class="font-bold text-[#2E2C2B]">銀行定存/預備資金/現金流總額</span>
             </div>
-            <strong class="text-[#4D5A6E] text-sm font-bold">$${(depositTotal + annualFundTotal).toLocaleString()}</strong>
+            <strong class="text-[#4D5A6E] text-sm font-bold">${maskDisplayValue(depositTotal + annualFundTotal + extraYuxuanCash)}</strong>
           </div>
 
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
@@ -2582,7 +2616,7 @@
               <span class="w-3 h-3 rounded-full bg-[#78699B] inline-block"></span>
               <span class="font-bold text-[#2E2C2B]">儲蓄險解約金現值</span>
             </div>
-            <strong class="text-[#78699B] text-sm font-bold">$${insuranceTotal.toLocaleString()}</strong>
+            <strong class="text-[#78699B] text-sm font-bold">${maskDisplayValue(insuranceTotal)}</strong>
           </div>
 
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
@@ -2590,7 +2624,7 @@
               <span class="w-3 h-3 rounded-full bg-[#4A5B6E] inline-block"></span>
               <span class="font-bold text-[#2E2C2B]">外幣儲蓄與投資總值</span>
             </div>
-            <strong class="text-[#4A5B6E] text-sm font-bold">$${forexTotalNTD.toLocaleString()}</strong>
+            <strong class="text-[#4A5B6E] text-sm font-bold">${maskDisplayValue(forexTotalNTD)}</strong>
           </div>
 
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
@@ -2598,7 +2632,7 @@
               <span class="w-3 h-3 rounded-full bg-[#C89B9C] inline-block"></span>
               <span class="font-bold text-[#2E2C2B]">股票預估變現淨額</span>
             </div>
-            <strong class="text-[#784D4E] text-sm font-bold">${stockGrandTotal < 0 ? '-$' + Math.abs(Math.round(stockGrandTotal)).toLocaleString() : '$' + Math.round(stockGrandTotal).toLocaleString()}</strong>
+            <strong class="text-[#784D4E] text-sm font-bold">${maskDisplayValue(Math.round(stockGrandTotal))}</strong>
           </div>
 
           <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#E2E8F0]">
@@ -2606,7 +2640,7 @@
               <span class="w-3 h-3 rounded-full bg-[#556357] inline-block"></span>
               <span class="font-bold text-[#2E2C2B]">勞工退休金專戶</span>
             </div>
-            <strong class="text-[#556357] text-sm font-bold">$${laborTotal.toLocaleString()}</strong>
+            <strong class="text-[#556357] text-sm font-bold">${maskDisplayValue(laborTotal)}</strong>
           </div>
         `;
       }
@@ -2619,16 +2653,16 @@
               <div class="min-w-0">
                 <strong class="text-[#2E2C2B] font-bold block truncate">${i.owner ? `[${i.owner}] ` : ''}${i.company}</strong>
                 <span class="text-[10px] text-[#635D5A] block">
-                  ${i.policyNo ? '保號:' + i.policyNo + ' | ' : ''}已繳保費:$${(i.totalPaid||0).toLocaleString()}
+                  ${i.policyNo ? '保號:' + i.policyNo + ' | ' : ''}已繳保費:${maskDisplayValue(i.totalPaid||0)}
                 </span>
                 <span class="text-[10px] text-[#78699B] font-bold block">
-                  ${i.date ? '解約金現值日期:' + i.date + ' | ' : ''}利率:${i.rate}%
+                  ${i.date ? '解約金現值日期:' + (currentUser?.role === 'guest' ? '****-**-**' : i.date) + ' | ' : ''}利率:${i.rate}%
                 </span>
               </div>
               <div class="flex items-center gap-1 shrink-0">
                 <div class="text-right">
                   <span class="text-[9px] text-[#635D5A] block">解約金現值</span>
-                  <strong class="text-[#78699B] font-extrabold text-sm">$${(i.amount||0).toLocaleString()}</strong>
+                  <strong class="text-[#78699B] font-extrabold text-sm">${maskDisplayValue(i.amount||0)}</strong>
                 </div>
                 <button onclick="insurancePolicies.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="editable-only text-[#784D4E] text-xs font-bold ml-1.5">刪除</button>
               </div>
@@ -2644,10 +2678,10 @@
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-[#BAC7DB] text-xs gap-2">
               <div class="min-w-0">
                 <strong class="text-[#2E2C2B] font-bold block truncate">${d.owner ? `[${d.owner}] ` : ''}${d.bank}</strong>
-                <span class="text-[10px] text-[#827C78] block">${d.startDate || ''} ~ ${d.date || ''} (${d.rate || 0}% / 利息$${(d.interest || 0).toLocaleString()})</span>
+                <span class="text-[10px] text-[#827C78] block">${d.startDate || ''} ~ ${d.date || ''} (${d.rate || 0}% / 利息${maskDisplayValue(d.interest || 0)})</span>
               </div>
               <div class="flex items-center gap-1 shrink-0">
-                <strong class="text-[#4D5A6E] font-bold">$${d.amount.toLocaleString()}</strong>
+                <strong class="text-[#4D5A6E] font-bold">${maskDisplayValue(d.amount)}</strong>
                 <button onclick="fixedDeposits.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderAssets(currentAssetMember);" class="editable-only text-[#784D4E] text-xs font-bold ml-1.5">刪除</button>
               </div>
             </div>
@@ -2660,11 +2694,11 @@
         summaryBox.innerHTML = `
           <div class="flex justify-between items-center font-bold text-xs text-[#2E2C2B]">
             <span class="keep-word">【${member}】股票預估變現淨額</span>
-            <strong class="text-[#4D5A6E] text-sm font-extrabold">$${Math.round(stockGrandTotal).toLocaleString()}</strong>
+            <strong class="text-[#4D5A6E] text-sm font-extrabold">${maskDisplayValue(Math.round(stockGrandTotal))}</strong>
           </div>
           <div class="grid grid-cols-2 gap-2 text-[11px] text-[#635D5A] pt-1 border-t border-[#F2ECE9]">
-            <div>預估變現淨額：<strong class="text-[#2E2C2B] font-bold block">$${Math.round(stockMarketVal).toLocaleString()}</strong></div>
-            <div>交割戶現金餘額：<strong class="text-[#2E2C2B] font-bold block">$${Math.round(stockCashVal).toLocaleString()}</strong></div>
+            <div>預估變現淨額：<strong class="text-[#2E2C2B] font-bold block">${maskDisplayValue(Math.round(stockMarketVal))}</strong></div>
+            <div>交割戶現金餘額：<strong class="text-[#2E2C2B] font-bold block">${maskDisplayValue(Math.round(stockCashVal))}</strong></div>
           </div>
         `;
       }
@@ -2728,7 +2762,7 @@
     }
 
     function addCustomCard() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const bank = document.getElementById('card-bank-input').value;
       const name = document.getElementById('card-name-input').value.trim();
       const cutoff = Number(document.getElementById('card-cutoff-input').value) || 15;
@@ -2747,7 +2781,7 @@
     }
 
     function editCustomCard(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       const c = userCards[idx];
       const newName = prompt('修改卡別名稱：', c.name);
       const newExpiry = prompt('修改到期日：', c.expiry || '12/28');
@@ -2765,7 +2799,7 @@
     }
 
     function deleteCustomCard(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm(`確定要刪除「${userCards[idx].bank} ${userCards[idx].name}」嗎？`)) {
         userCards.splice(idx, 1);
         saveAllSettingsLocalAndCloud();
@@ -2786,7 +2820,7 @@
         <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl flex justify-between items-center text-xs gap-2">
           <div class="min-w-0">
             <strong class="text-[#2E2C2B] block font-bold truncate">${c.bank} - ${c.name}</strong>
-            <span class="text-[10px] text-[#635D5A]">${c.cutoff} 號結帳 | 到期日：<strong class="text-[#784D4E]">${c.expiry || '未設定'}</strong></span>
+            <span class="text-[10px] text-[#635D5A]">${c.cutoff} 號結帳 | 到期日：<strong class="text-[#784D4E]">${currentUser?.role === 'guest' ? '**/**' : (c.expiry || '未設定')}</strong></span>
           </div>
           <div class="space-x-1 shrink-0 editable-only">
             <button onclick="editCustomCard(${idx})" class="text-[11px] px-2 py-1 rounded font-bold bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E]">修改</button>
@@ -2797,7 +2831,7 @@
     }
 
     function saveLaborData() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法儲存！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法儲存！');
       const member = currentAssetMember === '宇軒' ? '宇軒' : '潔柔';
       
       laborDataByMember[member] = {
@@ -2832,17 +2866,17 @@
       const totalRate = totalPrincipal > 0 ? ((totalProfit / totalPrincipal) * 100).toFixed(1) : 0;
       const currentTotal = totalPrincipal + totalProfit;
 
-      document.getElementById('labor-profit-sum').innerText = '$' + totalProfit.toLocaleString();
+      document.getElementById('labor-profit-sum').innerText = maskDisplayValue(totalProfit);
       document.getElementById('labor-rate-sum').innerText = totalRate + '%';
-      document.getElementById('labor-current-total').innerText = '$' + currentTotal.toLocaleString();
+      document.getElementById('labor-current-total').innerText = maskDisplayValue(currentTotal);
 
       const futureYears = Math.max(1, (data.retireAge || 65) - 37);
       const estFuture = Math.round(currentTotal * Math.pow(1.03, futureYears));
-      document.getElementById('labor-est-future-total').innerText = '$' + estFuture.toLocaleString();
+      document.getElementById('labor-est-future-total').innerText = maskDisplayValue(estFuture);
     }
 
     function addBankFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const input = document.getElementById('setting-bank-input');
       const val = input.value.trim();
       if (!val) return alert('請輸入銀行名稱');
@@ -2857,7 +2891,7 @@
     }
 
     function editBank(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       const newName = prompt('請修改銀行名稱：', bankList[idx]);
       if (newName && newName.trim()) {
         bankList[idx] = newName.trim();
@@ -2869,7 +2903,7 @@
     }
 
     function deleteBank(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm(`確定要刪除「${bankList[idx]}」嗎？`)) {
         bankList.splice(idx, 1);
         saveAllSettingsLocalAndCloud();
@@ -2879,7 +2913,7 @@
     }
 
     function addBrokerFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const input = document.getElementById('setting-broker-input');
       const val = input.value.trim();
       if (!val) return alert('請輸入證券商名稱');
@@ -2893,7 +2927,7 @@
     }
 
     function editBroker(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       const newName = prompt('請修改證券商名稱：', brokerList[idx]);
       if (newName && newName.trim()) {
         brokerList[idx] = newName.trim();
@@ -2904,7 +2938,7 @@
     }
 
     function deleteBroker(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm(`確定要刪除「${brokerList[idx]}」嗎？`)) {
         brokerList.splice(idx, 1);
         saveAllSettingsLocalAndCloud();
@@ -2913,7 +2947,7 @@
     }
 
     function addCategoryFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const input = document.getElementById('setting-category-input');
       const val = input.value.trim();
       if (!val) return alert('請輸入分類名稱');
@@ -2927,7 +2961,7 @@
     }
 
     function editCategory(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       const newName = prompt('請修改分類名稱：', customCategories[idx]);
       if (newName && newName.trim()) {
         customCategories[idx] = newName.trim();
@@ -2938,7 +2972,7 @@
     }
 
     function deleteCategory(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm(`確定要刪除「${customCategories[idx]}」分類嗎？`)) {
         customCategories.splice(idx, 1);
         saveAllSettingsLocalAndCloud();
@@ -2948,7 +2982,7 @@
     }
 
     function addAccountFromSetting() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const input = document.getElementById('setting-account-input');
       const val = input.value.trim();
       if (!val) return alert('請輸入管道名稱');
@@ -2962,7 +2996,7 @@
     }
 
     function editAccount(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       const newName = prompt('請修改管道名稱：', customAccounts[idx].name);
       if (newName && newName.trim()) {
         customAccounts[idx].name = newName.trim();
@@ -2973,7 +3007,7 @@
     }
 
     function toggleAccountActive(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法停用！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法停用！');
       customAccounts[idx].active = !customAccounts[idx].active;
       saveAllSettingsLocalAndCloud();
       renderSettingLists();
@@ -2981,7 +3015,7 @@
     }
 
     function deleteAccount(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm(`確定要刪除「${customAccounts[idx].name}」管道嗎？`)) {
         customAccounts.splice(idx, 1);
         saveAllSettingsLocalAndCloud();
@@ -3063,7 +3097,7 @@
     }
 
     function addBudgetPlan() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const name = document.getElementById('budget-item-name').value.trim();
       const limit = parseCurrencyNumber(document.getElementById('budget-item-limit').value);
       if (!name || limit <= 0) return alert('請輸入名稱與金額');
@@ -3086,7 +3120,7 @@
         <div class="bg-white p-3 rounded-xl border border-[#DCD6D3] flex justify-between items-center text-xs">
           <span class="font-bold text-[#2E2C2B]">${b.name}</span>
           <div class="flex items-center gap-2 shrink-0">
-            <span class="font-bold text-[#3D3A39]">上限: $${b.limit.toLocaleString()}</span>
+            <span class="font-bold text-[#3D3A39]">上限: ${maskDisplayValue(b.limit)}</span>
             <button onclick="budgetPlans.splice(${idx},1); saveAllSettingsLocalAndCloud(); renderBudgetPlans();" class="editable-only text-[#784D4E] text-xs font-bold">刪除</button>
           </div>
         </div>
@@ -3094,14 +3128,15 @@
     }
 
     function addAAItem() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const title = document.getElementById('aa-item-title').value.trim();
       const guanheAmt = parseCurrencyNumber(document.getElementById('aa-guanhe-amount').value);
       const jierouAmt = parseCurrencyNumber(document.getElementById('aa-jierou-amount').value);
+      const selMonth = document.getElementById('aa-month-select')?.value || '2026-10';
 
       if (!title) return alert('請輸入項目名稱');
 
-      aaListItems.push({ title, guanheAmt, jierouAmt });
+      aaListItems.push({ title, guanheAmt, jierouAmt, month: selMonth });
       document.getElementById('aa-item-title').value = '';
       document.getElementById('aa-guanhe-amount').value = '';
       document.getElementById('aa-jierou-amount').value = '';
@@ -3110,7 +3145,7 @@
     }
 
     function editAAItem(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法修改！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法修改！');
       const item = aaListItems[idx];
       if (!item) return;
 
@@ -3130,13 +3165,13 @@
     }
 
     function deleteAAItem(idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       aaListItems.splice(idx, 1);
       saveAllSettingsLocalAndCloud();
       renderAATab();
     }
 
-    // 修正附件二：標示清楚月份
+    // 需求 4：AA請款單明細依選擇月份進行動態過濾
     function renderAATab() {
       const container = document.getElementById('aa-items-container');
       if (!container) return;
@@ -3150,31 +3185,35 @@
         titleDisplay.innerText = `${yearStr}年${monthStr}月 請款單明細`;
       }
 
+      // 動態過濾特定月份的請款資料
+      const filteredAA = aaListItems.filter(i => (i.month || '2026-10') === selMonth);
+
       let guanheTotal = 0;
       let jierouTotal = 0;
 
-      if (aaListItems.length === 0) {
-        container.innerHTML = '<div class="text-[#B5ADAD] text-center py-2">尚無請款項目。</div>';
+      if (filteredAA.length === 0) {
+        container.innerHTML = `<div class="text-[#B5ADAD] text-center py-2">該月份 (${yearStr}年${monthStr}月) 尚無請款項目。</div>`;
       } else {
-        container.innerHTML = aaListItems.map((item, idx) => {
+        container.innerHTML = filteredAA.map((item) => {
+          const originalIdx = aaListItems.indexOf(item);
           guanheTotal += item.guanheAmt;
           jierouTotal += (item.jierouAmt || 0);
           return `
             <div class="flex justify-between items-center text-xs border-b border-[#635A5A] pb-1.5 pt-0.5">
               <span class="truncate min-w-0 pr-2">- ${item.title}</span>
               <div class="flex items-center gap-1.5 shrink-0">
-                <span class="text-[#F2E5C9] font-bold">冠合 $${item.guanheAmt.toLocaleString()}</span>
-                <button onclick="editAAItem(${idx})" class="editable-only text-[#DDD7D4] hover:text-white bg-[#522B2B] px-1.5 py-0.5 rounded text-[10px]">修改</button>
-                <button onclick="deleteAAItem(${idx})" class="editable-only text-[#E8C2C3] hover:text-white bg-[#635A5A] px-1.5 py-0.5 rounded text-[10px]">刪除</button>
+                <span class="text-[#F2E5C9] font-bold">冠合 ${maskDisplayValue(item.guanheAmt)}</span>
+                <button onclick="editAAItem(${originalIdx})" class="editable-only text-[#DDD7D4] hover:text-white bg-[#522B2B] px-1.5 py-0.5 rounded text-[10px]">修改</button>
+                <button onclick="deleteAAItem(${originalIdx})" class="editable-only text-[#E8C2C3] hover:text-white bg-[#635A5A] px-1.5 py-0.5 rounded text-[10px]">刪除</button>
               </div>
             </div>
           `;
         }).join('');
       }
 
-      if (document.getElementById('aa-guanhe-total-display')) document.getElementById('aa-guanhe-total-display').innerText = '$' + guanheTotal.toLocaleString();
-      if (document.getElementById('aa-jierou-total-display')) document.getElementById('aa-jierou-total-display').innerText = '$' + jierouTotal.toLocaleString();
-      if (document.getElementById('aa-final-settle-display')) document.getElementById('aa-final-settle-display').innerText = '$' + guanheTotal.toLocaleString();
+      if (document.getElementById('aa-guanhe-total-display')) document.getElementById('aa-guanhe-total-display').innerText = maskDisplayValue(guanheTotal);
+      if (document.getElementById('aa-jierou-total-display')) document.getElementById('aa-jierou-total-display').innerText = maskDisplayValue(jierouTotal);
+      if (document.getElementById('aa-final-settle-display')) document.getElementById('aa-final-settle-display').innerText = maskDisplayValue(guanheTotal);
     }
 
     function copyAAListText() {
@@ -3182,10 +3221,12 @@
       const yearStr = selMonth.substring(0, 4);
       const monthStr = selMonth.substring(5, 7);
 
-      if (aaListItems.length === 0) return alert('目前沒有請款項目！');
+      const filteredAA = aaListItems.filter(i => (i.month || '2026-10') === selMonth);
+
+      if (filteredAA.length === 0) return alert('目前選擇的月份沒有請款項目！');
       let text = `【${yearStr}年${monthStr}月 請款單細項】\n`;
       let total = 0;
-      aaListItems.forEach(i => {
+      filteredAA.forEach(i => {
         text += `- ${i.title}：$${i.guanheAmt.toLocaleString()}\n`;
         total += i.guanheAmt;
       });
@@ -3226,7 +3267,7 @@
     }
 
     function saveAnnualFundModal() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const year = document.getElementById('modal-fund-year').value;
       const bank = document.getElementById('modal-fund-bank').value;
       const type = document.getElementById('modal-fund-type').value;
@@ -3244,7 +3285,7 @@
     }
 
     function deleteAnnualFund(id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm('確定要刪除這筆預備資金嗎？')) {
         annualFundList = annualFundList.filter(f => f.id !== id);
         saveAllSettingsLocalAndCloud();
@@ -3254,7 +3295,7 @@
     }
 
     function saveAnnualExpenseInline() {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法新增！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法新增！');
       const yearSelect = document.getElementById('annual-year-select');
       const year = yearSelect?.value || "2027";
       const monthSelect = document.getElementById('annual-input-month');
@@ -3282,7 +3323,7 @@
     }
 
     function editAnnualExpense(year, idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法編輯！');
       const item = annualExpenses[year]?.[idx];
       if (!item) return;
 
@@ -3304,7 +3345,7 @@
     }
 
     function deleteAnnualExpense(year, idx) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (confirm(`確定要刪除「${annualExpenses[year][idx].month || ''} ${annualExpenses[year][idx].name}」嗎？`)) {
         annualExpenses[year].splice(idx, 1);
         saveAllSettingsLocalAndCloud();
@@ -3357,23 +3398,23 @@
           return `
             <div class="p-3 bg-white border border-[#DCD6D3] rounded-xl space-y-2">
               <div class="flex justify-between items-center font-bold">
-                <span class="text-[#2E2C2B] text-xs">${year}年度開銷總預估：$${totalExpense.toLocaleString()}</span>
+                <span class="text-[#2E2C2B] text-xs">${year}年度開銷總預估：${maskDisplayValue(totalExpense)}</span>
                 <span class="${diff <= 0 && totalExpense > 0 ? 'text-[#556357]' : 'text-[#784D4E]'} text-xs">達成率 ${pct}%</span>
               </div>
               <div class="w-full bg-[#DDD7D4] rounded-full h-2 overflow-hidden my-1">
                 <div class="bg-[#B2C1B4] h-2 rounded-full" style="width: ${pct}%"></div>
               </div>
               <div class="flex justify-between text-[11px] text-[#635D5A]">
-                <span>已準備資金：$${savedAmount.toLocaleString()}</span>
-                <span>${totalExpense === 0 ? '尚無開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">$${diff.toLocaleString()}</strong>`)}</span>
+                <span>已準備資金：${maskDisplayValue(savedAmount)}</span>
+                <span>${totalExpense === 0 ? '尚無開銷' : (diff <= 0 ? '完全覆蓋' : `還需預存：<strong class="text-[#784D4E]">${maskDisplayValue(diff)}</strong>`)}</span>
               </div>
               ${userFunds.length > 0 ? `
                 <div class="pt-1.5 border-t border-dashed border-[#DCD6D3] space-y-1 text-[10px]">
                   ${userFunds.map(f => `
                     <div class="flex justify-between items-center text-[#4D5A6E]">
-                      <span>- ${f.bank} (${f.type}${f.dueDate ? ' ' + f.dueDate + '到期' : ''})</span>
+                      <span>- ${f.bank} (${f.type}${f.dueDate ? ' ' + (currentUser?.role === 'guest' ? '****-**-**' : f.dueDate) + '到期' : ''})</span>
                       <div class="space-x-1">
-                        <strong class="font-bold">$${f.amount.toLocaleString()}</strong>
+                        <strong class="font-bold">${maskDisplayValue(f.amount)}</strong>
                         <button onclick="deleteAnnualFund(${f.id})" class="editable-only text-[#784D4E] font-bold">刪</button>
                       </div>
                     </div>
@@ -3402,7 +3443,7 @@
               <span class="font-bold text-[#2E2C2B] truncate">${i.name}</span>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <strong class="text-[#2E2C2B] font-extrabold text-xs">$${i.amount.toLocaleString()}</strong>
+              <strong class="text-[#2E2C2B] font-extrabold text-xs">${maskDisplayValue(i.amount)}</strong>
               <div class="editable-only space-x-1">
                 <button onclick="editAnnualExpense('${year1}', ${idx})" class="text-[10px] text-[#4D5A6E] font-bold hover:underline">修改</button>
                 <button onclick="deleteAnnualExpense('${year1}', ${idx})" class="text-[10px] text-[#784D4E] font-bold hover:underline">刪除</button>
@@ -3445,15 +3486,16 @@
       const totalExpense = currentMonthTx.filter(t => Number(t.amount_ntd) < 0).reduce((sum, t) => sum + Math.abs(Number(t.amount_ntd)), 0);
       const totalIncome = currentMonthTx.filter(t => Number(t.amount_ntd) > 0).reduce((sum, t) => sum + Number(t.amount_ntd), 0);
 
-      document.getElementById('cashflow-expense-display').innerText = '$' + totalExpense.toLocaleString();
-      document.getElementById('cashflow-income-display').innerText = '$' + totalIncome.toLocaleString();
-      document.getElementById('cashflow-net-display').innerText = '$' + (totalIncome - totalExpense).toLocaleString();
+      document.getElementById('cashflow-expense-display').innerText = maskDisplayValue(totalExpense);
+      document.getElementById('cashflow-income-display').innerText = maskDisplayValue(totalIncome);
+      document.getElementById('cashflow-net-display').innerText = maskDisplayValue(totalIncome - totalExpense);
 
       renderDedicatedFunds();
     }
 
-    // 修正需求6：匯出檔案格式調整為真正的 Excel 檔 (.xlsx)
+    // 需求 7：匯出 Excel 檔 (.xlsx)
     function exportToExcel() {
+      if (currentUser?.role === 'guest') return alert('訪客模式不支援資料匯出！');
       if (allTransactions.length === 0) return alert('目前無資料可匯出');
 
       const dataArray = allTransactions.map(t => ({
@@ -3472,7 +3514,9 @@
       XLSX.writeFile(workbook, `財務總控_記帳紀錄_${getTodayString()}.xlsx`);
     }
 
+    // 需求 7：JSON 全站備份檔匯出
     function exportBackupJSON() {
+      if (currentUser?.role === 'guest') return alert('訪客模式不支援全站備份匯出！');
       lastExportDate = new Date().toISOString();
       const backupData = {
         customCategories, customAccounts,
@@ -3497,7 +3541,7 @@
     }
 
     function importBackupJSON(event) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法匯入備份！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法匯入備份！');
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -3515,7 +3559,7 @@
     }
 
     function editTransaction(id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法編輯！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法編輯！');
       const tx = allTransactions.find(t => t.id === id);
       if (!tx) return;
 
@@ -3542,7 +3586,7 @@
     }
 
     async function deleteTransaction(id) {
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法刪除！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (!confirm('確定要刪除這筆紀錄嗎？')) return;
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${id}`, {
@@ -3562,7 +3606,7 @@
 
     document.getElementById('expense-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (currentUser?.role === 'viewer') return alert('唯讀帳號無法儲存！');
+      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法儲存！');
 
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
@@ -3689,9 +3733,9 @@
       const summaryBar = document.getElementById('filter-summary-bar');
       if (summaryBar) {
         summaryBar.innerHTML = `
-          <span>收入: <strong class="text-[#556357]">$${incTotal.toLocaleString()}</strong></span>
-          <span>支出: <strong class="text-[#784D4E]">$${expTotal.toLocaleString()}</strong></span>
-          <span>淨額: <strong class="text-[#2E2C2B]">$${(incTotal - expTotal).toLocaleString()}</strong></span>
+          <span>收入: <strong class="text-[#556357]">${maskDisplayValue(incTotal)}</strong></span>
+          <span>支出: <strong class="text-[#784D4E]">${maskDisplayValue(expTotal)}</strong></span>
+          <span>淨額: <strong class="text-[#2E2C2B]">${maskDisplayValue(incTotal - expTotal)}</strong></span>
         `;
       }
 
@@ -3707,7 +3751,7 @@
 
       container.innerHTML = list.slice(0, 15).map(t => {
         const isExpense = Number(t.amount_ntd) < 0;
-        const amtStr = (isExpense ? '-' : '+') + '$' + Math.abs(Number(t.amount_ntd)).toLocaleString();
+        const amtStr = currentUser?.role === 'guest' ? '***' : ((isExpense ? '-' : '+') + '$' + Math.abs(Number(t.amount_ntd)).toLocaleString());
         const amtClass = isExpense ? 'text-[#784D4E]' : 'text-[#556357]';
 
         return `
@@ -3728,6 +3772,7 @@
       }).join('');
     }
 
+    // 需求 3：順序切換邏輯
     function switchTab(tabIndex) {
       currentTabIndex = tabIndex;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -3747,20 +3792,20 @@
         fetchGoogleCalendarEvents();
         renderCalendar();
       }
-      if (tabIndex === 5) renderAssets(currentAssetMember);
-      if (tabIndex === 6) {
+      if (tabIndex === 5) renderStockPage(currentStockMember);
+      if (tabIndex === 6) renderForexPage(currentForexMember);
+      if (tabIndex === 7) renderAssets(currentAssetMember);
+      if (tabIndex === 8) {
         renderCardBankOptions();
         renderSettingLists();
         renderCustomCardList();
         renderUserAccountsList();
         checkBackupReminder();
       }
-      if (tabIndex === 7) renderStockPage(currentStockMember);
-      if (tabIndex === 8) renderForexPage(currentForexMember);
       if (tabIndex === 9) renderLoginLogs();
     }
 
-    // 修正需求7：修復滑動觸控順序，確保依序 1 -> 2 -> 3 ... -> 9 滑動跳轉
+    // 需求 3：觸控滑動順序完全依照 tabOrderList 陣列 (1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9)
     let touchStartX = 0;
     let touchEndX = 0;
     const mainApp = document.getElementById('main-app-container');
@@ -3773,12 +3818,12 @@
       if (Math.abs(diffX) > 80) {
         const curPos = tabOrderList.indexOf(currentTabIndex);
         if (diffX < 0) {
-          // 向左滑動：跳至下一頁
+          // 向左滑動：跳至下一個分頁
           if (curPos < tabOrderList.length - 1) {
             switchTab(tabOrderList[curPos + 1]);
           }
         } else if (diffX > 0) {
-          // 向右滑動：跳至上一頁
+          // 向右滑動：跳至上一個分頁
           if (curPos > 0) {
             switchTab(tabOrderList[curPos - 1]);
           }
