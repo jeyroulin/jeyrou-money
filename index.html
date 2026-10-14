@@ -1115,6 +1115,9 @@
     const SUPABASE_URL = 'https://yantaufqgiqkrbvopupl.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnRhdWZxZ2lxa3Jidm9wdXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTc4MTQsImV4cCI6MjEwNzEzMzgxNH0.g3SUk8OtXjTnfX3OfmhrYiv-QEJ89cvg_2PnoLIjHwk';
 
+    /* --- Google Apps Script (GAS) 專屬股票代理網址 --- */
+    const GAS_STOCK_API_URL = 'https://script.google.com/macros/s/AKfycbwfRwRHCBTZq9i3qmP3vJuBQUsXB8nD79jY7KRow8TPink8q841sjI4kAnAm8vC7aXu/exec';
+
     /* --- LINE Messaging API 設定 --- */
     const LINE_CONFIG = {
       channelId: "2011982183",
@@ -2376,62 +2379,54 @@
       }
     }
 
+    /* --- 優化後的股價連動函式（改為呼叫專屬 Google Apps Script 代理） --- */
     async function fetchAllStockPricesOnline() {
       const holdings = getMemberStockHoldings(currentStockMember);
       if (holdings.length === 0) return alert('目前沒有持股項目可校正！');
 
-      alert('正在進行盤後/即時行情對接與收盤價校正...');
+      alert('正在透過專屬 Google API 進行盤後/即時行情對接與收盤價校正...');
       let updatedCount = 0;
 
       for (let h of holdings) {
         const matchCode = h.code.match(/\d+/);
         if (matchCode) {
           const stockNum = matchCode[0];
-          const targetUrl = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${stockNum}.tw`;
-
-          let resData = null;
           try {
-            // 嘗試直接呼叫證交所 API
-            const res = await fetch(targetUrl);
-            if (res.ok) resData = await res.json();
-          } catch (e) {
-            // 若被瀏覽器 CORS 擋截，自動使用 CORS 代理服務進行備援
-            try {
-              const proxyRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
-              if (proxyRes.ok) {
-                const proxyJson = await proxyRes.json();
-                if (proxyJson.contents) resData = JSON.parse(proxyJson.contents);
+            const res = await fetch(`${GAS_STOCK_API_URL}?stock=${stockNum}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.msgArray && data.msgArray.length > 0) {
+                const item = data.msgArray[0];
+                
+                // 盤後停止交易時，成交價 z 常為 "-"，自動改取昨收/盤後基準價 y
+                let rawPrice = item.z;
+                if (!rawPrice || rawPrice === '-' || isNaN(parseFloat(rawPrice))) {
+                  rawPrice = item.y;
+                }
+
+                const latestPrice = parseFloat(rawPrice);
+                if (!isNaN(latestPrice) && latestPrice > 0) {
+                  const matchKey = Object.keys(manualStockPrices).find(k => h.code.includes(k)) || h.code;
+                  manualStockPrices[matchKey] = latestPrice;
+                  updatedCount++;
+                }
               }
-            } catch (proxyErr) {}
-          }
-
-          if (resData && resData.msgArray && resData.msgArray.length > 0) {
-            const item = resData.msgArray[0];
-            // 盤後停止交易時，成交價 z 常為 "-"，自動改取昨收/盤後基準價 y
-            let rawPrice = item.z;
-            if (!rawPrice || rawPrice === '-' || isNaN(parseFloat(rawPrice))) {
-              rawPrice = item.y;
             }
-
-            const latestPrice = parseFloat(rawPrice);
-            if (latestPrice > 0) {
-              const matchKey = Object.keys(manualStockPrices).find(k => h.code.includes(k)) || h.code;
-              manualStockPrices[matchKey] = latestPrice;
-              updatedCount++;
-            }
+          } catch (e) {
+            console.warn(`股票 ${stockNum} 連動失敗:`, e);
           }
         }
       }
 
-      stockLastUpdateTime = "盤後自動連動收盤價";
+      stockLastUpdateTime = "專屬 API 自動連動收盤價";
       saveAllSettingsLocalAndCloud();
       renderStockPage(currentStockMember);
       renderAssets(currentAssetMember);
 
       if (updatedCount > 0) {
-        alert(`成功連動更新 ${updatedCount} 檔股票之盤後收盤價！`);
+        alert(`成功透過專屬 API 更新 ${updatedCount} 檔股票之最新/盤後收盤價！`);
       } else {
-        alert('受限於網路/跨域限制無法自動連動。您可點擊各股票卡片旁的【校正單價】手動調整價格。');
+        alert('自動連動失敗。您可點擊各股票卡片旁的【校正單價】手動調整價格。');
       }
     }
 
