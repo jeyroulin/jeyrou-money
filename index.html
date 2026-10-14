@@ -3246,17 +3246,21 @@
       }
 
       const catContainer = document.getElementById('setting-category-list');
-      if (catContainer) {
-        catContainer.innerHTML = customCategories.map((c, idx) => `
-          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
-            <span class="font-bold text-[#3D3A39]">${c}</span>
-            <div class="space-x-2 shrink-0 editable-only">
-              <button onclick="editCategory(${idx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
-              <button onclick="deleteCategory(${idx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
-            </div>
-          </div>
-        `).join('');
-      }
+if (catContainer) {
+  const sortedCategories = customCategories
+    .map((c, idx) => ({ name: c, origIdx: idx }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant', { numeric: true }));
+
+  catContainer.innerHTML = sortedCategories.map(item => `
+    <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-[#DCD6D3]">
+      <span class="font-bold text-[#3D3A39]">${item.name}</span>
+      <div class="space-x-2 shrink-0 editable-only">
+        <button onclick="editCategory(${item.origIdx})" class="text-[#4D5A6E] font-bold text-xs">編輯</button>
+        <button onclick="deleteCategory(${item.origIdx})" class="text-[#784D4E] font-bold text-xs">刪除</button>
+      </div>
+    </div>
+  `).join('');
+}
 
       const accContainer = document.getElementById('setting-account-list');
       if (accContainer) {
