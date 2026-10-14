@@ -1042,16 +1042,10 @@
           </select>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="block font-bold mb-1 text-[#524D4B]">股票代號</label>
-          <input type="text" id="modal-stock-code" placeholder="例: 0056" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
+          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號</label>
+          <input type="text" id="modal-stock-code" placeholder="例: 0056 或 元大高股息" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
         </div>
-        <div>
-          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱</label>
-          <input type="text" id="modal-stock-name" placeholder="例: 元大高股息" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
-        </div>
-      </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -1158,9 +1152,9 @@
 
     /* 中信外幣即時匯率與到價提醒 */
     let ctbcRates = {
-    usdRaw: 32.1416, usdDiscount: 32.1066, // 中信美金即期牌告與 APP 讓 3.5 分優惠價
-    jpyRaw: 0.2047, jpyDiscount: 0.2033   // 中信日圓即期牌告與 APP 讓 0.14 分優惠價
-  };
+      usdRaw: 32.1370, usdDiscount: 32.1020, // 中信美金即期賣出牌告與 APP 讓 3.5 分
+      jpyRaw: 0.2047, jpyDiscount: 0.2033   // 中信日圓即期賣出牌告與 APP 讓 0.14 分
+    };
     let lineAlertSettings = {
       usdLow: 35.0, usdHigh: 35.0,
       jpyLow: 0.25, jpyHigh: 0.50
@@ -2297,7 +2291,7 @@
       document.getElementById('stock-modal').classList.add('hidden');
     }
 
-   function editStockTransaction(txId) {
+    function editStockTransaction(txId) {
       if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法編輯！');
       const tx = stocksList.find(s => s.id === Number(txId));
       if (!tx) return;
@@ -2313,17 +2307,7 @@
       select.innerHTML = brokerList.map(br => `<option value="${br}">${br}</option>`).join('');
       select.value = tx.broker || brokerList[0];
 
-      // 拆分顯示股票代號與名稱
-      const rawCode = tx.code || '';
-      const match = rawCode.match(/^(\d+)\s*(.*)$/);
-      if (match) {
-        document.getElementById('modal-stock-code').value = match[1];
-        document.getElementById('modal-stock-name').value = match[2];
-      } else {
-        document.getElementById('modal-stock-code').value = rawCode;
-        document.getElementById('modal-stock-name').value = '';
-      }
-
+      document.getElementById('modal-stock-code').value = tx.code || '';
       document.getElementById('modal-stock-price').value = tx.price || '';
       document.getElementById('modal-stock-shares').value = tx.shares ? tx.shares.toLocaleString() : '';
       document.getElementById('modal-stock-total').value = tx.total ? tx.total.toLocaleString() : '';
@@ -2340,73 +2324,6 @@
         renderStockPage(member);
         renderAssets(currentAssetMember);
       }
-    }
-
-    function saveStockModal() {
-      if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法儲存！');
-      const editId = document.getElementById('editing-stock-id').value;
-      const txDate = document.getElementById('modal-stock-date').value || getTodayString();
-      const owner = document.getElementById('modal-stock-owner').value;
-      const type = document.getElementById('modal-stock-type').value;
-      const broker = document.getElementById('modal-stock-broker').value;
-      
-      const stockCode = document.getElementById('modal-stock-code').value.trim();
-      const stockName = document.getElementById('modal-stock-name').value.trim();
-      const fullCode = stockName ? `${stockCode} ${stockName}` : stockCode;
-
-      const price = Number(document.getElementById('modal-stock-price').value) || 0;
-      const shares = parseCurrencyNumber(document.getElementById('modal-stock-shares').value);
-      const total = parseCurrencyNumber(document.getElementById('modal-stock-total').value);
-
-      if (!stockCode || shares <= 0) return alert('請輸入股票代號與成交股數');
-
-      if (!manualStockPrices[stockCode]) manualStockPrices[stockCode] = price;
-
-      if (editId) {
-        const idx = stocksList.findIndex(s => s.id === Number(editId));
-        if (idx !== -1) stocksList[idx] = { id: Number(editId), date: txDate, owner, type, broker, code: fullCode, price, shares, total };
-      } else {
-        stocksList.push({ id: Date.now(), date: txDate, owner, type, broker, code: fullCode, price, shares, total });
-      }
-
-      closeStockModal();
-      saveAllSettingsLocalAndCloud();
-      renderStockPage(currentStockMember);
-      renderAssets(currentAssetMember);
-    }  }
-
-  function saveStockModal() {
-    if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法儲存！');
-    const editId = document.getElementById('editing-stock-id').value;
-    const txDate = document.getElementById('modal-stock-date').value || getTodayString();
-    const owner = document.getElementById('modal-stock-owner').value;
-    const type = document.getElementById('modal-stock-type').value;
-    const broker = document.getElementById('modal-stock-broker').value;
-
-    const stockCode = document.getElementById('modal-stock-code').value.trim();
-    const stockName = document.getElementById('modal-stock-name').value.trim();
-    const fullCode = stockName ? `${stockCode} ${stockName}` : stockCode;
-
-    const price = Number(document.getElementById('modal-stock-price').value) || 0;
-    const shares = parseCurrencyNumber(document.getElementById('modal-stock-shares').value);
-    const total = parseCurrencyNumber(document.getElementById('modal-stock-total').value);
-
-    if (!stockCode || shares <= 0) return alert('請輸入股票代號與成交股數');
-
-    if (!manualStockPrices[stockCode]) manualStockPrices[stockCode] = price;
-
-    if (editId) {
-      const idx = stocksList.findIndex(s => s.id === Number(editId));
-      if (idx !== -1) stocksList[idx] = { id: Number(editId), date: txDate, owner, type, broker, code: fullCode, price, shares, total };
-    } else {
-      stocksList.push({ id: Date.now(), date: txDate, owner, type, broker, code: fullCode, price, shares, total });
-    }
-
-    closeStockModal();
-    saveAllSettingsLocalAndCloud();
-    renderStockPage(currentStockMember);
-    renderAssets(currentAssetMember);
-  }
     }
 
     function saveStockModal() {
@@ -2471,9 +2388,9 @@
       let updatedCount = 0;
 
       for (let h of holdings) {
-        // 優先精準解析純股票代號
-        const stockNum = h.code.trim().split(' ')[0];
-        if (stockNum) {
+        const matchCode = h.code.match(/\d+/);
+        if (matchCode) {
+          const stockNum = matchCode[0];
           try {
             const res = await fetch(`${GAS_STOCK_API_URL}?stock=${stockNum}`);
             if (res.ok) {
@@ -2489,7 +2406,8 @@
 
                 const latestPrice = parseFloat(rawPrice);
                 if (!isNaN(latestPrice) && latestPrice > 0) {
-                  manualStockPrices[stockNum] = latestPrice;
+                  const matchKey = Object.keys(manualStockPrices).find(k => h.code.includes(k)) || h.code;
+                  manualStockPrices[matchKey] = latestPrice;
                   updatedCount++;
                 }
               }
@@ -2499,6 +2417,7 @@
           }
         }
       }
+
       stockLastUpdateTime = "專屬 API 自動連動收盤價";
       saveAllSettingsLocalAndCloud();
       renderStockPage(currentStockMember);
