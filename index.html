@@ -384,7 +384,7 @@
             <h2 class="text-base font-bold text-[#2E2C2B] keep-word">股票資產分析與預估現值</h2>
           </div>
           <div class="flex gap-1 shrink-0">
-            <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">金額校正</button>
+            <button onclick="fetchAllStockPricesOnline()" class="px-3 py-2 bg-[#556357] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#435045]">連動收盤價</button>
             <button onclick="openStockModal()" class="editable-only px-3 py-2 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs hover:bg-[#3B4758]">+ 買賣零股</button>
           </div>
         </div>
@@ -2369,7 +2369,7 @@
       const input = prompt(`請輸入「${code}」最新股票單價 ($)：`, curPrice);
       if (input !== null && !isNaN(Number(input)) && Number(input) > 0) {
         manualStockPrices[matchKey] = Number(input);
-        stockLastUpdateTime = "12:47 手動校正";
+        stockLastUpdateTime = "手動校正價格";
         saveAllSettingsLocalAndCloud();
         renderStockPage(currentStockMember);
         renderAssets(currentAssetMember);
@@ -2380,33 +2380,59 @@
       const holdings = getMemberStockHoldings(currentStockMember);
       if (holdings.length === 0) return alert('目前沒有持股項目可校正！');
 
-      alert('正在從證交所 API 進行即時行情對接與校正...');
+      alert('正在進行盤後/即時行情對接與收盤價校正...');
       let updatedCount = 0;
+
       for (let h of holdings) {
         const matchCode = h.code.match(/\d+/);
         if (matchCode) {
           const stockNum = matchCode[0];
+          const targetUrl = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${stockNum}.tw`;
+
+          let resData = null;
           try {
-            const res = await fetch(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${stockNum}.tw`);
-            if (res.ok) {
-              const data = await res.json();
-              if (data && data.msgArray && data.msgArray.length > 0) {
-                const latestPrice = parseFloat(data.msgArray[0].z || data.msgArray[0].y);
-                if (latestPrice > 0) {
-                  manualStockPrices[h.code] = latestPrice;
-                  updatedCount++;
-                }
+            // 嘗試直接呼叫證交所 API
+            const res = await fetch(targetUrl);
+            if (res.ok) resData = await res.json();
+          } catch (e) {
+            // 若被瀏覽器 CORS 擋截，自動使用 CORS 代理服務進行備援
+            try {
+              const proxyRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
+              if (proxyRes.ok) {
+                const proxyJson = await proxyRes.json();
+                if (proxyJson.contents) resData = JSON.parse(proxyJson.contents);
               }
+            } catch (proxyErr) {}
+          }
+
+          if (resData && resData.msgArray && resData.msgArray.length > 0) {
+            const item = resData.msgArray[0];
+            // 盤後停止交易時，成交價 z 常為 "-"，自動改取昨收/盤後基準價 y
+            let rawPrice = item.z;
+            if (!rawPrice || rawPrice === '-' || isNaN(parseFloat(rawPrice))) {
+              rawPrice = item.y;
             }
-          } catch (e) {}
+
+            const latestPrice = parseFloat(rawPrice);
+            if (latestPrice > 0) {
+              const matchKey = Object.keys(manualStockPrices).find(k => h.code.includes(k)) || h.code;
+              manualStockPrices[matchKey] = latestPrice;
+              updatedCount++;
+            }
+          }
         }
       }
 
-      stockLastUpdateTime = "12:47 盤中即時行情";
+      stockLastUpdateTime = "盤後自動連動收盤價";
       saveAllSettingsLocalAndCloud();
       renderStockPage(currentStockMember);
       renderAssets(currentAssetMember);
-      alert('證交所即時股價對接校正完成！');
+
+      if (updatedCount > 0) {
+        alert(`成功連動更新 ${updatedCount} 檔股票之盤後收盤價！`);
+      } else {
+        alert('受限於網路/跨域限制無法自動連動。您可點擊各股票卡片旁的【校正單價】手動調整價格。');
+      }
     }
 
     function toggleStockDetails(code) {
