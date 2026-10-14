@@ -142,6 +142,16 @@
             <input type="text" id="amount_ntd" required placeholder="0" oninput="formatInputCurrency(this)" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-lg font-extrabold text-[#2E2C2B] bg-[#F7F4F3] focus:bg-white focus:ring-2 focus:ring-[#B2C1B4] outline-none">
           </div>
 
+          <div>
+              <label class="block text-xs font-bold text-[#524D4B] mb-1">分期期數</label>
+              <select id="installment_period" class="w-full box-border p-3 border border-[#DCD6D3] rounded-xl text-sm font-bold bg-[#F7F4F3] text-[#2E2C2B] focus:outline-none">
+                <option value="1">不分期</option>
+                <option value="3">3 期</option>
+                <option value="6">6 期</option>
+                <option value="12">12 期</option>
+              </select>
+            </div>
+          
           <div class="grid grid-cols-2 gap-2.5">
             <div>
               <label class="block text-xs font-bold text-[#524D4B] mb-1">歸屬成員</label>
@@ -3822,30 +3832,67 @@ if (catContainer) {
         }
       }
 
-      const recordToInsert = {
+      // 取得分期期數
+    const installments = parseInt(document.getElementById('installment_period')?.value) || 1;
+
+    let recordsToInsert = [];
+
+    // 若是「編輯舊紀錄」或「不分期」，直接新增單筆
+    if (editId || installments === 1) {
+      recordsToInsert.push({
         item_name: rawItemName,
         amount_ntd: totalAmount,
         account_name: bankName,
         member_tag: memberTag,
         category: category,
         transaction_date: customDate
-      };
+      });
+    } else {
+      // 分期計算：正負號保留，金額取絕對值計算每期整數
+      const isExpense = totalAmount < 0;
+      const absTotal = Math.abs(totalAmount);
+      const basePerPeriod = Math.floor(absTotal / installments); // 每期整數（向下取整）
+      const remainder = absTotal - (basePerPeriod * installments); // 剩餘除不盡之差額
+      const firstPeriodAbs = basePerPeriod + remainder; // 餘額一律列入第一期
 
-      try {
-        let res;
-        if (editId) {
-          res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${editId}`, {
-            method: 'PATCH',
-            headers: fetchHeaders,
-            body: JSON.stringify(recordToInsert)
-          });
-        } else {
-          res = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
-            method: 'POST',
-            headers: fetchHeaders,
-            body: JSON.stringify([recordToInsert])
-          });
-        }
+      const startDate = new Date(customDate);
+
+      for (let i = 1; i <= installments; i++) {
+        // 計算未來各期日期（逐月遞增）
+        const currentPeriodDate = new Date(startDate);
+        currentPeriodDate.setMonth(startDate.getMonth() + (i - 1));
+        const formattedDate = currentPeriodDate.toISOString().split('T')[0];
+
+        // 第一期拿包含餘額的金額，其餘拿基本金額
+        const currentAbsAmount = (i === 1) ? firstPeriodAbs : basePerPeriod;
+        const finalPeriodAmount = isExpense ? -currentAbsAmount : currentAbsAmount;
+
+        recordsToInsert.push({
+          item_name: `${rawItemName}(${i}/${installments})`,
+          amount_ntd: finalPeriodAmount,
+          account_name: bankName,
+          member_tag: memberTag,
+          category: category,
+          transaction_date: formattedDate
+        });
+      }
+    }
+
+    try {
+      let res;
+      if (editId) {
+        res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${editId}`, {
+          method: 'PATCH',
+          headers: fetchHeaders,
+          body: JSON.stringify(recordsToInsert[0])
+        });
+      } else {
+        res = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
+          method: 'POST',
+          headers: fetchHeaders,
+          body: JSON.stringify(recordsToInsert)
+        });
+      }
 
         if (!res.ok) throw new Error(await res.text());
         document.getElementById('item_name').value = '';
