@@ -1042,15 +1042,9 @@
           </select>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">股票代碼</label>
-            <input type="text" id="modal-stock-code" oninput="autoFillStockNameByCode(this.value)" placeholder="例: 0056" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
-          </div>
-          <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">股票名稱</label>
-            <input type="text" id="modal-stock-name" placeholder="例: 元大高股息" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
-          </div>
+        <div>
+          <label class="block font-bold mb-1 text-[#524D4B]">股票名稱 / 代號</label>
+          <input type="text" id="modal-stock-code" placeholder="例: 0056 或 元大高股息" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl bg-[#F7F4F3] font-bold">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -1143,11 +1137,10 @@
     let isMemoryAuthenticated = false;
     let currentUser = null;
     let userAccounts = [
-  { name: 'admin', pass: '123456', role: 'admin' },
-  { name: 'jeyroulin', pass: '0415', role: 'admin' }, // 寫死最高管理者帳號
-  { name: '宇軒爸爸', pass: '0926', role: 'viewer' },
-  { name: '訪客', pass: '0000', role: 'guest' }
-];
+      { name: 'admin', pass: '123456', role: 'admin' },
+      { name: 'yuxuan', pass: '123456', role: 'viewer' },
+      { name: '訪客', pass: '0000', role: 'guest' }
+    ];
 
     let userLoginLogs = []; 
     let entryMode = '支出';
@@ -2297,28 +2290,7 @@
     function closeStockModal() {
       document.getElementById('stock-modal').classList.add('hidden');
     }
-// 常用股票代號與名稱對照字典
-    const stockNameMap = {
-      '0050': '元大台灣50',
-      '0056': '元大高股息',
-      '00878': '國泰永續高股息',
-      '00919': '群益台灣精選高息',
-      '00929': '復華台灣科技優息',
-      '2330': '台積電',
-      '2317': '鴻海',
-      '2454': '聯發科',
-      '2303': '聯電',
-      '3008': '大立光',
-      '2327': '國巨'
-    };
 
-    function autoFillStockNameByCode(codeVal) {
-      const cleanCode = codeVal.trim();
-      const nameInput = document.getElementById('modal-stock-name');
-      if (stockNameMap[cleanCode] && nameInput) {
-        nameInput.value = stockNameMap[cleanCode];
-      }
-    }
     function editStockTransaction(txId) {
       if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法編輯！');
       const tx = stocksList.find(s => s.id === Number(txId));
@@ -2335,13 +2307,7 @@
       select.innerHTML = brokerList.map(br => `<option value="${br}">${br}</option>`).join('');
       select.value = tx.broker || brokerList[0];
 
-      // 自動將舊資料的 "0050 元大台灣50" 拆解為代碼與名稱
-      const codeParts = (tx.code || '').trim().split(' ');
-      const sCode = codeParts[0] || '';
-      const sName = codeParts.slice(1).join(' ') || (stockNameMap[sCode] || '');
-
-      document.getElementById('modal-stock-code').value = sCode;
-      document.getElementById('modal-stock-name').value = sName;
+      document.getElementById('modal-stock-code').value = tx.code || '';
       document.getElementById('modal-stock-price').value = tx.price || '';
       document.getElementById('modal-stock-shares').value = tx.shares ? tx.shares.toLocaleString() : '';
       document.getElementById('modal-stock-total').value = tx.total ? tx.total.toLocaleString() : '';
@@ -2367,9 +2333,7 @@
       const owner = document.getElementById('modal-stock-owner').value;
       const type = document.getElementById('modal-stock-type').value;
       const broker = document.getElementById('modal-stock-broker').value;
-      const sCode = document.getElementById('modal-stock-code').value.trim();
-      const sName = document.getElementById('modal-stock-name').value.trim();
-      const code = sName ? `${sCode} ${sName}` : sCode;
+      const code = document.getElementById('modal-stock-code').value.trim();
       const price = Number(document.getElementById('modal-stock-price').value) || 0;
       const shares = parseCurrencyNumber(document.getElementById('modal-stock-shares').value);
       const total = parseCurrencyNumber(document.getElementById('modal-stock-total').value);
@@ -2565,30 +2529,6 @@
       renderStockPieCard(member, holdings, totalMarketValue);
 
       const listContainer = document.getElementById('stock-detailed-list');
-      function renderStockPage(member) {
-      document.getElementById('stock-dashboard-title').innerText = `【${member}】股票資產預估現值`;
-
-      const holdings = getMemberStockHoldings(member);
-      const totalMarketValue = holdings.reduce((sum, h) => sum + h.currentMarketValue, 0);
-      const totalCost = holdings.reduce((sum, h) => sum + h.totalCost, 0);
-
-      const cashValue = stockAccountCash[member] || 0;
-      const grandTotal = totalMarketValue + cashValue;
-      const totalProfit = totalMarketValue - totalCost;
-
-      document.getElementById('stock-account-grand-total').innerText = maskDisplayValue(grandTotal);
-      document.getElementById('stock-total-market-val').innerText = maskDisplayValue(totalMarketValue);
-      document.getElementById('stock-total-cash-val').innerText = maskDisplayValue(cashValue);
-      document.getElementById('stock-total-cost-val').innerText = maskDisplayValue(totalCost);
-      
-      const profitEl = document.getElementById('stock-total-profit-val');
-      const isPositive = totalProfit >= 0;
-      profitEl.innerText = currentUser?.role === 'guest' ? '***' : ((isPositive ? '+' : '') + '$' + totalProfit.toLocaleString());
-      profitEl.className = `text-sm font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
-
-      renderStockPieCard(member, holdings, totalMarketValue);
-
-      const listContainer = document.getElementById('stock-detailed-list');
       if (holdings.length === 0) {
         listContainer.innerHTML = `<div class="text-center text-[#827C78] py-4 text-xs">【${member}】目前無持股紀錄。</div>`;
       } else {
@@ -2597,162 +2537,12 @@
           const isExpanded = expandedStockCode === h.code;
           const sortedTxList = [...h.txList].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
-          // 自動拆解代碼與名稱 (先計算好變數)
-          const codeParts = h.code.trim().split(' ');
-          const displayCode = codeParts[0] || h.code;
-          const displayName = codeParts.slice(1).join(' ') || (stockNameMap[displayCode] || '台股');
-
-          // 正確回傳單一 HTML 樣板字串
           return `
             <div class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
               <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
-                <div class="flex items-center gap-3">
-                  <div>
-                    <span class="text-xs text-[#827C78]">股票代碼：</span>
-                    <strong class="text-[#2E2C2B] text-sm font-extrabold font-mono">${displayCode}</strong>
-                  </div>
-                  <div>
-                    <span class="text-xs text-[#827C78]">股票名稱：</span>
-                    <strong class="text-[#4D5A6E] text-sm font-bold">${displayName}</strong>
-                  </div>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">持有股數：</span>
-                  <strong class="text-[#2E2C2B] text-sm font-bold">${currentUser?.role === 'guest' ? '***' : h.shares.toLocaleString()} 股</strong>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">現值總額：</span>
-                  <strong class="text-[#4D5A6E] text-sm font-bold">${maskDisplayValue(h.currentMarketValue)}</strong>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">損益金額 / %數：</span>
-                  <strong class="${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} text-sm font-bold">
-                    ${currentUser?.role === 'guest' ? '***' : ((isProf ? '+' : '') + '$' + h.unrealizedProfit.toLocaleString() + ' (' + h.profitRate + '%)')}
-                  </strong>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#635D5A]">
-                <div class="flex flex-wrap gap-x-4 gap-y-1">
-                  <span>證券銀行：<strong class="text-[#2E2C2B] font-bold">${h.broker || '國泰綜合證券'}</strong></span>
-                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">${currentUser?.role === 'guest' ? '***' : '$' + h.avgCost + ' (' + maskDisplayValue(Math.round(h.totalCost)) + ')'}</strong></span>
-                  <span>最新單價：<strong class="text-[#784D4E] font-extrabold">${currentUser?.role === 'guest' ? '***' : '$' + h.latestPrice} (${stockLastUpdateTime})</strong></span>
-                </div>
-                <div class="flex gap-2 shrink-0 ml-auto">
-                  <button onclick="updateStockLatestPrice('${h.code}')" class="editable-only px-3 py-1.5 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#2E2C2B] rounded-xl font-bold shadow-2xs text-xs">
-                    校正單價
-                  </button>
-                  <button onclick="toggleStockDetails('${h.code}')" class="px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-xl font-bold shadow-2xs text-xs">
-                    ${isExpanded ? '明細 ▲' : '明細 ▼'}
-                  </button>
-                </div>
-              </div>
-
-              ${isExpanded ? `
-                <div class="p-3 bg-[#E8EDF5] rounded-xl border border-[#BAC7DB] space-y-2 mt-2 text-[11px]">
-                  <strong class="font-bold text-[#4D5A6E] block border-b border-[#BAC7DB] pb-1.5">「${h.code}」歷史明細 (${sortedTxList.length}筆)</strong>
-                  ${sortedTxList.map(t => `
-                    <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] gap-2">
-                      <div class="min-w-0">
-                        <strong class="${t.type === '買入' ? 'text-[#784D4E]' : 'text-[#556357]'} font-bold block">[${t.type}] ${currentUser?.role === 'guest' ? '***' : t.shares.toLocaleString()}股 @ $${t.price}</strong>
-                        <span class="text-[10px] text-[#827C78] block">日期：${t.date || '無'} | 總計：${maskDisplayValue(t.total)}</span>
-                      </div>
-                      <div class="space-x-1 shrink-0 editable-only">
-                        <button onclick="editStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] font-bold rounded-lg">編輯</button>
-                        <button onclick="deleteStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7EDED] text-[#784D4E] font-bold rounded-lg">刪除</button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join('');
-      }
-    }
-
-          // 自動拆解代碼與名稱 (先計算好變數)
-          const codeParts = h.code.trim().split(' ');
-          const displayCode = codeParts[0] || h.code;
-          const displayName = codeParts.slice(1).join(' ') || (stockNameMap[displayCode] || '台股');
-
-          // 正確回傳單一 HTML 樣板字串
-          return `
-            <div class="bg-white p-5 rounded-2xl border border-[#DCD6D3] space-y-3 text-xs shadow-2xs">
-              <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
-                <div class="flex items-center gap-3">
-                  <div>
-                    <span class="text-xs text-[#827C78]">股票代碼：</span>
-                    <strong class="text-[#2E2C2B] text-sm font-extrabold font-mono">${displayCode}</strong>
-                  </div>
-                  <div>
-                    <span class="text-xs text-[#827C78]">股票名稱：</span>
-                    <strong class="text-[#4D5A6E] text-sm font-bold">${displayName}</strong>
-                  </div>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">持有股數：</span>
-                  <strong class="text-[#2E2C2B] text-sm font-bold">${currentUser?.role === 'guest' ? '***' : h.shares.toLocaleString()} 股</strong>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">現值總額：</span>
-                  <strong class="text-[#4D5A6E] text-sm font-bold">${maskDisplayValue(h.currentMarketValue)}</strong>
-                </div>
-                <div class="text-xs">
-                  <span class="text-[#827C78]">損益金額 / %數：</span>
-                  <strong class="${isProf ? 'text-[#556357]' : 'text-[#784D4E]'} text-sm font-bold">
-                    ${currentUser?.role === 'guest' ? '***' : ((isProf ? '+' : '') + '$' + h.unrealizedProfit.toLocaleString() + ' (' + h.profitRate + '%)')}
-                  </strong>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#635D5A]">
-                <div class="flex flex-wrap gap-x-4 gap-y-1">
-                  <span>證券銀行：<strong class="text-[#2E2C2B] font-bold">${h.broker || '國泰綜合證券'}</strong></span>
-                  <span>平均買價 / 總成本：<strong class="text-[#2E2C2B] font-bold">${currentUser?.role === 'guest' ? '***' : '$' + h.avgCost + ' (' + maskDisplayValue(Math.round(h.totalCost)) + ')'}</strong></span>
-                  <span>最新單價：<strong class="text-[#784D4E] font-extrabold">${currentUser?.role === 'guest' ? '***' : '$' + h.latestPrice} (${stockLastUpdateTime})</strong></span>
-                </div>
-                <div class="flex gap-2 shrink-0 ml-auto">
-                  <button onclick="updateStockLatestPrice('${h.code}')" class="editable-only px-3 py-1.5 bg-[#DDD7D4] hover:bg-[#D1C9C6] text-[#2E2C2B] rounded-xl font-bold shadow-2xs text-xs">
-                    校正單價
-                  </button>
-                  <button onclick="toggleStockDetails('${h.code}')" class="px-3 py-1.5 bg-[#4D5A6E] hover:bg-[#3B4758] text-white rounded-xl font-bold shadow-2xs text-xs">
-                    ${isExpanded ? '明細 ▲' : '明細 ▼'}
-                  </button>
-                </div>
-              </div>
-
-              ${isExpanded ? `
-                <div class="p-3 bg-[#E8EDF5] rounded-xl border border-[#BAC7DB] space-y-2 mt-2 text-[11px]">
-                  <strong class="font-bold text-[#4D5A6E] block border-b border-[#BAC7DB] pb-1.5">「${h.code}」歷史明細 (${sortedTxList.length}筆)</strong>
-                  ${sortedTxList.map(t => `
-                    <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-[#DCD6D3] gap-2">
-                      <div class="min-w-0">
-                        <strong class="${t.type === '買入' ? 'text-[#784D4E]' : 'text-[#556357]'} font-bold block">[${t.type}] ${currentUser?.role === 'guest' ? '***' : t.shares.toLocaleString()}股 @ $${t.price}</strong>
-                        <span class="text-[10px] text-[#827C78] block">日期：${t.date || '無'} | 總計：${maskDisplayValue(t.total)}</span>
-                      </div>
-                      <div class="space-x-1 shrink-0 editable-only">
-                        <button onclick="editStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7F4F3] border border-[#DCD6D3] text-[#4D5A6E] font-bold rounded-lg">編輯</button>
-                        <button onclick="deleteStockTransaction(${t.id})" class="px-2 py-1 bg-[#F7EDED] text-[#784D4E] font-bold rounded-lg">刪除</button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join('');
-      }
-              <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F2ECE9] pb-3">
-                <div class="flex items-center gap-3">
-                  <div>
-                    <span class="text-xs text-[#827C78]">股票代碼：</span>
-                    <strong class="text-[#2E2C2B] text-sm font-extrabold font-mono">${displayCode}</strong>
-                  </div>
-                  <div>
-                    <span class="text-xs text-[#827C78]">股票名稱：</span>
-                    <strong class="text-[#4D5A6E] text-sm font-bold">${displayName}</strong>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-[#827C78]">股票名稱：</span>
+                  <strong class="text-[#2E2C2B] text-sm font-bold">${h.code}</strong>
                 </div>
                 <div class="text-xs">
                   <span class="text-[#827C78]">持有股數：</span>
