@@ -2541,30 +2541,7 @@
       `;
     }
 
-    function renderStockPage(member) {
-      document.getElementById('stock-dashboard-title').innerText = `【${member}】股票資產預估現值`;
-
-      const holdings = getMemberStockHoldings(member);
-      const totalMarketValue = holdings.reduce((sum, h) => sum + h.currentMarketValue, 0);
-      const totalCost = holdings.reduce((sum, h) => sum + h.totalCost, 0);
-
-      const cashValue = stockAccountCash[member] || 0;
-      const grandTotal = totalMarketValue + cashValue;
-      const totalProfit = totalMarketValue - totalCost;
-
-      document.getElementById('stock-account-grand-total').innerText = maskDisplayValue(grandTotal);
-      document.getElementById('stock-total-market-val').innerText = maskDisplayValue(totalMarketValue);
-      document.getElementById('stock-total-cash-val').innerText = maskDisplayValue(cashValue);
-      document.getElementById('stock-total-cost-val').innerText = maskDisplayValue(totalCost);
-      
-      const profitEl = document.getElementById('stock-total-profit-val');
-      const isPositive = totalProfit >= 0;
-      profitEl.innerText = currentUser?.role === 'guest' ? '***' : ((isPositive ? '+' : '') + '$' + totalProfit.toLocaleString());
-      profitEl.className = `text-sm font-extrabold ${isPositive ? 'text-[#F2E5C9]' : 'text-[#C89B9C]'}`;
-
-      renderStockPieCard(member, holdings, totalMarketValue);
-
-      const listContainer = document.getElementById('stock-detailed-list');
+    
       function renderStockPage(member) {
       document.getElementById('stock-dashboard-title').innerText = `【${member}】股票資產預估現值`;
 
