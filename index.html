@@ -3775,12 +3775,15 @@ if (catContainer) {
 
     function editTransaction(id) {
       if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法編輯！');
-      const tx = allTransactions.find(t => t.id === id);
+      const tx = allTransactions.find(t => String(t.id) === String(id));
       if (!tx) return;
 
       document.getElementById('editing_tx_id').value = tx.id;
       document.getElementById('custom_transaction_date').value = tx.transaction_date;
       document.getElementById('item_name').value = tx.item_name;
+      if (document.getElementById('account_name') && tx.account_name) {
+        document.getElementById('account_name').value = tx.account_name;
+      }
       document.getElementById('amount_ntd').value = Math.abs(tx.amount_ntd).toLocaleString();
       document.getElementById('member_tag').value = tx.member_tag || '潔柔';
       document.getElementById('category').value = tx.category || '生活費';
@@ -4072,7 +4075,7 @@ async function handleExcelImport(event) {
       renderQuickList(filtered);
     }
 
-    function renderQuickList(list) {
+   function renderQuickList(list) {
       const container = document.getElementById('quick-list');
       if (list.length === 0) {
         container.innerHTML = '<div class="p-4 text-center text-[#827C78] text-xs">尚無紀錄。</div>';
@@ -4093,8 +4096,8 @@ async function handleExcelImport(event) {
             <div class="flex items-center gap-2 shrink-0">
               <div class="font-extrabold ${amtClass} text-sm">${amtStr}</div>
               <div class="editable-only space-x-1">
-                <button onclick="editTransaction(${t.id})" class="text-[10px] bg-[#F7F4F3] hover:bg-[#DDD7D4] text-[#524D4B] px-2 py-1 rounded border border-[#DCD6D3]">編輯</button>
-                <button onclick="deleteTransaction(${t.id})" class="text-[10px] bg-[#F7EDED] hover:bg-[#EBD2D2] text-[#784D4E] px-1.5 py-1 rounded border border-[#C89B9C]">刪除</button>
+                <button onclick="editTransaction('${t.id}')" class="text-[10px] bg-[#F7F4F3] hover:bg-[#DDD7D4] text-[#524D4B] px-2 py-1 rounded border border-[#DCD6D3]">編輯</button>
+                <button onclick="deleteTransaction('${t.id}')" class="text-[10px] bg-[#F7EDED] hover:bg-[#EBD2D2] text-[#784D4E] px-1.5 py-1 rounded border border-[#C89B9C]">刪除</button>
               </div>
             </div>
           </div>
