@@ -2028,61 +2028,72 @@ function initTodayDate() {
       renderCalendar();
     }
 
-    function getMemberStockHoldings(member) {
-      const userTransactions = stocksList.filter(s => member === '全部' || s.owner === member);
-      const holdings = {};
+function getMemberStockHoldings(member) {
+  const userTransactions = (typeof stocksList !== 'undefined' ? stocksList : stockTransactions).filter(s => member === '全部' || s.owner === member);
+  const holdings = {};
 
-      userTransactions.forEach(t => {
-        if (!holdings[t.code]) {
-          holdings[t.code] = {
-            code: t.code, shares: 0, totalCost: 0,
-            lastBuyPrice: t.price, broker: t.broker, owner: t.owner,
-            txList: []
-          };
-        }
-        holdings[t.code].txList.push(t);
-        if (t.type === '買入') {
-          holdings[t.code].shares += t.shares;
-          holdings[t.code].totalCost += t.total;
-        } else {
-          holdings[t.code].shares -= t.shares;
-          holdings[t.code].totalCost -= t.total;
-        }
-        holdings[t.code].lastBuyPrice = t.price;
-      });
+  userTransactions.forEach(t => {
+    const codeKey = (t.code || t.stock_code || '').trim();
+    if (!codeKey) return;
 
-      return Object.values(holdings).filter(h => h.shares > 0).map(h => {
-        const matchKey = Object.keys(manualStockPrices).find(k => h.code.includes(k)) || h.code;
-        const latestPrice = manualStockPrices[matchKey] || h.lastBuyPrice || 0;
-        const grossValue = h.shares * latestPrice;
-
-        const isETF = /^00/.test(h.code.trim());
-        const taxRate = isETF ? 0.001 : 0.003;
-        const estTax = Math.floor(grossValue * taxRate);
-
-        let estFee = 0;
-        if (grossValue > 0) {
-          const calcFee = Math.floor(grossValue * 0.001425 * 0.28);
-          estFee = Math.max(1, calcFee);
-        }
-
-        const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
-        const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
-        const unrealizedProfit = currentMarketValue - h.totalCost;
-        const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
-
-        return { 
-          ...h, 
-          latestPrice, 
-          avgCost, 
-          grossValue: Math.round(grossValue), 
-          estTaxFee: estTax + estFee, 
-          currentMarketValue, 
-          unrealizedProfit, 
-          profitRate 
-        };
-      }).sort((a, b) => b.currentMarketValue - a.currentMarketValue);
+    if (!holdings[codeKey]) {
+      holdings[codeKey] = {
+        code: codeKey,
+        name: t.name || t.stock_name || codeKey,
+        shares: 0,
+        totalCost: 0,
+        lastBuyPrice: t.price || 0,
+        broker: t.broker || t.bank || '國泰',
+        owner: t.owner || member,
+        txList: []
+      };
     }
+
+    holdings[codeKey].txList.push(t);
+    const numShares = Number(t.shares || 0);
+    const numTotal = Number(t.total || t.totalCost || (numShares * Number(t.price || 0)));
+
+    if (t.type === '買入' || !t.type) {
+      holdings[codeKey].shares += numShares;
+      holdings[codeKey].totalCost += numTotal;
+    } else {
+      holdings[codeKey].shares -= numShares;
+      holdings[codeKey].totalCost -= numTotal;
+    }
+    holdings[codeKey].lastBuyPrice = t.price || holdings[codeKey].lastBuyPrice;
+  });
+
+  return Object.values(holdings).filter(h => h.shares > 0).map(h => {
+    const matchKey = Object.keys(manualStockPrices || {}).find(k => h.code.includes(k)) || h.code;
+    const latestPrice = Number(manualStockPrices[matchKey] || h.lastBuyPrice || 0);
+    const grossValue = Math.round(h.shares * latestPrice);
+
+    const isETF = /^00/.test(h.code.trim());
+    const taxRate = isETF ? 0.001 : 0.003;
+    const estTax = Math.floor(grossValue * taxRate);
+
+    let estFee = 0;
+    if (grossValue > 0) {
+      const calcFee = Math.floor(grossValue * 0.001425 * 0.28);
+      estFee = Math.max(1, calcFee);
+    }
+
+    const unrealizedProfit = grossValue - h.totalCost;
+    const profitRatio = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
+    const avgCostPrice = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
+
+    return {
+      ...h,
+      avgCostPrice: avgCostPrice,
+      latestPrice: latestPrice,
+      currentMarketValue: grossValue,
+      unrealizedProfit: unrealizedProfit,
+      profitRatio: profitRatio,
+      estTax: estTax,
+      estFee: estFee
+    };
+  });
+}
 
     function autoFillForexRate() {
       const curr = document.getElementById('modal-forex-currency').value;
