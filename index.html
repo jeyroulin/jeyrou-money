@@ -4245,7 +4245,6 @@ function filterQuickList() {
       document.getElementById('salary-transfer-modal').classList.add('hidden');
     }
 
-    // 動態更新收支袋選單
     function updateTransferSubBagOptions() {
       const bankType = document.getElementById('transfer-modal-banktype').value;
       const subBagSelect = document.getElementById('transfer-modal-subbag');
@@ -4258,7 +4257,6 @@ function filterQuickList() {
         html += `<option value="NEW_LIFE">+ 新增全新收支袋</option>`;
         subBagSelect.innerHTML = html;
 
-        // 預設自動幫您選取名稱帶有「生活費」的袋子
         const defaultLifeFund = funds.find(f => f.name.includes('生活費'));
         if (defaultLifeFund) {
           subBagSelect.value = defaultLifeFund.id;
@@ -4266,7 +4264,6 @@ function filterQuickList() {
       }
     }
 
-    // 確認撥款與記帳
     async function confirmSalaryTransferModal() {
       const amount = parseCurrencyNumber(document.getElementById('transfer-modal-amount').value);
       const bankType = document.getElementById('transfer-modal-banktype').value;
@@ -4297,7 +4294,6 @@ function filterQuickList() {
           }
         }
 
-        // 自動新增快捷記帳扣款紀錄
         const newTx = {
           transaction_date: getTodayString(),
           item_name: `預撥生活費 | ${monthStr}`,
@@ -4318,7 +4314,6 @@ function filterQuickList() {
           localStorage.setItem('offline_transactions', JSON.stringify(allTransactions));
         }
 
-        // 記錄當月已完成撥款，當月不再重複提醒
         localStorage.setItem('last_salary_transfer_month', monthStr);
 
         saveAllSettingsLocalAndCloud();
