@@ -4270,8 +4270,8 @@ async function executeSalaryTransfer(amount, monthStr) {
   }
 }
 
-// 動態產生並彈出「撥款入袋」Modal 介面
-function openSalaryTransferModal() {
+// 動態產生並跳出 5~10 號發薪撥款確認 Modal
+function openSalaryTransferModal(pendingAmount = 17074) {
   let modal = document.getElementById('salary-transfer-modal');
   if (!modal) {
     modal = document.createElement('div');
@@ -4279,32 +4279,31 @@ function openSalaryTransferModal() {
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4';
     modal.innerHTML = `
       <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4 shadow-xl border border-[#DCD6D3]">
-        <h3 class="text-base font-bold text-[#4D5A6E] border-b border-[#F2ECE9] pb-2">發薪撥款與專款儲值提醒</h3>
+        <div class="border-b border-[#F2ECE9] pb-2 flex justify-between items-center">
+          <h3 class="text-base font-bold text-[#4D5A6E]">發薪日：隔月生活費撥款確認</h3>
+          <span class="text-xs bg-[#EBF0EC] text-[#556357] px-2 py-0.5 rounded-full font-bold">待撥款</span>
+        </div>
         <div class="space-y-3 text-xs">
           <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">撥款金額 ($)</label>
-            <input type="text" id="transfer-modal-amount" value="17,074" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-extrabold text-[#2E2C2B] bg-[#F7F4F3]">
+            <label class="block font-bold mb-1 text-[#524D4B]">本月預撥總金額 ($)</label>
+            <input type="text" id="transfer-modal-amount" value="${pendingAmount.toLocaleString()}" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-extrabold text-[#2E2C2B] bg-[#F7F4F3]">
           </div>
           <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">扣款主帳戶</label>
-            <input type="text" id="transfer-modal-account" value="預設銀行主帳戶" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold text-[#524D4B] bg-[#F7F4F3]">
-          </div>
-          <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">選擇銀行專款錢包</label>
+            <label class="block font-bold mb-1 text-[#524D4B]">選擇目的銀行專款錢包</label>
             <select id="transfer-modal-banktype" onchange="updateTransferSubBagOptions()" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
               <option value="line">連線銀行專款</option>
               <option value="land">土地銀行專款</option>
             </select>
           </div>
           <div>
-            <label class="block font-bold mb-1 text-[#524D4B]">選擇要充值的「收支袋」</label>
+            <label class="block font-bold mb-1 text-[#524D4B]">選擇撥入的「專款收支袋」</label>
             <select id="transfer-modal-subbag" class="w-full p-2.5 border border-[#DCD6D3] rounded-xl font-bold bg-white text-[#2E2C2B]">
             </select>
           </div>
         </div>
         <div class="flex gap-2 pt-2">
-          <button onclick="closeSalaryTransferModal()" class="flex-1 py-3 bg-[#DDD7D4] text-[#3D3A39] font-bold rounded-xl text-xs">稍後再說</button>
-          <button onclick="confirmSalaryTransferModal()" class="flex-1 py-3 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs">確認撥款入袋</button>
+          <button onclick="closeSalaryTransferModal()" class="flex-1 py-3 bg-[#DDD7D4] text-[#3D3A39] font-bold rounded-xl text-xs">稍後撥款</button>
+          <button onclick="confirmSalaryTransferModal()" class="flex-1 py-3 bg-[#4D5A6E] text-white font-bold rounded-xl text-xs shadow-xs">確認執行撥款入袋</button>
         </div>
       </div>
     `;
@@ -4320,7 +4319,7 @@ function closeSalaryTransferModal() {
   if (modal) modal.classList.add('hidden');
 }
 
-// 動態讀取並更新選單中的收支袋清單
+// 動態更新專款裡面的收支袋選單
 function updateTransferSubBagOptions() {
   const bankType = document.getElementById('transfer-modal-banktype').value;
   const subBagSelect = document.getElementById('transfer-modal-subbag');
@@ -4333,6 +4332,7 @@ function updateTransferSubBagOptions() {
     html += `<option value="NEW_LIFE">+ 新增全新收支袋</option>`;
     subBagSelect.innerHTML = html;
 
+    // 預設自動鎖定名稱有「生活費」的袋子
     const defaultLifeFund = funds.find(f => f.name.includes('生活費'));
     if (defaultLifeFund) {
       subBagSelect.value = defaultLifeFund.id;
@@ -4340,20 +4340,18 @@ function updateTransferSubBagOptions() {
   }
 }
 
-// 點擊確認：執行扣款記帳並存入指定的收支袋
+// 點擊確認後，精準將金額充值進對應的收支袋
 async function confirmSalaryTransferModal() {
   const rawAmtStr = document.getElementById('transfer-modal-amount').value.replace(/,/g, '');
   const amount = Number(rawAmtStr) || 0;
   const bankType = document.getElementById('transfer-modal-banktype').value;
   const subBagVal = document.getElementById('transfer-modal-subbag').value;
-  const mainAccount = document.getElementById('transfer-modal-account').value.trim() || '預設銀行主帳戶';
   const monthStr = new Date().toISOString().substring(0, 7);
 
-  if (amount <= 0) return alert('請輸入有效的撥款金額！');
+  if (amount <= 0) return alert('請輸入有效的金額！');
 
   try {
     let targetBagName = '生活費';
-
     if (!currentDedicatedFunds[bankType]) currentDedicatedFunds[bankType] = [];
 
     if (subBagVal === 'NEW_LIFE') {
@@ -4374,34 +4372,14 @@ async function confirmSalaryTransferModal() {
       }
     }
 
-    const newTx = {
-      transaction_date: getTodayString(),
-      item_name: `預撥生活費 | ${monthStr}`,
-      amount_ntd: -Math.abs(amount),
-      account_name: mainAccount,
-      member_tag: '潔柔',
-      category: '生活費'
-    };
-
-    if (typeof SUPABASE_URL !== 'undefined') {
-      await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
-        method: 'POST',
-        headers: fetchHeaders,
-        body: JSON.stringify([newTx])
-      });
-    } else {
-      allTransactions.unshift({ ...newTx, id: Date.now() });
-      localStorage.setItem('offline_transactions', JSON.stringify(allTransactions));
-    }
-
+    // 標記當月撥款作業已完成，不再跳彈窗
     localStorage.setItem('last_salary_transfer_month', monthStr);
 
     saveAllSettingsLocalAndCloud();
-    fetchTransactions();
     renderDedicatedFunds();
     closeSalaryTransferModal();
 
-    alert(`成功撥款 $${amount.toLocaleString()} 元至【${bankType === 'line' ? '連線' : '土銀'} - ${targetBagName}】並完成記帳！`);
+    alert(`已順利將 $${amount.toLocaleString()} 元撥入【${bankType === 'line' ? '連線' : '土銀'} - ${targetBagName}】！`);
   } catch (err) {
     alert('撥款失敗：' + err.message);
   }
