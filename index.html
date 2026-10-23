@@ -1798,15 +1798,17 @@
       return "2026-10-13";
     }
 
-    function initTodayDate() {
-      const todayStr = getTodayString();
-      const dateInput = document.getElementById('custom_transaction_date');
-      if (dateInput) dateInput.value = todayStr;
+// 🟢 修改後（直接替換第 1801 ~ 1809 行）
+function initTodayDate() {
+  const todayStr = getTodayString();
+  const dateInput = document.getElementById('custom_transaction_date');
+  if (dateInput) dateInput.value = todayStr;
 
-      const currentMonthStr = "2026-10";
-      if (document.getElementById('aa-month-select')) document.getElementById('aa-month-select').value = currentMonthStr;
-      if (document.getElementById('cashflow-month-select')) document.getElementById('cashflow-month-select').value = currentMonthStr;
-    }
+  // 動態取得當前年月（例: 2026-10），避免寫死特定月份
+  const dynamicMonthStr = todayStr.substring(0, 7);
+  if (document.getElementById('aa-month-select')) document.getElementById('aa-month-select').value = dynamicMonthStr;
+  if (document.getElementById('cashflow-month-select')) document.getElementById('cashflow-month-select').value = dynamicMonthStr;
+}
 
     function setEntryMode(mode) {
       entryMode = mode;
