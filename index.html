@@ -3801,14 +3801,42 @@ if (catContainer) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function cancelEditing() {
-      document.getElementById('editing_tx_id').value = '';
-      document.getElementById('item_name').value = '';
-      document.getElementById('amount_ntd').value = '';
-      document.getElementById('submit-btn').innerText = '儲存紀錄';
-      document.getElementById('cancel-edit-btn').classList.add('hidden');
+    // 檢查並自動充值至專款生活費收支袋
+function checkAndChargeDedicatedLifeFund(itemName, categoryVal, rawAmount) {
+  if (itemName.includes('生活費') || (categoryVal && categoryVal.includes('生活費'))) {
+    if (!currentDedicatedFunds.line) currentDedicatedFunds.line = [];
+    let lifeFund = currentDedicatedFunds.line.find(f => f.name.includes('生活費'));
+    const chargeAmt = Math.abs(rawAmount);
+    
+    if (lifeFund) {
+      lifeFund.amount += chargeAmt;
+    } else {
+      currentDedicatedFunds.line.push({
+        id: Date.now(),
+        name: '生活費',
+        amount: chargeAmt,
+        note: '快捷記帳自動預撥充值'
+      });
     }
+    saveAllSettingsLocalAndCloud();
+    renderDedicatedFunds();
+    return true;
+  }
+  return false;
+}
 
+function cancelEditing() {
+  document.getElementById('editing_tx_id').value = '';
+  document.getElementById('item_name').value = '';
+  document.getElementById('amount_ntd').value = '0';
+  document.getElementById('submit-btn').innerText = '儲存紀錄';
+  document.getElementById('cancel-edit-btn').classList.add('hidden');
+  
+  // 重置表單時，強制刷新日期為今天
+  if (typeof initTodayDate === 'function') {
+    initTodayDate();
+  }
+}
     async function deleteTransaction(id) {
       if (currentUser?.role === 'viewer' || currentUser?.role === 'guest') return alert('權限不足無法刪除！');
       if (!confirm('確定要刪除這筆紀錄嗎？')) return;
