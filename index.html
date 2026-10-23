@@ -1768,31 +1768,37 @@
       });
     }
 
-    function handleAccountChange() {
-      const accountName = document.getElementById('account_name').value;
-      const subBagContainer = document.getElementById('sub-bag-container');
-      const subBagSelect = document.getElementById('sub_bag_select');
+function handleAccountChange() {
+  const accountSelect = document.getElementById('account_name');
+  const subBagContainer = document.getElementById('sub-bag-container');
+  const subBagSelect = document.getElementById('sub_bag_select');
+  if (!subBagContainer || !subBagSelect) return;
 
-      if (accountName === '連線銀行專款小錢包') {
-        const funds = currentDedicatedFunds.line || [];
-        if (funds.length === 0) {
-          subBagSelect.innerHTML = `<option value="">尚無專款收支袋，請先至「現金收支」新增</option>`;
-        } else {
-          subBagSelect.innerHTML = funds.map(f => `<option value="${f.id}">[連線] ${f.name} (剩餘: $${f.amount.toLocaleString()})</option>`).join('');
-        }
-        subBagContainer.classList.remove('hidden');
-      } else if (accountName === '土地銀行專款小錢包') {
-        const funds = currentDedicatedFunds.land || [];
-        if (funds.length === 0) {
-          subBagSelect.innerHTML = `<option value="">尚無專款收支袋，請先至「現金收支」新增</option>`;
-        } else {
-          subBagSelect.innerHTML = funds.map(f => `<option value="${f.id}">[土銀] ${f.name} (剩餘: $${f.amount.toLocaleString()})</option>`).join('');
-        }
-        subBagContainer.classList.remove('hidden');
-      } else {
-        subBagContainer.classList.add('hidden');
-      }
+  // 強制顯示收支袋選單，不被隱藏
+  subBagContainer.classList.remove('hidden');
+
+  // 判斷當前帳戶選單選擇的是連線或土銀，若選現金則預設載入連線收支袋
+  const accVal = accountSelect ? accountSelect.value : '';
+  let bankType = 'line';
+  if (accVal.includes('土銀') || accVal.includes('土地')) {
+    bankType = 'land';
+  }
+
+  const funds = (currentDedicatedFunds && currentDedicatedFunds[bankType]) || [];
+  if (funds.length === 0) {
+    subBagSelect.innerHTML = `<option value="">(無可用收支袋)</option>`;
+  } else {
+    let html = `<option value="">(不指定收支袋)</option>`;
+    html += funds.map(f => `<option value="${f.id}">[${bankType === 'line' ? '連線' : '土銀'}] ${f.name} (剩餘: $${Number(f.amount || 0).toLocaleString()})</option>`).join('');
+    subBagSelect.innerHTML = html;
+
+    // 自動預設選取包含「生活費」的袋子
+    const defaultLife = funds.find(f => f.name.includes('生活費'));
+    if (defaultLife) {
+      subBagSelect.value = defaultLife.id;
     }
+  }
+}
 
 function getTodayString() {
   const now = new Date();
