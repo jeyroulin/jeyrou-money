@@ -4186,35 +4186,118 @@ function filterQuickList() {
       }
     }
 
-    async function initSystem() {
-      checkLoginSession();
-      initTodayDate();
-      await loadAllSettingsLocalAndCloud();
-      updateCtbcForexRates();
-      
-      const badge = document.getElementById('status-badge');
-      try {
-        const res = await fetch(SUPABASE_URL + '/rest/v1/transactions?select=*&limit=1', { method: 'GET', headers: fetchHeaders });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        if (badge) {
-          badge.className = 'shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF0EC] text-[#556357] border border-[#B2C1B4]';
-          badge.innerText = '連線正常';
+   // 檢查是否需要跳出撥款提醒（每月 5 ~ 10 號）
+function checkMonthlySalaryTransferReminder() {
+  const today = new Date();
+  const currentDay = today.getDate();
+  const currentMonthStr = today.toISOString().substring(0, 7);
+
+  // 1. 判斷日期是否在 5 號 到 10 號 之間
+  if (currentDay >= 5 && currentDay <= 10) {
+    const lastTransferredMonth = localStorage.getItem('last_salary_transfer_month');
+    
+    // 2. 當月如果尚未撥款過，跳出確認提醒
+    if (lastTransferredMonth !== currentMonthStr) {
+      setTimeout(() => {
+        const defaultAmount = 17074; // 可自訂預設撥款金額
+        const inputAmount = prompt(
+          `【發薪撥款提醒】\n今天是 ${today.getMonth() + 1} 月 ${currentDay} 號，是否執行隔月生活費預撥？\n\n請確認或修改撥款金額 ($)：`,
+          defaultAmount
+        );
+
+        if (inputAmount !== null && !isNaN(parseCurrencyNumber(inputAmount))) {
+          const transferAmt = parseCurrencyNumber(inputAmount);
+          if (transferAmt > 0) {
+            executeSalaryTransfer(transferAmt, currentMonthStr);
+          }
         }
-        fetchTransactions();
-      } catch (err) {
-        if (badge) {
-          badge.className = 'shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#F7EDED] text-[#784D4E] border border-[#C89B9C]';
-          badge.innerText = '離線模式';
-        }
-        const cached = localStorage.getItem('offline_transactions');
-        if (cached) {
-          allTransactions = JSON.parse(cached);
-          filterQuickList();
-        }
-      }
+      }, 1000);
+    }
+  }
+}
+
+// 執行撥款：自動記帳 + 充值連線專款生活費收支袋
+async function executeSalaryTransfer(amount, monthStr) {
+  try {
+    // A. 自動增加連線專款「生活費」收支袋金額
+    if (!currentDedicatedFunds.line) currentDedicatedFunds.line = [];
+    let lifeFund = currentDedicatedFunds.line.find(f => f.name.includes('生活費'));
+
+    if (lifeFund) {
+      lifeFund.amount += amount;
+    } else {
+      currentDedicatedFunds.line.push({
+        id: Date.now(),
+        name: '生活費',
+        amount: amount,
+        note: '隔月生活費預撥'
+      });
     }
 
-    initSystem();
-  </script>
+    // B. 自動新增一筆快捷記帳紀錄
+    const newTx = {
+      transaction_date: getTodayString(),
+      item_name: `生活費 | ${monthStr}`,
+      amount_ntd: -Math.abs(amount),
+      account_name: '預設銀行主帳戶',
+      member_tag: '潔柔',
+      category: '生活費'
+    };
+
+    if (typeof SUPABASE_URL !== 'undefined') {
+      await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
+        method: 'POST',
+        headers: fetchHeaders,
+        body: JSON.stringify([newTx])
+      });
+    } else {
+      allTransactions.unshift({ ...newTx, id: Date.now() });
+      localStorage.setItem('offline_transactions', JSON.stringify(allTransactions));
+    }
+
+    // C. 紀錄當月已完成撥款，避免重複跳出提醒
+    localStorage.setItem('last_salary_transfer_month', monthStr);
+
+    saveAllSettingsLocalAndCloud();
+    fetchTransactions();
+    renderDedicatedFunds();
+
+    alert(`成功撥款 $${amount.toLocaleString()} 元至連線專款「生活費」收支袋並完成記帳！`);
+  } catch (err) {
+    alert('撥款失敗：' + err.message);
+  }
+}
+
+async function initSystem() {
+  checkMonthlySalaryTransferReminder();
+  checkLoginSession();
+  initTodayDate();
+  await loadAllSettingsLocalAndCloud();
+  updateCtbcForexRates();
+  
+  const badge = document.getElementById('status-badge');
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/transactions?select=*&limit=1', { method: 'GET', headers: fetchHeaders });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (badge) {
+      badge.className = 'shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF0EC] text-[#556357] border border-[#B2C1B4]';
+      badge.innerText = '連線正常';
+    }
+    fetchTransactions();
+  } catch (err) {
+    if (badge) {
+      badge.className = 'shrink-0 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#F7EDED] text-[#784D4E] border border-[#C89B9C]';
+      badge.innerText = '離線模式';
+    }
+    const cached = localStorage.getItem('offline_transactions');
+    if (cached) {
+      allTransactions = JSON.parse(cached);
+      filterQuickList();
+    }
+  }
+}
+
+initSystem();
+</script>
 </body>
 </html>
