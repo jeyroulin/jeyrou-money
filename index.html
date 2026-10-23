@@ -131,7 +131,7 @@
             </select>
           </div>
 
-          <div id="sub-bag-container" class="hidden p-3 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-1">
+         <div id="sub-bag-container" class="p-3 bg-[#E8EDF5] border border-[#BAC7DB] rounded-xl space-y-1">
             <label class="block text-xs font-bold text-[#4D5A6E]">對應扣減/入帳之「收支袋」</label>
             <select id="sub_bag_select" class="w-full p-2.5 border border-[#DCD6D3] rounded-lg text-xs font-bold bg-white text-[#2E2C2B] outline-none">
             </select>
@@ -4437,6 +4437,9 @@ async function initSystem() {
   checkMonthlySalaryTransferReminder();
   checkLoginSession();
   initTodayDate();
+  if (typeof handleAccountChange === 'function') {
+    handleAccountChange();
+  }
   await loadAllSettingsLocalAndCloud();
   updateCtbcForexRates();
   
