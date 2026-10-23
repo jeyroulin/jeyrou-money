@@ -4032,14 +4032,15 @@ async function handleExcelImport(event) {
   };
   reader.readAsArrayBuffer(file);
 }
-    function filterQuickList() {
+function filterQuickList() {
       const keyword = (document.getElementById('search-input')?.value || '').toLowerCase();
       const memberFilter = document.getElementById('filter-member-select')?.value || '';
       const startDate = document.getElementById('filter-start-date')?.value || '';
       const endDate = document.getElementById('filter-end-date')?.value || '';
 
-      let incTotal = 0;
-      let expTotal = 0;
+      // 分別統計潔柔與宇軒的收入與支出
+      let jrInc = 0, jrExp = 0;
+      let yxInc = 0, yxExp = 0;
 
       const filtered = allTransactions.filter(t => {
         const matchKey = !keyword || (t.item_name && t.item_name.toLowerCase().includes(keyword));
@@ -4048,27 +4049,52 @@ async function handleExcelImport(event) {
         const matchEnd = !endDate || (t.transaction_date && t.transaction_date <= endDate);
         
         let matchType = true;
-          const amt = Number(t.amount_ntd) || 0;
-          if (currentHistoryTypeFilter === 'expense') {
-            matchType = amt < 0;
-          } else if (currentHistoryTypeFilter === 'income') {
-            matchType = amt > 0;
-          }
+        const amt = Number(t.amount_ntd) || 0;
+        if (currentHistoryTypeFilter === 'expense') {
+          matchType = amt < 0;
+        } else if (currentHistoryTypeFilter === 'income') {
+          matchType = amt > 0;
+        }
 
-          const isMatch = matchKey && matchMem && matchStart && matchEnd && matchType;
-          if (isMatch) {
-            if (amt > 0) incTotal += amt;
-            else expTotal += Math.abs(amt);
+        const isMatch = matchKey && matchMem && matchStart && matchEnd && matchType;
+        if (isMatch) {
+          const member = t.member_tag || '潔柔';
+          if (member === '宇軒') {
+            if (amt > 0) yxInc += amt;
+            else yxExp += Math.abs(amt);
+          } else {
+            if (amt > 0) jrInc += amt;
+            else jrExp += Math.abs(amt);
           }
-          return isMatch;
+        }
+        return isMatch;
       });
 
+      // 計算各自與全站總額
+      const jrNet = jrInc - jrExp;
+      const yxNet = yxInc - yxExp;
+      const allInc = jrInc + yxInc;
+      const allExp = jrExp + yxExp;
+      const allNet = allInc - allExp;
+
+      // 更新拆分後的統計條 UI
       const summaryBar = document.getElementById('filter-summary-bar');
       if (summaryBar) {
         summaryBar.innerHTML = `
-          <span>收入: <strong class="text-[#556357]">${maskDisplayValue(incTotal)}</strong></span>
-          <span>支出: <strong class="text-[#784D4E]">${maskDisplayValue(expTotal)}</strong></span>
-          <span>淨額: <strong class="text-[#2E2C2B]">${maskDisplayValue(incTotal - expTotal)}</strong></span>
+          <div class="space-y-1.5 w-full text-xs font-bold text-[#4D5A6E]">
+            <div class="flex justify-between items-center border-b border-[#BAC7DB]/50 pb-1">
+              <span>【潔柔】收入: <strong class="text-[#556357]">${maskDisplayValue(jrInc)}</strong> | 支出: <strong class="text-[#784D4E]">${maskDisplayValue(jrExp)}</strong></span>
+              <span>小計: <strong class="text-[#2E2C2B]">${maskDisplayValue(jrNet)}</strong></span>
+            </div>
+            <div class="flex justify-between items-center border-b border-[#BAC7DB]/50 pb-1">
+              <span>【宇軒】收入: <strong class="text-[#556357]">${maskDisplayValue(yxInc)}</strong> | 支出: <strong class="text-[#784D4E]">${maskDisplayValue(yxExp)}</strong></span>
+              <span>小計: <strong class="text-[#2E2C2B]">${maskDisplayValue(yxNet)}</strong></span>
+            </div>
+            <div class="flex justify-between items-center pt-0.5 text-[#2E2C2B] font-extrabold">
+              <span>總計收入: <strong class="text-[#556357]">${maskDisplayValue(allInc)}</strong> | 總支出: <strong class="text-[#784D4E]">${maskDisplayValue(allExp)}</strong></span>
+              <span>總淨額: <strong>${maskDisplayValue(allNet)}</strong></span>
+            </div>
+          </div>
         `;
       }
 
