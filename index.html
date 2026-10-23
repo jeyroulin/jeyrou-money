@@ -2033,13 +2033,16 @@ function getMemberStockHoldings(member) {
   const holdings = {};
 
   userTransactions.forEach(t => {
-    const codeKey = (t.code || t.stock_code || '').trim();
+    // 提取純數字代碼（例如從 "0050 元大台灣50" 提取出 "0050"），確保不同輸入格式能完美歸併
+    const rawCode = (t.code || t.stock_code || '').trim();
+    const codeMatch = rawCode.match(/\d+/);
+    const codeKey = codeMatch ? codeMatch[0] : rawCode;
     if (!codeKey) return;
 
     if (!holdings[codeKey]) {
       holdings[codeKey] = {
-        code: codeKey,
-        name: t.name || t.stock_name || codeKey,
+        code: rawCode, // 保持原始顯示名稱
+        stockCodeOnly: codeKey,
         shares: 0,
         totalCost: 0,
         lastBuyPrice: t.price || 0,
@@ -2064,11 +2067,11 @@ function getMemberStockHoldings(member) {
   });
 
   return Object.values(holdings).filter(h => h.shares > 0).map(h => {
-    const matchKey = Object.keys(manualStockPrices || {}).find(k => h.code.includes(k)) || h.code;
+    const matchKey = Object.keys(manualStockPrices || {}).find(k => h.code.includes(k) || h.stockCodeOnly.includes(k)) || h.stockCodeOnly;
     const latestPrice = Number(manualStockPrices[matchKey] || h.lastBuyPrice || 0);
     const grossValue = Math.round(h.shares * latestPrice);
 
-    const isETF = /^00/.test(h.code.trim());
+    const isETF = /^00/.test(h.stockCodeOnly);
     const taxRate = isETF ? 0.001 : 0.003;
     const estTax = Math.floor(grossValue * taxRate);
 
@@ -2078,21 +2081,26 @@ function getMemberStockHoldings(member) {
       estFee = Math.max(1, calcFee);
     }
 
-    const unrealizedProfit = grossValue - h.totalCost;
-    const profitRatio = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : 0;
-    const avgCostPrice = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : 0;
+    const currentMarketValue = Math.max(0, Math.round(grossValue - estTax - estFee));
+    const avgCost = h.shares > 0 ? (h.totalCost / h.shares).toFixed(2) : '0.00';
+    const unrealizedProfit = currentMarketValue - h.totalCost;
+    const profitRate = h.totalCost > 0 ? ((unrealizedProfit / h.totalCost) * 100).toFixed(1) : '0.0';
 
     return {
       ...h,
-      avgCostPrice: avgCostPrice,
-      latestPrice: latestPrice,
-      currentMarketValue: grossValue,
-      unrealizedProfit: unrealizedProfit,
-      profitRatio: profitRatio,
-      estTax: estTax,
-      estFee: estFee
+      latestPrice,
+      avgCost,
+      avgCostPrice: avgCost,
+      grossValue,
+      estTax,
+      estFee,
+      estTaxFee: estTax + estFee,
+      currentMarketValue,
+      unrealizedProfit,
+      profitRate,
+      profitRatio: profitRate
     };
-  });
+  }).sort((a, b) => b.currentMarketValue - a.currentMarketValue);
 }
 
     function autoFillForexRate() {
