@@ -2708,48 +2708,53 @@ function getMemberStockHoldings(member) {
       }
     }
 
-    function renderAssets(member) {
-      currentAssetMember = member;
+function renderAssets(member) {
+  currentAssetMember = member;
 
-      const fixedCard = document.getElementById('yuxuan-cashflow-fixed-card');
-      if (fixedCard) {
-        if (member === '潔柔') {
-          fixedCard.classList.add('hidden');
-        } else {
-          fixedCard.classList.remove('hidden');
-        }
-      }
+  const fixedCard = document.getElementById('yuxuan-cashflow-fixed-card');
+  if (fixedCard) {
+    if (member === '潔柔') {
+      fixedCard.classList.add('hidden');
+    } else {
+      fixedCard.classList.remove('hidden');
+    }
+  }
 
-      const yuxuanCashNet = 1437;
+  const yuxuanCashNet = 1437;
 
-      const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
-      const depositTotal = filteredDeposits.reduce((sum, d) => sum + d.amount, 0);
+  // 定存 (郵局定存 63,168)
+  const filteredDeposits = fixedDeposits.filter(d => member === '全部' || d.owner === member);
+  const depositTotal = filteredDeposits.reduce((sum, d) => sum + Number(d.amount || 0), 0);
 
-      const filteredInsurances = insurancePolicies.filter(i => member === '全部' || i.owner === member);
-      const insuranceTotal = filteredInsurances.reduce((sum, i) => sum + (i.amount || 0), 0);
+  // 保險與外幣
+  const filteredInsurances = insurancePolicies.filter(i => member === '全部' || i.owner === member);
+  const insuranceTotal = filteredInsurances.reduce((sum, i) => sum + Number(i.amount || 0), 0);
 
-      const forexHoldings = getMemberForexHoldings(member);
-      const forexTotalNTD = forexHoldings.reduce((sum, h) => sum + h.currentNTDValue, 0);
+  const forexHoldings = getMemberForexHoldings(member);
+  const forexTotalNTD = forexHoldings.reduce((sum, h) => sum + Number(h.currentNTDValue || 0), 0);
 
-      const annualFundTotal = annualFundList.reduce((sum, f) => sum + f.amount, 0);
+  // 年度預備金：僅屬於「潔柔」或「全部」，不重複算入宇軒
+  const annualFundTotal = (member === '宇軒') ? 0 : annualFundList.reduce((sum, f) => sum + Number(f.amount || 0), 0);
 
-      let stockMarketVal = 0;
-      let stockCashVal = 0;
+  let stockMarketVal = 0;
+  let stockCashVal = 0;
 
-      if (member === '全部') {
-        const holdingsJR = getMemberStockHoldings('潔柔');
-        const holdingsYX = getMemberStockHoldings('宇軒');
-        stockMarketVal = holdingsJR.reduce((s, h) => s + h.currentMarketValue, 0) + holdingsYX.reduce((s, h) => s + h.currentMarketValue, 0);
-        stockCashVal = (stockAccountCash['潔柔'] || 0) + (stockAccountCash['宇軒'] || 0);
-      } else {
-        const holdings = getMemberStockHoldings(member);
-        stockMarketVal = holdings.reduce((s, h) => s + h.currentMarketValue, 0);
-        stockCashVal = stockAccountCash[member] || 0;
-      }
+  if (member === '全部') {
+    const holdingsJR = getMemberStockHoldings('潔柔');
+    const holdingsYX = getMemberStockHoldings('宇軒');
+    stockMarketVal = holdingsJR.reduce((s, h) => s + Number(h.currentMarketValue || 0), 0) + holdingsYX.reduce((s, h) => s + Number(h.currentMarketValue || 0), 0);
+    stockCashVal = (stockAccountCash['潔柔'] || 0) + (stockAccountCash['宇軒'] || 0);
+  } else {
+    const holdings = getMemberStockHoldings(member);
+    stockMarketVal = holdings.reduce((s, h) => s + Number(h.currentMarketValue || 0), 0);
+    stockCashVal = stockAccountCash[member] || 0;
+  }
 
-      const stockGrandTotal = stockMarketVal + stockCashVal;
-      const extraYuxuanCash = (member === '宇軒' || member === '全部') ? yuxuanCashNet : 0;
-      const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + annualFundTotal + extraYuxuanCash;
+  const stockGrandTotal = stockMarketVal + stockCashVal;
+  const extraYuxuanCash = (member === '宇軒' || member === '全部') ? yuxuanCashNet : 0;
+  
+  // 精準加總：銀行定存/預備金總額
+  const cashAssetTotal = depositTotal + insuranceTotal + forexTotalNTD + stockGrandTotal + annualFundTotal + extraYuxuanCash;
 
       let laborTotal = 0;
       if (member === '全部') {
